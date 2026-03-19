@@ -57,3 +57,40 @@ Always prefer Nx commands (`nx run`, `nx run-many`, `nx affected`) so task graph
 - For Nx plugin best practices, check `node_modules/@nx/<plugin>/PLUGIN.md`. Not all plugins have this file - proceed without it if unavailable.
 
 <!-- nx configuration end-->
+
+## Cursor Cloud specific instructions
+
+### Infrastructure services
+
+The engine backend requires PostgreSQL, MongoDB, Redis, and RabbitMQ. These are defined in `docker/docker-compose.yml` and started via `docker compose --env-file .env up -d` from the `docker/` directory. Docker must be installed and running first (the Cloud VM does not have Docker pre-installed).
+
+### Environment variables
+
+Copy `.env.example` to `.env` before first run. Key adjustments for local development:
+- Replace all host IPs (e.g. `72.61.126.222`) with `localhost`.
+- The `POSGTRES_DATABASE_URL` and `RABBITMQ_URI` values use `${VAR}` interpolation which standard `dotenv` does not expand. Replace them with literal values:
+  - `POSGTRES_DATABASE_URL="postgresql://ray_user:ray_password@localhost:5432/ray?connect_timeout=300&sslmode=disable"`
+  - `RABBITMQ_URI=amqp://ray_user:ray_password@localhost:5672`
+- Note: the env var name `POSGTRES_DATABASE_URL` has a typo (missing "R") — this is intentional in the codebase; do not "fix" it.
+
+### Database setup
+
+After infrastructure is running, generate the Prisma client and deploy migrations:
+```
+pnpm db:generate
+npx nx run pg-dao:deploy
+```
+
+### Running services
+
+- **Engine** (NestJS, port 8000): `pnpm dev:engine` — reads `.env` from workspace root via `@nestjs/config`.
+- **Web** (TanStack React Start, port 3000): `pnpm dev:web`
+- Lint: `pnpm lint` (uses `nx affected -t lint`) or `pnpm lint:all`
+- Tests: `npx nx run-many -t test --projects=billing,api-core` (only projects with test files currently: `billing`, `api-core`)
+
+### Gotchas
+
+- `nx` is not globally installed; use `npx nx` or the `pnpm` scripts that wrap it.
+- Several projects (web, common, studio, ui-shared, api-client) have Vitest configured but no test files yet; running `nx test` on them exits with code 1 ("No test files found"). This is expected.
+- The `postinstall` script runs `lefthook install` which sets up pre-commit (format + lint) and commit-msg (commitlint) hooks.
+- Elasticsearch is referenced in config but is optional and not included in docker-compose.
