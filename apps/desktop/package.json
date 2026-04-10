@@ -42,7 +42,7 @@
     "@tanstack/router-plugin": "catalog:",
     "@types/electron-squirrel-startup": "^1.0.2",
     "@vitejs/plugin-react": "catalog:",
-    "electron": "^39.2.7",
+    "electron": "^39.8.5",
     "tailwindcss": "catalog:",
     "vite": "catalog:",
     "vite-plugin-svgr": "catalog:"
