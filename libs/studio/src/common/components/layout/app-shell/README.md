@@ -46,7 +46,11 @@ app-shell/
 
 1. **一级导航 (Sidebar)**
    - 位于左侧，始终可见
+<<<<<<< HEAD
    - 包含主要功能模块入口（如Admin）
+=======
+   - 包含主要功能模块入口（如 CRM、Admin）
+>>>>>>> 01f70ac (Initial commit)
    - 底部显示用户头像
    - 支持折叠/展开
 
@@ -97,13 +101,24 @@ function App() {
 **推荐方式：配置式（数据源唯一）**
 
 ```tsx
+<<<<<<< HEAD
 import { getCrmNavConfig, SecondaryNavProvider } from '@libs/studio'
+=======
+import { SecondaryNavProvider, getCrmNavConfig } from '@libs/studio'
+>>>>>>> 01f70ac (Initial commit)
 
 function CrmLayout() {
   const { t } = useTranslation(['common', 'dashboard'])
 
   // 使用统一的导航配置函数
+<<<<<<< HEAD
   const navConfig = useMemo(() => getCrmNavConfig(t), [t])
+=======
+  const navConfig = useMemo(
+    () => getCrmNavConfig(t),
+    [t]
+  )
+>>>>>>> 01f70ac (Initial commit)
 
   return (
     // 配置式：自动生成 desktopContent 和 mobileItems
@@ -153,6 +168,7 @@ libs/studio/src/modules/
 
 ```typescript
 interface SecondaryNavConfig {
+<<<<<<< HEAD
   title?: string // 导航标题
   stats?: NavStatCard[] // 统计卡片
   progress?: NavProgress // 进度指示器
@@ -164,13 +180,29 @@ interface NavItem {
   label: string // 显示标签
   href: string // 跳转路径
   icon: ReactNode // 图标
+=======
+  title?: string           // 导航标题
+  stats?: NavStatCard[]    // 统计卡片
+  progress?: NavProgress   // 进度指示器
+  quickAccess?: NavItem[]  // 快捷入口（网格）
+  groups: NavGroup[]       // 导航分组
+}
+
+interface NavItem {
+  label: string    // 显示标签
+  href: string     // 跳转路径
+  icon: ReactNode  // 图标
+>>>>>>> 01f70ac (Initial commit)
 }
 ```
 
 ### 自动转换
 
 配置会自动转换为：
+<<<<<<< HEAD
 
+=======
+>>>>>>> 01f70ac (Initial commit)
 - **大屏展开**：`SecondaryNavRenderer` 渲染完整 UI
 - **大屏折叠/小屏**：`flattenNavConfig()` 生成扁平列表
 
@@ -184,7 +216,11 @@ const menu = [
     href: '/crm',
     icon: <HomeIcon />,
     defaultSubRoute: getDefaultSubRoute(crmNavConfig),
+<<<<<<< HEAD
     subItems: flattenNavConfig(crmNavConfig) // 自动扁平化
+=======
+    subItems: flattenNavConfig(crmNavConfig)  // 自动扁平化
+>>>>>>> 01f70ac (Initial commit)
   }
 ]
 ```
@@ -226,6 +262,7 @@ import { useNavigationStore } from '@libs/studio/common/components/layout/app-sh
 
 function handleSwitchIdentity() {
   const resetNavigation = useNavigationStore.getState().resetNavigation
+<<<<<<< HEAD
 
   // 切换身份
   await authClient.organization.setActive({ organizationId: orgId })
@@ -233,6 +270,15 @@ function handleSwitchIdentity() {
   // 重置导航状态
   resetNavigation()
 
+=======
+  
+  // 切换身份
+  await authClient.organization.setActive({ organizationId: orgId })
+  
+  // 重置导航状态
+  resetNavigation()
+  
+>>>>>>> 01f70ac (Initial commit)
   // 导航到默认页面
   navigate({ to: '/crm' })
 }
