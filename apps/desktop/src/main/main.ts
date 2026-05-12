@@ -2,10 +2,9 @@ import './instrument'
 
 import path from 'node:path'
 
+import { registerAllHandlers } from '@main/handlers/index'
 import { app, BrowserWindow } from 'electron'
 import electronSquirrelStartup from 'electron-squirrel-startup'
-
-import { registerAllHandlers } from '@main/handlers/index'
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string | undefined
 declare const MAIN_WINDOW_VITE_NAME: string
@@ -52,7 +51,6 @@ const createWindow = () => {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-
 }
 
 app.whenReady().then(() => {
