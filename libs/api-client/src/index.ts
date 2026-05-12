@@ -44,7 +44,13 @@ export {
   orgKeys,
   storageKeys,
   storageMutations,
-  userKeys
+  userKeys,
+  collectionCategoryKeys,
+  collectionCategoryQueries,
+  collectionCategoryMutations,
+  collectionItemKeys,
+  collectionItemQueries,
+  collectionItemMutations
 } from './domains'
 
 // Utils (Hono compatibility)

@@ -706,10 +706,7 @@ export type I18nTranslations = {
         "disabled": string;
         "platform": string;
         "account": string;
-<<<<<<< HEAD
         "profile": string;
-=======
->>>>>>> 01f70ac (Initial commit)
         "continue": string;
         "cancel": string;
         "save": string;

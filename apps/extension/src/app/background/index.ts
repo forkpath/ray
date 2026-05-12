@@ -2,10 +2,13 @@ import { defineBackground } from 'wxt/utils/define-background'
 
 import { logger } from '@libs/common'
 
+import { initCollectionContextMenu } from './collection/context-menu'
+
 import './messaging/hello'
 
-const main = () => {
-  logger.info('Background service worker is running! Edit `src/app/background` and save to reload.')
+const main = async () => {
+  logger.info('Background service worker is running!')
+  await initCollectionContextMenu()
 }
 
 export default defineBackground(main)

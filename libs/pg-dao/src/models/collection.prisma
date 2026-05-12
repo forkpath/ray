@@ -1,0 +1,100 @@
+model CollectionCategory {
+  id        String   @id @default(cuid())
+  name      String
+  isDefault Boolean  @default(false) @map("is_default")
+  color     String?
+  sortOrder Int      @default(0) @map("sort_order")
+  userId    String?  @map("user_id")
+  orgId     String?  @map("org_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  items     CollectionItem[]
+
+  @@index([userId])
+  @@index([orgId])
+  @@map("collection_category")
+  @@schema("public")
+}
+
+enum CollectionItemType {
+  image
+  video
+  rich_text
+
+  @@schema("public")
+}
+
+enum VideoPlatform {
+  youtube
+  x
+  xiaohongshu
+  bilibili
+  weibo
+  wechat_mp
+  tiktok
+  douyin
+  kuaishou
+
+  @@schema("public")
+}
+
+enum VideoDownloadStatus {
+  pending
+  downloading
+  completed
+  failed
+  unavailable
+
+  @@schema("public")
+}
+
+enum AiProcessingStatus {
+  pending
+  processing
+  completed
+  failed
+
+  @@schema("public")
+}
+
+model CollectionItem {
+  id         String             @id @default(cuid())
+  type       CollectionItemType
+  userId     String?            @map("user_id")
+  orgId      String?            @map("org_id")
+  categoryId String             @map("category_id")
+  category   CollectionCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  sourceUrl  String  @map("source_url")
+  sourceHost String  @map("source_host")
+  title      String?
+  notes      String?
+
+  imageUrl    String? @map("image_url")
+  imageAlt    String? @map("image_alt")
+  imageWidth  Int?    @map("image_width")
+  imageHeight Int?    @map("image_height")
+
+  platform       VideoPlatform?
+  videoId        String?              @map("video_id")
+  thumbnail      String?
+  duration       Int?
+  author         String?
+  downloadStatus VideoDownloadStatus? @map("download_status")
+
+  rawContent String?           @db.Text @map("raw_content")
+  content    String?           @db.Text
+  aiStatus   AiProcessingStatus? @map("ai_status")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([orgId])
+  @@index([categoryId])
+  @@index([userId, type])
+  @@index([orgId, type])
+  @@index([createdAt])
+  @@map("collection_item")
+  @@schema("public")
+}

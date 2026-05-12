@@ -53,7 +53,7 @@ export default defineConfig({
 
     return {
       name: appConfig.name,
-      permissions: ['storage', 'cookies', 'sidePanel'],
+      permissions: ['storage', 'cookies', 'sidePanel', 'contextMenus', 'downloads'],
       host_permissions: hostPermissions
     }
   },

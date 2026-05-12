@@ -6,8 +6,14 @@ import { useEffect, useState } from 'react'
 import { appConfig } from '~/config/app'
 import { storage as browserStorage } from 'wxt/utils/storage'
 
+export interface CachedCategories {
+  list: Array<{ id: string; name: string; isDefault: boolean; color: string | null }>
+  fetchedAt: number
+}
+
 export const StorageKey = {
-  THEME: 'local:theme'
+  THEME: 'local:theme',
+  CATEGORIES: 'local:categories'
 } as const
 
 export type StorageKey = (typeof StorageKey)[keyof typeof StorageKey]
@@ -15,6 +21,9 @@ export type StorageKey = (typeof StorageKey)[keyof typeof StorageKey]
 const storage = {
   [StorageKey.THEME]: browserStorage.defineItem<ThemeConfig>(StorageKey.THEME, {
     fallback: appConfig.theme
+  }),
+  [StorageKey.CATEGORIES]: browserStorage.defineItem<CachedCategories | null>(StorageKey.CATEGORIES, {
+    fallback: null
   })
 } as const
 

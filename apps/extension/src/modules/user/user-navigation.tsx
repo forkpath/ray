@@ -4,6 +4,8 @@ import { memo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { appConfig } from '~/config/app'
+import { authClient } from '~/lib/auth'
+import { Message, sendMessage } from '~/lib/messaging'
 import { billingQueries } from '~/modules/billing/lib/api'
 
 import { useApiClient } from '@libs/api-client'
@@ -83,9 +85,22 @@ export const UserNavigation = memo<UserNavigationProps>(({ user, organization })
   })
   const activePlan = getActivePlan(summary.data)
 
+  const orgs = authClient.useListOrganizations()
+
+  async function switchWorkspace(orgId: string | null) {
+    await authClient.organization.setActive({ organizationId: orgId })
+    try {
+      await sendMessage(Message.WORKSPACE_CHANGED, undefined)
+    } catch {
+      // background may not be listening yet
+    }
+  }
+
   if (!user) {
     return <AnonymousUser />
   }
+
+  const hasOrgs = orgs.data && orgs.data.length > 0
 
   return (
     <DropdownMenu>
@@ -156,6 +171,41 @@ export const UserNavigation = memo<UserNavigationProps>(({ user, organization })
             }
           />
         </DropdownMenuGroup>
+
+        {hasOrgs && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-muted-foreground px-2 py-1 text-xs">切换工作区</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => switchWorkspace(null)} className="flex items-center gap-2">
+                <Avatar className="size-5">
+                  <AvatarImage src={user.image ?? undefined} alt={user.name} />
+                  <AvatarFallback>
+                    <Icons.UserRound className="w-3" />
+                  </AvatarFallback>
+                </Avatar>
+                <span className="truncate">{t('account.personal')}</span>
+                {!organization && <Icons.Check className="ml-auto size-3.5" />}
+              </DropdownMenuItem>
+              {orgs.data?.map(org => (
+                <DropdownMenuItem
+                  key={org.id}
+                  onClick={() => switchWorkspace(org.id)}
+                  className="flex items-center gap-2"
+                >
+                  <Avatar className="size-5">
+                    <AvatarImage src={org.logo ?? undefined} alt={org.name} />
+                    <AvatarFallback>
+                      <span className="text-muted-foreground text-xs uppercase">{org.name.charAt(0)}</span>
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="truncate">{org.name}</span>
+                  {organization?.id === org.id && <Icons.Check className="ml-auto size-3.5" />}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+          </>
+        )}
 
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
