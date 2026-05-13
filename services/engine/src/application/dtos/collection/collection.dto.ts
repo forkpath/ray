@@ -2,7 +2,6 @@ import { createZodDto } from 'nestjs-zod'
 
 import {
   createCategoryReqSchema,
-  createCollectionItemReqSchema,
   listCollectionItemsReqSchema,
   updateCategoryReqSchema,
   updateCollectionItemReqSchema
@@ -10,6 +9,7 @@ import {
 
 export class CreateCategoryDto extends createZodDto(createCategoryReqSchema) {}
 export class UpdateCategoryDto extends createZodDto(updateCategoryReqSchema) {}
-export class CreateCollectionItemDto extends createZodDto(createCollectionItemReqSchema) {}
+// createCollectionItemReqSchema is a discriminated union — createZodDto can't extend union types.
+// Validation is applied via ZodValidationPipe directly on the @Body() parameter in the controller.
 export class UpdateCollectionItemDto extends createZodDto(updateCollectionItemReqSchema) {}
 export class ListCollectionItemsQueryDto extends createZodDto(listCollectionItemsReqSchema) {}

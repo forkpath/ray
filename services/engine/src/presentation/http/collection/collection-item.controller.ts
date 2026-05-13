@@ -1,18 +1,17 @@
-import type { CollectionItemRes, ListCollectionItemsRes } from '@libs/payload'
+import type { CollectionItemRes, CreateCollectionItemReq, ListCollectionItemsRes } from '@libs/payload'
 
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 
+import { ZodValidationPipe } from 'nestjs-zod'
+
+import { createCollectionItemReqSchema } from '@libs/payload'
 import { Session } from '@libs/srv-shared'
 
 import { CreateItemCommand } from '#/application/commands/collection/create-item.command'
 import { DeleteItemCommand } from '#/application/commands/collection/delete-item.command'
 import { UpdateItemCommand } from '#/application/commands/collection/update-item.command'
-import {
-  CreateCollectionItemDto,
-  ListCollectionItemsQueryDto,
-  UpdateCollectionItemDto
-} from '#/application/dtos/collection/collection.dto'
+import { ListCollectionItemsQueryDto, UpdateCollectionItemDto } from '#/application/dtos/collection/collection.dto'
 import { ListItemsQuery } from '#/application/queries/collection/list-items.query'
 
 interface AuthSession {
@@ -33,7 +32,10 @@ export class CollectionItemController {
   }
 
   @Post()
-  create(@Session() session: AuthSession, @Body() dto: CreateCollectionItemDto): Promise<CollectionItemRes> {
+  create(
+    @Session() session: AuthSession,
+    @Body(new ZodValidationPipe(createCollectionItemReqSchema)) dto: CreateCollectionItemReq
+  ): Promise<CollectionItemRes> {
     return this.commandBus.execute(new CreateItemCommand(session.user.id, session.session.activeOrganizationId, dto))
   }
 
