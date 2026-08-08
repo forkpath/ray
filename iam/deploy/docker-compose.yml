@@ -1,0 +1,80 @@
+# 独立 IAM 平台部署：Logto（共享身份层）+ Logto Postgres + Kong（DB 模式）+ Kong Postgres
+# 启动：docker compose --env-file .env up -d
+services:
+  # ── Logto 身份层 ───────────────────────────────────────
+  iam-postgres:
+    image: postgres:17
+    container_name: iam-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${IAM_PG_PASSWORD}
+      POSTGRES_DB: logto
+    ports: ['6432:5432']
+    volumes: ['iam-pg:/var/lib/postgresql/data']
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  logto:
+    image: ghcr.io/logto-io/logto:latest
+    container_name: iam-logto
+    depends_on:
+      iam-postgres: { condition: service_healthy }
+    entrypoint: ['sh', '-c', 'npm run cli db seed -- --swe && npm start']
+    environment:
+      TRUST_PROXY_HEADER: '1'
+      DB_URL: postgres://postgres:${IAM_PG_PASSWORD}@iam-postgres:5432/logto
+      ENDPOINT: ${LOGTO_ENDPOINT}
+      ADMIN_ENDPOINT: ${LOGTO_ADMIN_ENDPOINT}
+    ports: ['3001:3001', '3002:3002']
+
+  # ── Kong 网关（DB 模式，方案 B）────────────────────────
+  kong-database:
+    image: postgres:17
+    container_name: iam-kong-pg
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: ${KONG_PG_PASSWORD}
+      POSTGRES_DB: kong
+    volumes: ['kong-pg:/var/lib/postgresql/data']
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U kong']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  kong-migrations:
+    image: kong:3.7
+    command: kong migrations bootstrap
+    depends_on:
+      kong-database: { condition: service_healthy }
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
+    restart: on-failure
+
+  kong:
+    image: kong:3.7
+    container_name: iam-kong
+    depends_on:
+      kong-database: { condition: service_healthy }
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_PASSWORD: ${KONG_PG_PASSWORD}
+      # Admin API 仅内网/本机；proxy 暴露 80/443（ADR-0007）
+      KONG_ADMIN_LISTEN: '0.0.0.0:8001'
+      KONG_PROXY_LISTEN: '0.0.0.0:80, 0.0.0.0:443 ssl'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '127.0.0.1:8001:8001' # 不要映射到公网
+    volumes: ['kong-prefix:/usr/local/kong']
+
+volumes:
+  iam-pg:
+  kong-pg:
+  kong-prefix:

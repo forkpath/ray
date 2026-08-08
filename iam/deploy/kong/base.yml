@@ -1,0 +1,76 @@
+# Kong 静态基础设施配置（与组织无关）。
+# 由 deck 幂等下发：deck gateway sync --select-tag base iam/deploy/kong/base.yml
+# 所有实体打 tag: base，确保 deck sync 不会删除 Provisioner 动态创建的租户路由（tag: tenant）。
+#
+# 来源：从 ray docker/kong/kong.yml 转换而来。
+# 注意：engine-auth (/api/auth) 路由在 Plan 3 Task 4 切 Logto 时移除。
+_format_version: '3.0'
+
+services:
+  - name: engine-api
+    url: http://engine:8000
+    tags: ['base']
+    routes:
+      - name: engine-api-route
+        paths: ['/api']
+        strip_path: false
+        preserve_host: true
+        tags: ['base']
+    plugins:
+      - name: cors
+        tags: ['base']
+        config:
+          origins: ['https://${DOMAIN}']
+          methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+          headers: ['Content-Type', 'Authorization', 'Accept', 'Cookie']
+          credentials: true
+          max_age: 3600
+
+  # ⚠️ Plan 3 Task 4 Step 5：切 Logto 后删除此 engine-auth Service/Route
+  - name: engine-auth
+    url: http://engine:8000
+    tags: ['base']
+    routes:
+      - name: engine-auth-route
+        paths: ['/api/auth']
+        strip_path: false
+        preserve_host: true
+        tags: ['base']
+
+  - name: web-ssr
+    url: http://web:3000
+    tags: ['base']
+    routes:
+      - name: web-catch-all
+        paths: ['/']
+        strip_path: false
+        preserve_host: true
+        tags: ['base']
+
+plugins:
+  - name: acme
+    tags: ['base']
+    config:
+      account_email: ${ACME_EMAIL}
+      api_uri: https://acme-v02.api.letsencrypt.org
+      tos_accepted: true
+      # 每组织子域走按需 http-01 签发（ADR-0008）
+      domains: ['${DOMAIN}', 'www.${DOMAIN}']
+      storage: redis
+      storage_config:
+        redis:
+          host: redis
+          port: 6379
+          database: 1
+      cert_type: rsa
+
+  - name: rate-limiting
+    tags: ['base']
+    config:
+      minute: 200
+      policy: redis
+      redis:
+        host: redis
+        port: 6379
+        database: 2
+      fault_tolerant: true
