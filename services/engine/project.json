@@ -5,16 +5,26 @@
   "projectType": "application",
   "tags": ["scope:backend", "type:app"],
   "targets": {
-    "build": {
+    "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "webpack-cli build",
-        "args": ["--node-env=production"],
+        "command": "tsc --noEmit -p tsconfig.app.json",
+        "cwd": "services/engine"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production", { "env": "NODE_ENV" }],
+      "outputs": ["{workspaceRoot}/dist/services/engine"],
+      "options": {
+        "command": "webpack-cli build --config-node-env production",
         "cwd": "services/engine"
       },
       "configurations": {
         "development": {
-          "args": ["--node-env=development"]
+          "command": "webpack-cli build --config-node-env development"
         }
       }
     },

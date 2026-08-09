@@ -5,6 +5,13 @@
   "projectType": "application",
   "tags": ["scope:frontend", "type:app", "platform:mobile"],
   "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tsconfig.json",
+        "cwd": "apps/mobile"
+      }
+    },
     "run-ios": {
       "command": "expo run:ios",
       "continuous": true,
@@ -32,7 +39,24 @@
       }
     },
     "build": {
+      "executor": "nx:noop",
+      "cache": true,
+      "dependsOn": ["export"]
+    },
+    "export": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["^export"],
+      "inputs": ["default", "^production", "expoBuildEnvironment", { "externalDependencies": ["expo"] }],
+      "outputs": ["{projectRoot}/dist"],
+      "options": {
+        "command": "expo export --clear",
+        "cwd": "apps/mobile"
+      }
+    },
+    "release": {
       "executor": "@nx/expo:build",
+      "cache": false,
       "options": {
         "profile": "production",
         "interactive": false
@@ -40,6 +64,14 @@
       "configurations": {
         "ios": { "platform": "ios" },
         "android": { "platform": "android" }
+      }
+    },
+    "submit": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "eas submit",
+        "cwd": "apps/mobile"
       }
     }
   }

@@ -1,0 +1,102 @@
+name: Capture Nx CI baseline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: nx-ci-baseline-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.14.1
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: node --test scripts/ci/nx-baseline.test.mjs
+
+  sample:
+    needs: preflight
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        sample: ['1', '2', '3', '4', '5']
+    env:
+      CI_METRICS_DIR: artifacts/ci-baseline/sample-${{ matrix.sample }}
+      CI_METRICS_RUNNER_LABEL: ubuntu-latest
+      CI_METRICS_SAMPLE_ID: ${{ matrix.sample }}
+      NX_CACHE_DIRECTORY: .nx/cache
+      NX_CLOUD_ACCESS_TOKEN: ''
+      NX_NO_CLOUD: 'true'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          run_install: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.14.1
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Capture independent full no-cache sample
+        run: >-
+          node scripts/ci/run-nx-with-metrics.mjs --phase=baseline --
+          pnpm exec nx run-many -t lint,typecheck,test,build --all
+          --nxBail --skipNxCache --outputStyle=static
+
+      - name: Upload baseline sample
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nx-ci-baseline-${{ github.run_id }}-${{ matrix.sample }}
+          path: artifacts/ci-baseline/sample-${{ matrix.sample }}/*.json
+          if-no-files-found: error
+          retention-days: 30
+
+  aggregate:
+    needs: sample
+    if: needs.sample.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.14.1
+
+      - name: Download this run's five samples
+        run: |
+          mkdir -p artifacts/ci-baseline-samples
+          gh run download "$GITHUB_RUN_ID" \
+            --pattern "nx-ci-baseline-$GITHUB_RUN_ID-*" \
+            --dir artifacts/ci-baseline-samples
+
+      - name: Validate and aggregate the candidate baseline
+        run: >-
+          node scripts/ci/summarize-nx-baseline.mjs
+          --metrics-dir=artifacts/ci-baseline-samples
+          --expected-samples=5
+          --output=artifacts/ci-baseline-summary/baseline.json
+
+      - name: Upload candidate baseline evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nx-ci-baseline-summary-${{ github.run_id }}
+          path: artifacts/ci-baseline-summary/baseline.json
+          if-no-files-found: error
+          retention-days: 30

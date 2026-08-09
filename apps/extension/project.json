@@ -5,6 +5,12 @@
   "projectType": "application",
   "tags": ["scope:frontend", "type:app", "platform:extension"],
   "targets": {
+    "build": {
+      "executor": "nx:noop",
+      "cache": true,
+      "dependsOn": ["build-chrome", "build-firefox"],
+      "outputs": ["{projectRoot}/build", "{projectRoot}/.output"]
+    },
     "dev": {
       "executor": "nx:run-commands",
       "options": {
@@ -21,6 +27,9 @@
     },
     "build-chrome": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["production", "^production", "viteBuildEnvironment", { "externalDependencies": ["wxt"] }],
+      "outputs": ["{projectRoot}/build", "{projectRoot}/.output"],
       "options": {
         "command": "wxt zip",
         "cwd": "apps/extension"
@@ -29,6 +38,9 @@
     },
     "build-firefox": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["production", "^production", "viteBuildEnvironment", { "externalDependencies": ["wxt"] }],
+      "outputs": ["{projectRoot}/build", "{projectRoot}/.output"],
       "options": {
         "command": "wxt zip -b firefox",
         "cwd": "apps/extension"

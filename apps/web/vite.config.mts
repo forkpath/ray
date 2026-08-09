@@ -1,4 +1,3 @@
-/// <reference types='vitest' />
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 
@@ -75,18 +74,6 @@ export default defineConfig(async ({ command }) => {
       reportCompressedSize: true,
       commonjsOptions: {
         transformMixedEsModules: true
-      }
-    },
-    test: {
-      name: 'web',
-      watch: false,
-      globals: true,
-      environment: 'jsdom',
-      include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-      reporters: ['default'],
-      coverage: {
-        reportsDirectory: '../../coverage/apps/web',
-        provider: 'v8'
       }
     }
   }

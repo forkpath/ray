@@ -18,7 +18,7 @@ export function ImpersonatingBanner() {
     ...admin.mutations.users.stopImpersonating,
     onSuccess: async () => {
       await queryClient.invalidateQueries()
-      void router.navigate({ to: '/admin/users' })
+      void router.navigate({ to: '/admin/users' as never })
     }
   })
 
