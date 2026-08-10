@@ -1,4 +1,14 @@
-export * from './types'
-export * from './lib/utils'
-export * from './lib/schema'
-export * from './permissions'
+export * from '@libs/auth-contract'
+
+export { getUrl } from './lib/utils'
+export type {
+  ActiveOrganization,
+  AuthClientOptions,
+  AuthClientPlugin,
+  AuthMobileClientOptions,
+  Invitation,
+  Member,
+  Organization,
+  Session,
+  User
+} from './types'

@@ -116,7 +116,7 @@ export default [
               sourceTag: 'domain:billing',
               onlyDependOnLibsWithTags: [
                 'domain:billing',
-                'domain:auth',
+                'boundary:auth-contract',
                 'domain:shared',
                 'domain:platform',
                 'boundary:facade'
@@ -126,7 +126,7 @@ export default [
               sourceTag: 'domain:organization',
               onlyDependOnLibsWithTags: [
                 'domain:organization',
-                'domain:auth',
+                'boundary:auth-contract',
                 'domain:shared',
                 'domain:platform',
                 'boundary:facade'

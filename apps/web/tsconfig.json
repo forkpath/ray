@@ -15,6 +15,7 @@
       "@libs/payload": ["libs/payload/src/index.ts"],
       "@libs/auth": ["libs/auth/src/index.ts"],
       "@libs/auth/*": ["libs/auth/src/*"],
+      "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
       "@libs/email": ["libs/email/src/index.ts"],
       "@libs/email/*": ["libs/email/src/*"],
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],

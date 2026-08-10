@@ -39,6 +39,11 @@ project's runtime, type, and domain rules. There is no wildcard fallback.
   shared, and platform projects.
 - Composition roots can combine all domains.
 
+Cross-domain access to Auth is represented by the additive
+`boundary:auth-contract` marker. Billing and organization cannot target the
+broader `domain:auth` tag, so future Auth server and client projects remain
+inaccessible even though they share the Auth domain.
+
 ## Transitional facade debt
 
 `boundary:facade` is a narrow migration exception, not a fourth architecture
@@ -46,7 +51,7 @@ dimension. It allows existing consumers to keep their import paths while a
 mixed project is split. The allowlist is guarded in CI and currently contains:
 
 - `auth`: remove after contract, web/native client, and Node server projects
-  replace the mixed facade;
+  replace the mixed facade. The `auth-contract` project is already extracted;
 - `billing`: remove after contract/config, web/native client, and Node provider
   projects replace the mixed facade;
 - `ui-shared`: remove after universal core, web UI, and native UI projects are
