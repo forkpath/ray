@@ -2,33 +2,15 @@ import { Logger } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 
 import { AppModule } from './app/app.module'
-
-const keepProcessAlive = () => setInterval(() => undefined, 2_147_483_647)
+import { workerRuntimeConfig } from './app/worker-runtime.config'
 
 async function bootstrap() {
-  const app = await NestFactory.createApplicationContext(AppModule, {
+  const app = await NestFactory.create(AppModule, {
     bufferLogs: true
   })
-
-  const keepAlive = keepProcessAlive()
-  let isShuttingDown = false
-
-  const shutdown = async (signal: NodeJS.Signals) => {
-    if (isShuttingDown) {
-      return
-    }
-
-    isShuttingDown = true
-    Logger.log(`Worker received ${signal}, shutting down`)
-    clearInterval(keepAlive)
-    await app.close()
-    process.exit(0)
-  }
-
-  process.once('SIGINT', shutdown)
-  process.once('SIGTERM', shutdown)
-
-  Logger.log('Worker application context is running')
+  app.enableShutdownHooks(['SIGINT', 'SIGTERM'])
+  await app.listen(workerRuntimeConfig.port, '0.0.0.0')
+  Logger.log(`Worker ${workerRuntimeConfig.mode} runtime is listening on ${workerRuntimeConfig.port}`)
 }
 
 bootstrap().catch(error => {

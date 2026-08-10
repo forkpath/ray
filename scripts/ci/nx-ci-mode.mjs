@@ -9,6 +9,7 @@ const CI_CONTROL_PLANE_FILES = new Set([
   'pnpm-lock.yaml',
   'tsconfig.base.json'
 ])
+const CI_CONTROL_PLANE_PREFIXES = ['.github/workflows/', 'docker/', 'scripts/ci/']
 
 function isAffectedEvent(eventName, ref) {
   return eventName === 'pull_request' || (eventName === 'push' && ref === 'refs/heads/dev')
@@ -53,10 +54,7 @@ export function hasCiControlPlaneChange(base, head, git = spawnSync) {
   return result.stdout
     .split('\n')
     .filter(Boolean)
-    .some(
-      file =>
-        CI_CONTROL_PLANE_FILES.has(file) || file.startsWith('.github/workflows/') || file.startsWith('scripts/ci/')
-    )
+    .some(file => CI_CONTROL_PLANE_FILES.has(file) || CI_CONTROL_PLANE_PREFIXES.some(prefix => file.startsWith(prefix)))
 }
 
 export function resolveNxCiMode({

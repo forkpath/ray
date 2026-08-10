@@ -64,6 +64,31 @@ export interface WorkerInboxRepository {
   isReady(): Promise<boolean>
 }
 
+export interface WorkerRetryDelivery {
+  readonly consumer: string
+  readonly messageId: string
+  readonly envelope: unknown
+}
+
+export interface WorkerRetryRepository {
+  claimDispatchable(input: {
+    readonly now: Date
+    readonly dispatchLeaseExpiredAt: Date
+    readonly processingLeaseExpiredAt: Date
+    readonly limit: number
+  }): Promise<readonly WorkerRetryDelivery[]>
+}
+
+export interface WorkerRetryPublisher {
+  publish(delivery: WorkerRetryDelivery): Promise<void>
+}
+
+export interface WorkerRetryDispatchResult {
+  readonly claimed: number
+  readonly published: number
+  readonly failed: number
+}
+
 export type WorkerMessageResult =
   | { readonly status: 'processed'; readonly attemptCount: number }
   | { readonly status: 'retry-scheduled'; readonly attemptCount: number; readonly nextAttemptAt: Date }
@@ -77,6 +102,13 @@ export interface WorkerMessageProcessorOptions {
   readonly retryMaxMs?: number
   readonly jitterRatio?: number
   readonly random?: () => number
+  readonly now?: () => Date
+}
+
+export interface WorkerRetryDispatcherOptions {
+  readonly batchSize?: number
+  readonly dispatchLeaseMs?: number
+  readonly processingLeaseMs?: number
   readonly now?: () => Date
 }
 
@@ -298,6 +330,41 @@ export class WorkerMessageProcessor {
   }
 }
 
+export class WorkerRetryDispatcher {
+  private readonly batchSize: number
+  private readonly dispatchLeaseMs: number
+  private readonly now: () => Date
+  private readonly processingLeaseMs: number
+
+  constructor(
+    private readonly repository: WorkerRetryRepository,
+    private readonly publisher: WorkerRetryPublisher,
+    options: WorkerRetryDispatcherOptions = {}
+  ) {
+    this.batchSize = validatePositiveInteger(options.batchSize ?? 25, 'batchSize')
+    this.dispatchLeaseMs = validatePositiveInteger(options.dispatchLeaseMs ?? 60_000, 'dispatchLeaseMs')
+    this.processingLeaseMs = validatePositiveInteger(options.processingLeaseMs ?? 300_000, 'processingLeaseMs')
+    this.now = options.now ?? (() => new Date())
+  }
+
+  async dispatch(): Promise<WorkerRetryDispatchResult> {
+    const now = this.now()
+    const deliveries = await this.repository.claimDispatchable({
+      now,
+      dispatchLeaseExpiredAt: new Date(now.getTime() - this.dispatchLeaseMs),
+      processingLeaseExpiredAt: new Date(now.getTime() - this.processingLeaseMs),
+      limit: this.batchSize
+    })
+    const results = await Promise.allSettled(deliveries.map(delivery => this.publisher.publish(delivery)))
+    const published = results.filter(result => result.status === 'fulfilled').length
+    return {
+      claimed: deliveries.length,
+      published,
+      failed: deliveries.length - published
+    }
+  }
+}
+
 export class WorkerReadinessProbe {
   constructor(
     private readonly mode: WorkerRuntimeMode,
@@ -307,7 +374,13 @@ export class WorkerReadinessProbe {
 
   async inspect(): Promise<WorkerReadinessResult> {
     const dependencyEntries = await Promise.all(
-      this.dependencies.map(async dependency => [dependency.name, await dependency.isReady()] as const)
+      this.dependencies.map(async dependency => {
+        try {
+          return [dependency.name, await dependency.isReady()] as const
+        } catch {
+          return [dependency.name, false] as const
+        }
+      })
     )
     const dependencyState = Object.fromEntries(dependencyEntries)
     const handlers = this.registry.list()
