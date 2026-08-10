@@ -13,6 +13,7 @@ export const policyPath = join(workspaceRoot, 'libs/auth/auth-schema-policy.json
 const toolingPackagePath = join(workspaceRoot, 'tools/auth-schema-tooling/package.json')
 const toolingRequire = createRequire(toolingPackagePath)
 const { getSchema } = toolingRequire('@mrleebo/prisma-ast')
+const tsconfigPathsRegisterPath = toolingRequire.resolve('tsconfig-paths/register')
 
 const logicalAttributeExclusions = new Set(['map', 'schema'])
 const scalarTypes = new Set(['BigInt', 'Boolean', 'Bytes', 'DateTime', 'Decimal', 'Float', 'Int', 'Json', 'String'])
@@ -222,15 +223,16 @@ export function evaluateContracts({ candidateText, trackedText, policy }) {
   }
 }
 
-function safeEnvironment() {
+export function safeEnvironment(environment = process.env) {
   const inheritedEnvironment = Object.fromEntries(
     ['CI', 'FORCE_COLOR', 'NO_COLOR', 'PATH', 'TEMP', 'TERM', 'TMP', 'TMPDIR']
-      .filter(name => process.env[name] !== undefined)
-      .map(name => [name, process.env[name]])
+      .filter(name => environment[name] !== undefined)
+      .map(name => [name, environment[name]])
   )
 
   return {
     ...inheritedEnvironment,
+    NODE_OPTIONS: `--require=${tsconfigPathsRegisterPath}`,
     NODE_ENV: 'development',
     POSTGRES_DATABASE_URL: 'postgresql://schema_check:schema_check@127.0.0.1:1/schema_check',
     POSGTRES_DATABASE_URL: '',

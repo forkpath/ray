@@ -106,6 +106,8 @@
     "cannotBanUsers": "You cannot ban users.",
     "cannotImpersonateUsers": "You cannot impersonate users.",
     "cannotRevokeUsersSessions": "You cannot revoke users sessions.",
-    "cannotSetUsersPassword": "You cannot set users password."
+    "cannotSetUsersPassword": "You cannot set users password.",
+    "cannotSetUsersEmail": "You cannot set a user's email address.",
+    "passwordCannotBeUpdatedViaUpdateUser": "A password cannot be changed through the general user update action. Use the password action instead."
   }
 }

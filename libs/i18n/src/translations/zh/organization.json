@@ -152,6 +152,7 @@
     "cannotAccess": "无法访问该组织。",
     "slugNotAvailable": "该标识不可用。",
     "team": {
+      "invalidId": "团队标识无效。",
       "cannotCreateNew": "无法创建新团队。",
       "alreadyExists": "已存在同名团队。",
       "notFound": "未找到该团队。",

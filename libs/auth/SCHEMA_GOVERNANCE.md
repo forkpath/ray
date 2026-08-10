@@ -33,13 +33,14 @@ Runtime Better Auth packages and the tooling package `auth` must use the same ex
 ## Better Auth 1.6.22 compatibility bridge
 
 Better Auth 1.6.22 introduced `TwoFactor.failedVerificationCount` and
-`TwoFactor.lockedUntil`. The physical schema expands before the runtime upgrade so
-the current 1.6.2 application and the future 1.6.x application can both run on the
-same database. While runtime and CLI remain on 1.6.2, these two tracked fields are
-temporarily listed as local extensions in `auth-schema-policy.json`.
+`TwoFactor.lockedUntil`. The physical schema was expanded while the runtime still
+used 1.6.2, so both application versions remained compatible with the same
+database. Runtime and CLI now use 1.6.26, and a clean schema check proves that both
+fields are governed Better Auth fields rather than permanent local extensions.
 
-The runtime upgrade PR must remove both whitelist entries. A clean schema check on
-the upgraded CLI then proves the fields are owned by Better Auth rather than by a
-permanent local exception.
+The CLI loads the repository TypeScript path aliases through the pinned
+`tsconfig-paths` tooling dependency. The schema command replaces inherited
+`NODE_OPTIONS` with this single controlled loader so developer or CI process flags
+cannot change candidate generation.
 
 The legacy `auth:generate-auth-schema` target remains fail-closed so old automation cannot resume destructive schema generation.

@@ -8,6 +8,8 @@ import * as z from 'zod'
 import { InvitationStatus, MemberRole, SocialProvider, UserRole } from '@libs/common'
 
 type AuthMobileClientOptions = Parameters<typeof expoClient>[0]
+// Plugin composition is owned here so Better Auth can infer the exact endpoint tuple.
+type AuthClientOptions = Omit<BetterAuthClientOptions, 'plugins'>
 
 const AuthProvider = {
   ...SocialProvider,
@@ -49,6 +51,13 @@ type VerificationType = (typeof VerificationType)[keyof typeof VerificationType]
 type AuthConfig = z.infer<typeof authConfigSchema>
 
 const ERROR_MESSAGES: Record<AuthErrorCode, TranslationKey> = {
+  ACCOUNT_TEMPORARILY_LOCKED: 'auth:error.twoFactor.accountTemporarilyLocked',
+  CHANGE_EMAIL_DISABLED: 'auth:error.credentials.email.changeDisabled',
+  EMAIL_VERIFICATION_REQUIRED_FOR_INVITATION: 'organization:error.invitation.emailVerificationRequired',
+  FAILED_TO_DELETE_ANONYMOUS_USER_SESSIONS: 'auth:error.user.failedToDeleteAnonymousUserSessions',
+  INVALID_TEAM_ID: 'organization:error.team.invalidId',
+  PASSWORD_CANNOT_BE_UPDATED_VIA_UPDATE_USER: 'admin:error.passwordCannotBeUpdatedViaUpdateUser',
+  YOU_ARE_NOT_ALLOWED_TO_SET_USERS_EMAIL: 'admin:error.cannotSetUsersEmail',
   YOU_CANNOT_BAN_YOURSELF: 'auth:error.user.cannotBanYourself',
   YOU_CANNOT_IMPERSONATE_ADMINS: 'auth:error.user.cannotImpersonateAdmins',
   INVALID_EMAIL_FORMAT: 'auth:error.credentials.email.invalidFormat',
@@ -208,7 +217,7 @@ const ERROR_MESSAGES: Record<AuthErrorCode, TranslationKey> = {
 } as const
 
 export type {
-  BetterAuthClientOptions as AuthClientOptions,
+  AuthClientOptions,
   BetterAuthClientPlugin as AuthClientPlugin,
   AuthMobileClientOptions,
   AuthConfig,

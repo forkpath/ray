@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "devDependencies": {
     "@mrleebo/prisma-ast": "0.13.1",
-    "auth": "1.6.2"
+    "auth": "1.6.26",
+    "tsconfig-paths": "4.2.0"
   },
   "nx": {
     "tags": [

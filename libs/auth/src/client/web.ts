@@ -1,4 +1,4 @@
-import type { PermissionCheckParams } from '../permissions'
+import type { PermissionCheckParams, RoleName } from '../permissions'
 import type { auth } from '../server'
 import type { AuthClientOptions } from '../types'
 
@@ -25,7 +25,6 @@ export const createClient = (options?: AuthClientOptions) => {
   const client = createAuthClient({
     ...options,
     plugins: [
-      ...(options?.plugins ?? []),
       passkeyClient(),
       anonymousClient(),
       magicLinkClient(),
@@ -81,15 +80,9 @@ export async function checkPermission(client: AuthClient, permissions: Permissio
  * const canDelete = checkRolePermission(client, 'admin', { product: ['delete'] })
  * ```
  */
-export function checkRolePermission<R extends string = string>(
-  client: AuthClient,
-  role: R,
-  permissions: PermissionCheckParams
-): boolean {
-  // 使用类型断言，因为 better-auth 的类型定义可能过于严格
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function checkRolePermission(client: AuthClient, role: RoleName, permissions: PermissionCheckParams): boolean {
   return client.organization.checkRolePermission({
-    role: role as any,
+    role,
     permissions
   })
 }

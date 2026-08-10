@@ -44,7 +44,7 @@ describe('migration safety guardrails', () => {
       toolingPackageJson.devDependencies.auth
     ]
 
-    assert.deepEqual(versions, ['1.6.2', '1.6.2', '1.6.2', '1.6.2'])
+    assert.deepEqual(versions, ['1.6.26', '1.6.26', '1.6.26', '1.6.26'])
     assert.equal(toolingPackageJson.devDependencies['@mrleebo/prisma-ast'], '0.13.1')
     assert.equal(project.targets['schema-check'].cache, true)
     assert.equal(project.targets['schema-update'].cache, false)

@@ -71,8 +71,8 @@
     "@alicloud/openapi-client": "^0.4.15",
     "@aws-sdk/client-s3": "^3.965.0",
     "@aws-sdk/s3-request-presigner": "^3.965.0",
-    "@better-auth/expo": "1.6.2",
-    "@better-auth/passkey": "1.6.2",
+    "@better-auth/expo": "1.6.26",
+    "@better-auth/passkey": "1.6.26",
     "@elastic/elasticsearch": "^9.2.0",
     "@formatjs/intl-localematcher": "^0.7.5",
     "@golevelup/nestjs-rabbitmq": "^7.1.1",
@@ -124,7 +124,7 @@
     "@types/ws": "^8.18.1",
     "ali-oss": "^6.23.0",
     "axios": "catalog:",
-    "better-auth": "1.6.2",
+    "better-auth": "1.6.26",
     "cache-manager": "^7.2.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -268,6 +268,7 @@
   },
   "pnpm": {
     "overrides": {
+      "@better-auth/utils": "0.4.2",
       "@peculiar/asn1-schema": "2.8.0",
       "tmp": ">=0.2.4"
     },
