@@ -16,6 +16,7 @@
     "db:reset": "nx run pg-dao:reset",
     "format:check": "nx format:check",
     "format:write": "nx format:write",
+    "test": "node --test scripts/ci/*.test.mjs",
     "ui:add": "pnpx shadcn@latest add",
     "lint": "nx affected -t lint",
     "lint:all": "nx run-many -t lint",
@@ -51,6 +52,18 @@
     "sync:commands": "./scripts/sync-commands.sh"
   },
   "private": true,
+  "nx": {
+    "includedScripts": [],
+    "targets": {
+      "test": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "pnpm run test",
+          "cwd": "{workspaceRoot}"
+        }
+      }
+    }
+  },
   "dependencies": {
     "@alicloud/dysmsapi20170525": "^4.3.1",
     "@alicloud/openapi-client": "^0.4.15",

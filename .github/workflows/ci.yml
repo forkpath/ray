@@ -4,37 +4,109 @@ on:
   push:
     branches:
       - main
+      - dev
+    tags:
+      - '*'
   pull_request:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
 
 permissions:
   actions: read
   contents: read
+  pull-requests: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   main:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CI_METRICS_DIR: artifacts/ci-metrics
+      CI_METRICS_RUNNER_LABEL: ubuntu-latest
+      NX_CACHE_DIRECTORY: ${{ github.workspace }}/.nx/cache
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           filter: tree:0
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         name: Install pnpm
         with:
           run_install: false
 
-      # Cache node_modules
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: 22
-          cache: 'pnpm'
+          node-version: 24.14.1
+          cache: pnpm
 
       - run: pnpm install --frozen-lockfile
 
-      # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
-      # - run: pnpm exec nx-cloud record -- echo Hello World
-      - run: pnpm exec nx run-many -t lint test build
-      # Nx Cloud recommends fixes for failures to help you get CI green faster. Learn more: https://nx.dev/ci/features/self-healing-ci
-      - run: pnpm exec nx fix-ci
+      - name: Derive affected SHAs from the last successful dev CI
+        id: set-shas
+        if: >-
+          github.event_name == 'pull_request' ||
+          (github.event_name == 'push' && github.ref == 'refs/heads/dev')
+        continue-on-error: true
+        uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5.0.1
+        with:
+          main-branch-name: dev
+          workflow-id: ci.yml
+          error-on-no-successful-workflow: true
+
+      - name: Probe Nx Cloud for trusted runs
+        id: nx-cloud-probe
+        if: >-
+          github.event_name != 'pull_request' ||
+          github.event.pull_request.head.repo.full_name == github.repository
+        continue-on-error: true
+        run: >-
+          pnpm exec nx-cloud record --
+          node -e "process.stdout.write('nx-cloud-probe-ok\\n')"
+
+      - name: Resolve safe CI execution mode
+        id: ci-mode
+        env:
+          CI_EVENT_NAME: ${{ github.event_name }}
+          CI_REF: ${{ github.ref }}
+          CI_IS_FORK_PR: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+          NX_SET_SHAS_OUTCOME: ${{ steps.set-shas.outcome }}
+          NX_CLOUD_PROBE_OUTCOME: ${{ steps.nx-cloud-probe.outcome }}
+          NX_BASE_CANDIDATE: ${{ steps.set-shas.outputs.base }}
+          NX_HEAD_CANDIDATE: ${{ steps.set-shas.outputs.head }}
+        run: node scripts/ci/resolve-nx-ci-mode.mjs
+
+      - name: Disable Nx Cloud for the safe local fallback
+        if: steps.ci-mode.outputs.disable-cloud == 'true'
+        run: echo 'NX_NO_CLOUD=true' >> "$GITHUB_ENV"
+
+      - name: Run Nx verification
+        env:
+          CI_METRICS_SAMPLE_ID: ${{ steps.ci-mode.outputs.mode }}
+          NX_BASE: ${{ steps.ci-mode.outputs.base }}
+          NX_HEAD: ${{ steps.ci-mode.outputs.head }}
+        run: |
+          if [[ "${{ steps.ci-mode.outputs.mode }}" == 'affected' ]]; then
+            node scripts/ci/run-nx-with-metrics.mjs --phase=affected -- \
+              pnpm exec nx affected -t lint,typecheck,test,build \
+              --base "$NX_BASE" --head "$NX_HEAD" \
+              --nxBail --outputStyle=static
+          else
+            node scripts/ci/run-nx-with-metrics.mjs --phase=full -- \
+              pnpm exec nx run-many -t lint,typecheck,test,build --all \
+              --nxBail --outputStyle=static
+          fi
+
+      - name: Upload CI metrics
         if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nx-ci-metrics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/ci-metrics/*.json
+          if-no-files-found: warn
+          retention-days: 14
