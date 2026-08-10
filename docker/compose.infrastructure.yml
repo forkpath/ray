@@ -1,0 +1,105 @@
+name: ray-infrastructure
+
+networks:
+  platform:
+    name: ${RAY_NETWORK_NAME:-ray-production-platform}
+    driver: bridge
+
+services:
+  redis:
+    image: ${REDIS_IMAGE:?REDIS_IMAGE must be an immutable image reference}
+    pull_policy: never
+    networks:
+      platform:
+        aliases: [redis]
+    command:
+      - redis-server
+      - --requirepass
+      - ${REDIS_PASSWORD}
+      - --appendonly
+      - 'yes'
+      - --tcp-keepalive
+      - '60'
+    volumes:
+      - redis:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  postgres:
+    image: ${POSTGRES_IMAGE:?POSTGRES_IMAGE must be an immutable image reference}
+    pull_policy: never
+    networks:
+      platform:
+        aliases: [postgres]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  mongo:
+    image: ${MONGO_IMAGE:?MONGO_IMAGE must be an immutable image reference}
+    pull_policy: never
+    networks:
+      platform:
+        aliases: [mongo]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - mongo:/data/db
+      - ./mongo/init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          mongosh --quiet --username "$${MONGO_INITDB_ROOT_USERNAME}"
+          --password "$${MONGO_INITDB_ROOT_PASSWORD}"
+          --authenticationDatabase admin
+          --eval "db.adminCommand('ping').ok" | grep 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: ${RABBITMQ_IMAGE:?RABBITMQ_IMAGE must be an immutable image reference}
+    pull_policy: never
+    networks:
+      platform:
+        aliases: [rabbitmq]
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASSWORD}
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  redis:
+    name: ray-redis
+  postgres:
+    name: ray-postgres
+  mongo:
+    name: ray-mongo
+  rabbitmq:
+    name: ray-rabbitmq

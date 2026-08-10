@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "environment": "production",
+  "status": "completed",
+  "backupId": "provider-backup-id",
+  "database": "ray-production-primary",
+  "completedAt": "2026-08-10T20:00:00.000Z"
+}
