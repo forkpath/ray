@@ -104,7 +104,7 @@ services:
       REDIS_HOST: redis
       MONGO_HOST: mongo
       POSTGRES_HOST: postgres
-      POSGTRES_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?connect_timeout=300&sslmode=disable
+      POSTGRES_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?connect_timeout=300&sslmode=disable
       RABBITMQ_URI: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASSWORD}@rabbitmq:5672
       ELASTICSEARCH_HOST: ${ELASTICSEARCH_HOST:-elasticsearch}
     depends_on:
@@ -139,7 +139,7 @@ services:
       REDIS_HOST: redis
       MONGO_HOST: mongo
       POSTGRES_HOST: postgres
-      POSGTRES_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?connect_timeout=300&sslmode=disable
+      POSTGRES_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?connect_timeout=300&sslmode=disable
       RABBITMQ_URI: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASSWORD}@rabbitmq:5672
     depends_on:
       redis:
@@ -171,7 +171,7 @@ services:
       REDIS_HOST: redis
       MONGO_HOST: mongo
       POSTGRES_HOST: postgres
-      POSGTRES_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?connect_timeout=300&sslmode=disable
+      POSTGRES_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?connect_timeout=300&sslmode=disable
       RABBITMQ_URI: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASSWORD}@rabbitmq:5672
       WORKER_PROCESSORS: ${WORKER_PROCESSORS:-all}
       WORKER_QUEUES: ${WORKER_QUEUES:-jobs.ingestion.worker}

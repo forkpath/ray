@@ -8,7 +8,8 @@ import { NodeEnv } from '@libs/common'
 export const preset = {
   id: 'pg',
   server: {
-    POSGTRES_DATABASE_URL: z.url()
+    POSTGRES_DATABASE_URL: z.string().optional(),
+    POSGTRES_DATABASE_URL: z.string().optional()
   }
 } as const satisfies Preset
 
