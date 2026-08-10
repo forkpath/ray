@@ -23,8 +23,10 @@ function getEnvVar(key: string): string | undefined {
     return process.env[key]
   }
   // 浏览器/Vite 环境
-  if (typeof import.meta !== 'undefined' && import.meta.env) {
-    return import.meta.env[key] as string | undefined
+  const browserEnv = (import.meta as ImportMeta & { env?: Record<string, unknown> }).env
+  if (browserEnv) {
+    const value = browserEnv[key]
+    return typeof value === 'string' ? value : undefined
   }
   return undefined
 }

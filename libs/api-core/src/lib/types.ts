@@ -17,6 +17,12 @@ export interface ApiRequestMeta {
   raw?: boolean
 }
 
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    api?: ApiRequestMeta
+  }
+}
+
 export interface ApiRequestConfig<D = unknown> extends AxiosRequestConfig<D> {
   api?: ApiRequestMeta
 }
