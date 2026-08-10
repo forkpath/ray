@@ -114,3 +114,13 @@ export type Order = Prisma.OrderModel
  *
  */
 export type RayOnlineMigration = Prisma.RayOnlineMigrationModel
+/**
+ * Model RayDataBackfill
+ *
+ */
+export type RayDataBackfill = Prisma.RayDataBackfillModel
+/**
+ * Model RayDataBackfillConflict
+ *
+ */
+export type RayDataBackfillConflict = Prisma.RayDataBackfillConflictModel

@@ -398,7 +398,9 @@ export const ModelName = {
   Customer: 'Customer',
   Subscription: 'Subscription',
   Order: 'Order',
-  RayOnlineMigration: 'RayOnlineMigration'
+  RayOnlineMigration: 'RayOnlineMigration',
+  RayDataBackfill: 'RayDataBackfill',
+  RayDataBackfillConflict: 'RayDataBackfillConflict'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "passkey" | "twoFactor" | "organization" | "member" | "invitation" | "organizationRole" | "webhookEvent" | "customer" | "subscription" | "order" | "rayOnlineMigration"
+    modelProps: "user" | "session" | "account" | "verification" | "passkey" | "twoFactor" | "organization" | "member" | "invitation" | "organizationRole" | "webhookEvent" | "customer" | "subscription" | "order" | "rayOnlineMigration" | "rayDataBackfill" | "rayDataBackfillConflict"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1528,6 +1530,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RayDataBackfill: {
+      payload: Prisma.$RayDataBackfillPayload<ExtArgs>
+      fields: Prisma.RayDataBackfillFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RayDataBackfillFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RayDataBackfillFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>
+        }
+        findFirst: {
+          args: Prisma.RayDataBackfillFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RayDataBackfillFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>
+        }
+        findMany: {
+          args: Prisma.RayDataBackfillFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>[]
+        }
+        create: {
+          args: Prisma.RayDataBackfillCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>
+        }
+        createMany: {
+          args: Prisma.RayDataBackfillCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RayDataBackfillCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>[]
+        }
+        delete: {
+          args: Prisma.RayDataBackfillDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>
+        }
+        update: {
+          args: Prisma.RayDataBackfillUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>
+        }
+        deleteMany: {
+          args: Prisma.RayDataBackfillDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RayDataBackfillUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RayDataBackfillUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>[]
+        }
+        upsert: {
+          args: Prisma.RayDataBackfillUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillPayload>
+        }
+        aggregate: {
+          args: Prisma.RayDataBackfillAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRayDataBackfill>
+        }
+        groupBy: {
+          args: Prisma.RayDataBackfillGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RayDataBackfillGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RayDataBackfillCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RayDataBackfillCountAggregateOutputType> | number
+        }
+      }
+    }
+    RayDataBackfillConflict: {
+      payload: Prisma.$RayDataBackfillConflictPayload<ExtArgs>
+      fields: Prisma.RayDataBackfillConflictFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RayDataBackfillConflictFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RayDataBackfillConflictFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>
+        }
+        findFirst: {
+          args: Prisma.RayDataBackfillConflictFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RayDataBackfillConflictFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>
+        }
+        findMany: {
+          args: Prisma.RayDataBackfillConflictFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>[]
+        }
+        create: {
+          args: Prisma.RayDataBackfillConflictCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>
+        }
+        createMany: {
+          args: Prisma.RayDataBackfillConflictCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RayDataBackfillConflictCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>[]
+        }
+        delete: {
+          args: Prisma.RayDataBackfillConflictDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>
+        }
+        update: {
+          args: Prisma.RayDataBackfillConflictUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>
+        }
+        deleteMany: {
+          args: Prisma.RayDataBackfillConflictDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RayDataBackfillConflictUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RayDataBackfillConflictUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>[]
+        }
+        upsert: {
+          args: Prisma.RayDataBackfillConflictUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayDataBackfillConflictPayload>
+        }
+        aggregate: {
+          args: Prisma.RayDataBackfillConflictAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRayDataBackfillConflict>
+        }
+        groupBy: {
+          args: Prisma.RayDataBackfillConflictGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RayDataBackfillConflictGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RayDataBackfillConflictCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RayDataBackfillConflictCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1783,12 +1933,48 @@ export const RayOnlineMigrationScalarFieldEnum = {
 export type RayOnlineMigrationScalarFieldEnum = (typeof RayOnlineMigrationScalarFieldEnum)[keyof typeof RayOnlineMigrationScalarFieldEnum]
 
 
+export const RayDataBackfillScalarFieldEnum = {
+  id: 'id',
+  cursor: 'cursor',
+  status: 'status',
+  scannedCount: 'scannedCount',
+  updatedCount: 'updatedCount',
+  conflictCount: 'conflictCount',
+  metadata: 'metadata',
+  startedAt: 'startedAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type RayDataBackfillScalarFieldEnum = (typeof RayDataBackfillScalarFieldEnum)[keyof typeof RayDataBackfillScalarFieldEnum]
+
+
+export const RayDataBackfillConflictScalarFieldEnum = {
+  backfillId: 'backfillId',
+  recordId: 'recordId',
+  reason: 'reason',
+  payload: 'payload',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt',
+  resolution: 'resolution'
+} as const
+
+export type RayDataBackfillConflictScalarFieldEnum = (typeof RayDataBackfillConflictScalarFieldEnum)[keyof typeof RayDataBackfillConflictScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1805,6 +1991,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1902,6 +2097,34 @@ export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pr
  */
 export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
     
+
+
+/**
+ * Reference to a field of type 'BigInt'
+ */
+export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+
+
+
+/**
+ * Reference to a field of type 'BigInt[]'
+ */
+export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+
 
 
 /**
@@ -2042,6 +2265,8 @@ export type GlobalOmitConfig = {
   subscription?: Prisma.SubscriptionOmit
   order?: Prisma.OrderOmit
   rayOnlineMigration?: Prisma.RayOnlineMigrationOmit
+  rayDataBackfill?: Prisma.RayDataBackfillOmit
+  rayDataBackfillConflict?: Prisma.RayDataBackfillConflictOmit
 }
 
 /* Types for Logging */

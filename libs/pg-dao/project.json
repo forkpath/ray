@@ -5,6 +5,9 @@
   "projectType": "library",
   "tags": ["type:data-access", "runtime:node", "domain:platform"],
   "targets": {
+    "test": {
+      "dependsOn": ["billing-owner-backfill-test", "billing-contract-readiness-test"]
+    },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
@@ -72,6 +75,40 @@
       "cache": false,
       "options": {
         "command": "node ./scripts/run-online-migrations.mjs",
+        "cwd": "libs/pg-dao"
+      }
+    },
+    "billing-owner-backfill-test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^production", { "env": "CI" }],
+      "options": {
+        "command": "node --test ./scripts/backfill-billing-owners.test.mjs",
+        "cwd": "libs/pg-dao"
+      }
+    },
+    "billing-owner-backfill": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node ./scripts/backfill-billing-owners.mjs",
+        "cwd": "libs/pg-dao"
+      }
+    },
+    "billing-contract-readiness-test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^production", { "env": "CI" }],
+      "options": {
+        "command": "node --test ./scripts/check-billing-contract-readiness.test.mjs",
+        "cwd": "libs/pg-dao"
+      }
+    },
+    "billing-contract-readiness": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node ./scripts/check-billing-contract-readiness.mjs",
         "cwd": "libs/pg-dao"
       }
     },
