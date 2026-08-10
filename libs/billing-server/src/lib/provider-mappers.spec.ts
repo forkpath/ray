@@ -6,12 +6,14 @@ import { mapStore, toPaymentStatus, toSubscriptionStatus } from './revenuecat'
 import { mapStripePaymentStatus, mapStripeSubscriptionStatus } from './stripe'
 
 vi.mock('./persistence', () => ({
-  createWebhookEvent: vi.fn(),
-  findWebhookEvent: vi.fn(),
   getBillingCustomerByExternalId: vi.fn(),
   upsertBillingCustomer: vi.fn(),
   upsertBillingOrder: vi.fn(),
   upsertBillingSubscription: vi.fn()
+}))
+
+vi.mock('./webhook-state-machine', () => ({
+  runWebhookEvent: vi.fn()
 }))
 
 describe('Billing provider mappers', () => {

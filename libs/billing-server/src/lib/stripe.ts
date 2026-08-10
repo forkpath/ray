@@ -9,14 +9,13 @@ import { billingConfig } from './config'
 import { serverEnv } from './env'
 import { getBillingOwnerId } from './owner-routing'
 import {
-  createWebhookEvent,
-  findWebhookEvent,
   getBillingCustomerByExternalId,
   getBillingCustomersByOwner,
   upsertBillingCustomer,
   upsertBillingOrder,
   upsertBillingSubscription
 } from './persistence'
+import { runWebhookEvent } from './webhook-state-machine'
 
 let stripeClient: Stripe | null = null
 
@@ -239,62 +238,43 @@ export async function handleStripeWebhook(input: { payload: string | Buffer; sig
 
   const event = stripe.webhooks.constructEvent(input.payload, input.signature, serverEnv.STRIPE_WEBHOOK_SECRET)
 
-  const existing = await findWebhookEvent(event.id, BillingProvider.STRIPE)
-  if (existing) {
-    return { received: true, type: event.type, status: 'duplicate' }
-  }
+  const result = await runWebhookEvent(
+    {
+      eventId: event.id,
+      provider: BillingProvider.STRIPE,
+      type: event.type
+    },
+    async () => {
+      switch (event.type) {
+        case 'customer.subscription.created':
+        case 'customer.subscription.updated':
+        case 'customer.subscription.deleted': {
+          const subscription = event.data.object as Stripe.Subscription
+          const stripeCustomerId = typeof subscription.customer === 'string' ? subscription.customer : ''
+          await syncStripeSubscription({
+            stripeSubscription: subscription,
+            stripeCustomerId
+          })
+          break
+        }
+        case 'checkout.session.completed':
+        case 'checkout.session.async_payment_succeeded':
+        case 'checkout.session.async_payment_failed': {
+          await syncStripeCheckout({
+            checkoutSession: event.data.object as Stripe.Checkout.Session
+          })
+          break
+        }
+        default: {
+          return 'skipped'
+        }
+      }
 
-  try {
-    switch (event.type) {
-      case 'customer.subscription.created':
-      case 'customer.subscription.updated':
-      case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription
-        const stripeCustomerId = typeof subscription.customer === 'string' ? subscription.customer : ''
-        await syncStripeSubscription({
-          stripeSubscription: subscription,
-          stripeCustomerId
-        })
-        break
-      }
-      case 'checkout.session.completed':
-      case 'checkout.session.async_payment_succeeded':
-      case 'checkout.session.async_payment_failed': {
-        await syncStripeCheckout({
-          checkoutSession: event.data.object as Stripe.Checkout.Session
-        })
-        break
-      }
-      default: {
-        await createWebhookEvent({
-          eventId: event.id,
-          provider: BillingProvider.STRIPE,
-          type: event.type,
-          status: 'skipped'
-        })
-        return { received: true, type: event.type, status: 'skipped' }
-      }
+      return 'processed'
     }
+  )
 
-    await createWebhookEvent({
-      eventId: event.id,
-      provider: BillingProvider.STRIPE,
-      type: event.type,
-      status: 'processed'
-    })
-
-    return { received: true, type: event.type, status: 'processed' }
-  } catch (error) {
-    await createWebhookEvent({
-      eventId: event.id,
-      provider: BillingProvider.STRIPE,
-      type: event.type,
-      status: 'failed',
-      error: error instanceof Error ? error.message : String(error)
-    }).catch(() => undefined)
-
-    throw error
-  }
+  return { received: true, type: event.type, status: result.status }
 }
 
 export function getBillingCatalog() {

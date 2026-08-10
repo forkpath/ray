@@ -25,6 +25,15 @@ export interface BillingOwnerPersistenceOptions {
   reportShadowMismatch?: BillingOwnerShadowMismatchReporter
 }
 
+export type WebhookEventTerminalStatus = 'processed' | 'skipped'
+
+export type WebhookEventClaim =
+  | { outcome: 'claimed'; attemptCount: number }
+  | { outcome: 'processing'; attemptCount: number }
+  | { outcome: 'terminal'; attemptCount: number; status: WebhookEventTerminalStatus }
+
+const WEBHOOK_PROCESSING_LEASE_MS = 5 * 60 * 1000
+
 interface BillingCustomerWhere {
   referenceId?: string
   userId?: string
@@ -296,6 +305,114 @@ export async function findWebhookEvent(eventId: string, provider: string) {
   })
 }
 
+export async function claimWebhookEvent(input: {
+  eventId: string
+  provider: string
+  type: string
+}): Promise<WebhookEventClaim> {
+  const attemptedAt = new Date()
+  const staleBefore = new Date(attemptedAt.getTime() - WEBHOOK_PROCESSING_LEASE_MS)
+  const key = {
+    eventId_provider: {
+      eventId: input.eventId,
+      provider: input.provider
+    }
+  }
+
+  await prisma.webhookEvent.upsert({
+    where: key,
+    create: {
+      eventId: input.eventId,
+      provider: input.provider,
+      type: input.type,
+      status: 'received',
+      processedAt: null
+    },
+    update: {}
+  })
+
+  const claimed = await prisma.webhookEvent.updateMany({
+    where: {
+      eventId: input.eventId,
+      provider: input.provider,
+      OR: [
+        { status: { in: ['received', 'failed'] } },
+        { status: 'processing', lastAttemptAt: null },
+        { status: 'processing', lastAttemptAt: { lt: staleBefore } }
+      ]
+    },
+    data: {
+      status: 'processing',
+      error: null,
+      processedAt: null,
+      lastAttemptAt: attemptedAt,
+      attemptCount: { increment: 1 }
+    }
+  })
+  const event = await prisma.webhookEvent.findUniqueOrThrow({ where: key })
+
+  if (claimed.count === 1) {
+    return { outcome: 'claimed', attemptCount: event.attemptCount }
+  }
+
+  if (event.status === 'processed' || event.status === 'skipped') {
+    return { outcome: 'terminal', status: event.status, attemptCount: event.attemptCount }
+  }
+
+  return { outcome: 'processing', attemptCount: event.attemptCount }
+}
+
+export async function completeWebhookEvent(input: {
+  eventId: string
+  provider: string
+  attemptCount: number
+  status: WebhookEventTerminalStatus
+}) {
+  const result = await prisma.webhookEvent.updateMany({
+    where: {
+      eventId: input.eventId,
+      provider: input.provider,
+      status: 'processing',
+      attemptCount: input.attemptCount
+    },
+    data: {
+      status: input.status,
+      error: null,
+      processedAt: new Date()
+    }
+  })
+
+  if (result.count !== 1) {
+    throw new Error(`Webhook event ${input.provider}/${input.eventId} no longer owns the processing claim`)
+  }
+}
+
+export async function failWebhookEvent(input: {
+  eventId: string
+  provider: string
+  attemptCount: number
+  error: string
+}) {
+  const result = await prisma.webhookEvent.updateMany({
+    where: {
+      eventId: input.eventId,
+      provider: input.provider,
+      status: 'processing',
+      attemptCount: input.attemptCount
+    },
+    data: {
+      status: 'failed',
+      error: input.error,
+      processedAt: null
+    }
+  })
+
+  if (result.count !== 1) {
+    throw new Error(`Webhook event ${input.provider}/${input.eventId} no longer owns the processing claim`)
+  }
+}
+
+/** @deprecated Use claimWebhookEvent followed by completeWebhookEvent or failWebhookEvent. */
 export async function createWebhookEvent(input: {
   eventId: string
   provider: string
@@ -303,15 +420,27 @@ export async function createWebhookEvent(input: {
   status: 'processed' | 'failed' | 'skipped'
   error?: string
 }) {
-  return prisma.webhookEvent.create({
-    data: {
-      eventId: input.eventId,
-      provider: input.provider,
-      type: input.type,
-      status: input.status,
-      error: input.error ?? null
+  const claim = await claimWebhookEvent(input)
+
+  if (claim.outcome === 'claimed') {
+    if (input.status === 'failed') {
+      await failWebhookEvent({
+        eventId: input.eventId,
+        provider: input.provider,
+        attemptCount: claim.attemptCount,
+        error: input.error ?? 'Webhook processing failed'
+      })
+    } else {
+      await completeWebhookEvent({
+        eventId: input.eventId,
+        provider: input.provider,
+        attemptCount: claim.attemptCount,
+        status: input.status
+      })
     }
-  })
+  }
+
+  return findWebhookEvent(input.eventId, input.provider)
 }
 
 export async function getBillingSummaryByOwner(owner: BillingOwner, options?: BillingOwnerPersistenceOptions) {
