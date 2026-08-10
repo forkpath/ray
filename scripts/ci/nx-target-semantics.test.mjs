@@ -51,4 +51,12 @@ describe('Nx target semantics', () => {
 
     assert.equal(tsconfig.compilerOptions.declaration, false)
   })
+
+  it('registers IAM as a pnpm workspace with an Nx typecheck target', async () => {
+    const workspace = await readFile('pnpm-workspace.yaml', 'utf8')
+    const packageJson = await readJson('iam/package.json')
+
+    assert.match(workspace, /^\s+- 'iam'$/m)
+    assert.deepEqual(packageJson.nx.includedScripts, ['typecheck'])
+  })
 })
