@@ -1,4 +1,3 @@
-
 model User {
   id               String       @id
   name             String
@@ -99,13 +98,14 @@ model Passkey {
 }
 
 model TwoFactor {
-  id          String @id
-  secret      String
-  backupCodes String @map("backup_codes")
-  userId      String @map("user_id")
-  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  verified Boolean? @default(true)
+  id                      String    @id
+  secret                  String
+  backupCodes             String    @map("backup_codes")
+  userId                  String    @map("user_id")
+  user                    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verified                Boolean?  @default(true)
+  failedVerificationCount Int?      @default(0) @map("failed_verification_count")
+  lockedUntil             DateTime? @map("locked_until")
 
   @@index([secret])
   @@index([userId])

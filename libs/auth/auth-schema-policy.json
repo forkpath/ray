@@ -23,7 +23,7 @@
     },
     "TwoFactor": {
       "table": "twoFactor",
-      "allowedAdditionalFields": []
+      "allowedAdditionalFields": ["failedVerificationCount", "lockedUntil"]
     },
     "Organization": {
       "table": "organization",
