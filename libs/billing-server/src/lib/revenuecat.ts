@@ -1,13 +1,8 @@
 import { BillingOrderStatus, BillingProvider, BillingSubscriptionStatus, MobileStore } from '@libs/billing-contract'
 
 import { serverEnv } from './env'
-import {
-  createWebhookEvent,
-  findWebhookEvent,
-  upsertBillingCustomer,
-  upsertBillingOrder,
-  upsertBillingSubscription
-} from './persistence'
+import { upsertBillingCustomer, upsertBillingOrder, upsertBillingSubscription } from './persistence'
+import { runWebhookEvent } from './webhook-state-machine'
 
 const RELEVANT_EVENTS = new Set([
   'INITIAL_PURCHASE',
@@ -138,99 +133,101 @@ export async function handleRevenueCatWebhook({ payload, authorization, callback
         ? (JSON.parse(payload.toString('utf8')) as { event: RevenueCatEvent })
         : (payload as { event: RevenueCatEvent })
 
-  await callbacks?.onEvent?.(body)
-
   const event = body.event
-  if (!event || !RELEVANT_EVENTS.has(event.type)) {
+  if (!event) {
     return { received: true, skipped: true as const }
   }
 
   const eventId =
     event.id ?? `${event.type}:${event.transaction_id ?? event.app_user_id}:${event.purchased_at_ms ?? ''}`
-  const existing = await findWebhookEvent(eventId, BillingProvider.REVENUECAT)
-  if (existing && existing.status === 'processed') {
-    return { received: true, duplicate: true as const }
-  }
+  const result = await runWebhookEvent(
+    {
+      eventId,
+      provider: BillingProvider.REVENUECAT,
+      type: event.type
+    },
+    async () => {
+      await callbacks?.onEvent?.(body)
 
-  try {
-    const subscriber = await fetchSubscriber(event.app_user_id)
+      if (!RELEVANT_EVENTS.has(event.type)) {
+        return 'skipped'
+      }
 
-    const customer = await upsertBillingCustomer({
-      owner: { kind: 'user', userId: event.app_user_id },
-      externalId: event.app_user_id,
-      provider: BillingProvider.REVENUECAT
-    })
+      const subscriber = await fetchSubscriber(event.app_user_id)
 
-    for (const [variantId, subscription] of Object.entries(subscriber.subscriptions ?? {})) {
-      const transactionId = subscription.original_transaction_id ?? subscription.store_transaction_id
-      if (!transactionId) continue
-
-      const periodStartsAt = subscription.purchase_date ? new Date(subscription.purchase_date) : new Date()
-      const periodEndsAt = subscription.expires_date ? new Date(subscription.expires_date) : new Date()
-
-      await upsertBillingSubscription({
-        customerId: customer.id,
-        externalId: transactionId,
-        variantId,
-        status: toSubscriptionStatus(subscription),
-        store: mapStore(subscription.store),
-        periodStartsAt,
-        periodEndsAt,
-        trialStartsAt:
-          subscription.period_type === 'trial' && subscription.original_purchase_date
-            ? new Date(subscription.original_purchase_date)
-            : null,
-        trialEndsAt:
-          subscription.period_type === 'trial' && subscription.expires_date ? new Date(subscription.expires_date) : null
+      const customer = await upsertBillingCustomer({
+        owner: { kind: 'user', userId: event.app_user_id },
+        externalId: event.app_user_id,
+        provider: BillingProvider.REVENUECAT
       })
-    }
 
-    for (const [variantId, purchases] of Object.entries(subscriber.non_subscriptions ?? {})) {
-      for (const purchase of purchases) {
-        const transactionId = purchase.original_transaction_id ?? purchase.store_transaction_id
+      for (const [variantId, subscription] of Object.entries(subscriber.subscriptions ?? {})) {
+        const transactionId = subscription.original_transaction_id ?? subscription.store_transaction_id
         if (!transactionId) continue
 
-        await upsertBillingOrder({
+        const periodStartsAt = subscription.purchase_date ? new Date(subscription.purchase_date) : new Date()
+        const periodEndsAt = subscription.expires_date ? new Date(subscription.expires_date) : new Date()
+
+        await upsertBillingSubscription({
           customerId: customer.id,
           externalId: transactionId,
           variantId,
-          status: toPaymentStatus(purchase),
-          store: mapStore(purchase.store)
+          status: toSubscriptionStatus(subscription),
+          store: mapStore(subscription.store),
+          periodStartsAt,
+          periodEndsAt,
+          trialStartsAt:
+            subscription.period_type === 'trial' && subscription.original_purchase_date
+              ? new Date(subscription.original_purchase_date)
+              : null,
+          trialEndsAt:
+            subscription.period_type === 'trial' && subscription.expires_date
+              ? new Date(subscription.expires_date)
+              : null
         })
       }
+
+      for (const [variantId, purchases] of Object.entries(subscriber.non_subscriptions ?? {})) {
+        for (const purchase of purchases) {
+          const transactionId = purchase.original_transaction_id ?? purchase.store_transaction_id
+          if (!transactionId) continue
+
+          await upsertBillingOrder({
+            customerId: customer.id,
+            externalId: transactionId,
+            variantId,
+            status: toPaymentStatus(purchase),
+            store: mapStore(purchase.store)
+          })
+        }
+      }
+
+      const effectiveId =
+        event.original_transaction_id ??
+        event.transaction_id ??
+        `${event.app_user_id}:${event.product_id}:${event.purchased_at_ms ?? ''}`
+
+      if (event.type === 'INITIAL_PURCHASE') {
+        await callbacks?.onSubscriptionCreated?.(effectiveId)
+      } else if (event.type === 'CANCELLATION' || event.type === 'EXPIRATION') {
+        await callbacks?.onSubscriptionDeleted?.(effectiveId)
+      } else if (event.type === 'NON_RENEWING_PURCHASE') {
+        await callbacks?.onOneTimePurchaseSucceeded?.(effectiveId)
+      } else {
+        await callbacks?.onSubscriptionUpdated?.(effectiveId)
+      }
+
+      return 'processed'
     }
+  )
 
-    const effectiveId =
-      event.original_transaction_id ??
-      event.transaction_id ??
-      `${event.app_user_id}:${event.product_id}:${event.purchased_at_ms ?? ''}`
-
-    if (event.type === 'INITIAL_PURCHASE') {
-      await callbacks?.onSubscriptionCreated?.(effectiveId)
-    } else if (event.type === 'CANCELLATION' || event.type === 'EXPIRATION') {
-      await callbacks?.onSubscriptionDeleted?.(effectiveId)
-    } else if (event.type === 'NON_RENEWING_PURCHASE') {
-      await callbacks?.onOneTimePurchaseSucceeded?.(effectiveId)
-    } else {
-      await callbacks?.onSubscriptionUpdated?.(effectiveId)
-    }
-
-    await createWebhookEvent({
-      eventId,
-      provider: BillingProvider.REVENUECAT,
-      type: event.type,
-      status: 'processed'
-    })
-
-    return { received: true }
-  } catch (error) {
-    await createWebhookEvent({
-      eventId,
-      provider: BillingProvider.REVENUECAT,
-      type: event.type,
-      status: 'failed',
-      error: error instanceof Error ? error.message : String(error)
-    })
-    throw error
+  if (result.status === 'duplicate') {
+    return { received: true, duplicate: true as const }
   }
+
+  if (result.status === 'skipped') {
+    return { received: true, skipped: true as const }
+  }
+
+  return { received: true }
 }

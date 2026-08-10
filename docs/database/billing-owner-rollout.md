@@ -47,3 +47,27 @@ Shadow mismatches are emitted as structured `billing-owner` warnings containing
 the owner, optional provider, legacy customer IDs, and V2 customer IDs. They do
 not switch the response source. Ambiguous rows with both owner columns set are
 rejected instead of guessing ownership.
+
+## Webhook claim state machine
+
+Stripe and RevenueCat deliveries use the existing unique
+`(event_id, provider)` row as a durable claim record:
+
+- new deliveries are inserted as `received` with `processed_at = NULL`;
+- an atomic conditional update claims only `received` or `failed` as
+  `processing`, increments `attempt_count`, and writes `last_attempt_at`;
+- successful work completes the claim as `processed` or `skipped` and sets
+  `processed_at`;
+- failures update the same row to `failed`, keep `processed_at = NULL`, and are
+  eligible for a later provider retry;
+- deliveries that observe a live `processing` lease fail the request so the
+  provider retries without running business synchronization;
+- a `processing` attempt older than five minutes can be reclaimed, while its
+  `attempt_count` fences the stale attempt from completing the newer claim;
+- deliveries that observe `processed` or `skipped` return idempotently.
+
+The unique key is deliberately retained. It identifies the durable event and no
+longer prevents retry because failure transitions update the same record.
+Provider persistence uses idempotent upserts. Optional provider callbacks must
+also be idempotent using the event identifier supplied in their payload or
+callback argument.
