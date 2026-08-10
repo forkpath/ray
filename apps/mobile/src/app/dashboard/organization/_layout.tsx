@@ -4,7 +4,7 @@ import { Tabs } from 'expo-router'
 import { Easing } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Icons } from '@libs/ui-shared/mobile/components/icons'
 
 export default function OrganizationLayout() {

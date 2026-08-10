@@ -4,7 +4,7 @@ import { testimonials } from '~/constants/marketing/testimonials'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 import { Dot } from './common/dots'
 import { Container } from './container'

@@ -11,7 +11,7 @@ import * as z from 'zod'
 
 import { storageMutations } from '@libs/api-client'
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-shared/mobile/components/avatar'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Icons } from '@libs/ui-shared/mobile/components/icons'

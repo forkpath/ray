@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 import { Button } from './button'
 import { CloseIcon, HamburgerIcon } from './icons/general'

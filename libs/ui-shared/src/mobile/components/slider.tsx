@@ -13,7 +13,7 @@ import Animated, {
   useSharedValue
 } from 'react-native-reanimated'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 interface SliderContextType {
   threshold: number

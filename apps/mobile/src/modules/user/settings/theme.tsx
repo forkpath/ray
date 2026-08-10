@@ -1,4 +1,4 @@
-import type { ThemeConfig } from '@libs/ui-shared/common'
+import type { ThemeConfig } from '@libs/ui-core'
 
 import { appConfig } from '~/config/app'
 import { useTheme } from '~/modules/common/hooks/use-theme'
@@ -6,7 +6,7 @@ import { SettingsTile } from '~/modules/common/settings-tile'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import {
   BottomSheet,
   BottomSheetCloseTrigger,

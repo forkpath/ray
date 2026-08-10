@@ -4,7 +4,7 @@ import { Container, Font, Head, Html, Section, Tailwind } from '@react-email/com
 import { formatHex, oklch } from 'culori'
 import { default as mapValues } from 'lodash/mapValues'
 
-import { ThemeMode, themes } from '@libs/ui-shared/common'
+import { ThemeMode, themes } from '@libs/ui-core'
 
 import { Footer } from './footer'
 import { Header } from './header'

@@ -3,8 +3,8 @@ import type { Table } from '@tanstack/react-table'
 import * as React from 'react'
 
 import { useTranslation } from '@libs/i18n'
+import { cn } from '@libs/ui-core'
 
-import { cn } from '../../../../common/lib/utils'
 import { Button } from '../button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../command'
 import { Icons } from '../icons'

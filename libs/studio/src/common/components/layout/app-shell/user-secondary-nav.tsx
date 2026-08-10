@@ -14,7 +14,7 @@ import { memo, useCallback } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Avatar, AvatarFallback, AvatarImage, Button, Icons } from '@libs/ui-shared/web'
 
 import { pathsConfig } from '../../../../config/paths'

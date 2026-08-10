@@ -5,7 +5,8 @@ import * as React from 'react'
 import { cva } from 'class-variance-authority'
 import { Pressable } from 'react-native'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
+
 import { TextClassContext } from './text'
 
 const buttonVariants = cva('group shrink-0 flex-row items-center justify-center gap-2 rounded-md shadow-none', {

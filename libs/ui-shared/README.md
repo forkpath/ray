@@ -1,7 +1,10 @@
 # ui-shared
 
-This library was generated with [Nx](https://nx.dev).
+Transitional Web/Native UI facade.
 
-## Running unit tests
+Theme value types, palettes, breakpoints, and `cn()` now live in the universal
+`ui-core` project. Existing `@libs/ui-shared/common` imports remain compatible,
+but internal and runtime consumers use `@libs/ui-core` directly.
 
-Run `nx test ui-shared` to execute the unit tests via [Vitest](https://vitest.dev/).
+DOM hooks and platform components remain here until the independent `ui-web`
+and `ui-native` extraction pull requests are accepted.

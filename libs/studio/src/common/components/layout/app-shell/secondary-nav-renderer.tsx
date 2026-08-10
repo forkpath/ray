@@ -12,7 +12,7 @@ import type { SecondaryNavConfig } from './nav-config'
 import { memo, useCallback } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 // ============================================================================
 // 子组件：统计卡片

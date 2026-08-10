@@ -1,8 +1,8 @@
 import type { Column } from '@tanstack/react-table'
 
 import { useTranslation } from '@libs/i18n'
+import { cn } from '@libs/ui-core'
 
-import { cn } from '../../../../common/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,

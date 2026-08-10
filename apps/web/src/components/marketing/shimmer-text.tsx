@@ -4,7 +4,7 @@ import React, { useMemo } from 'react'
 
 import { motion } from 'motion/react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 export type TextShimmerProps = {
   children: string

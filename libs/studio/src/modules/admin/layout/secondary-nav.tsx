@@ -1,7 +1,7 @@
 import { useLocation } from '@tanstack/react-router'
 
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Icons } from '@libs/ui-shared/web'
 
 import { GoLink } from '../../../common/components/go-link'

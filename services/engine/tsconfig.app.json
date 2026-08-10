@@ -29,6 +29,7 @@
       "@libs/billing-server": ["libs/billing-server/src/index.ts"],
       "@libs/payload": ["libs/payload/src/index.ts"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
+      "@libs/ui-core": ["libs/ui-core/src/index.ts"],
       "@libs/auth-server": ["libs/auth-server/src/index.ts"],
       "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
       "@libs/email": ["libs/email/src/index.ts"],

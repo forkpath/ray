@@ -3,7 +3,7 @@ import * as React from 'react'
 import * as Slot from '@rn-primitives/slot'
 import { Text as RNText } from 'react-native'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 const TextClassContext = React.createContext<string | undefined>(undefined)
 

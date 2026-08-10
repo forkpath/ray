@@ -1,4 +1,4 @@
-import type { ThemeConfig } from '@libs/ui-shared/common'
+import type { ThemeConfig } from '@libs/ui-core'
 import type { WxtStorageItem } from 'wxt/utils/storage'
 
 import { useEffect, useState } from 'react'

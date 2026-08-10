@@ -27,7 +27,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import Animated from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
+
 import { inputVariants } from './input'
 import { Text } from './text'
 

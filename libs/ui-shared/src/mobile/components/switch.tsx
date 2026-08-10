@@ -1,6 +1,6 @@
 import * as SwitchPrimitives from '@rn-primitives/switch'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 function Switch({ className, ...props }: SwitchPrimitives.RootProps & React.RefAttributes<SwitchPrimitives.RootRef>) {
   return (

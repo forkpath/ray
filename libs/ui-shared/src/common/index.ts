@@ -1,7 +1,3 @@
-/// <reference types="./typings/svg.d.ts" />
-
-export * from './types'
-export * from './styles/themes/themes'
-export * from './lib/utils'
+export * from '@libs/ui-core'
 export * from './hooks/use-media-query'
 export * from './hooks/use-mobile'

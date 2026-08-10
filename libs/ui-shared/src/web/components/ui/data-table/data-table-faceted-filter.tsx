@@ -4,8 +4,8 @@ import type { LucideIcon } from 'lucide-react'
 import * as React from 'react'
 
 import { useTranslation } from '@libs/i18n'
+import { cn } from '@libs/ui-core'
 
-import { cn } from '../../../../common/lib/utils'
 import { Badge } from '../badge'
 import { Button } from '../button'
 import {

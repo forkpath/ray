@@ -64,6 +64,13 @@ The RevenueCat client adapter now lives in `billing-native`, tagged
 imports that project directly; `@libs/billing/mobile` remains only as a
 deprecated exact-path alias for rollback without adding a facade graph edge.
 
+Shared theme values, breakpoints, and the deterministic `cn()` helper now live
+in `ui-core`, tagged `type:util`, `runtime:universal`, and `domain:shared`. Runtime
+consumers import this boundary directly. DOM media hooks and platform-specific
+SVG loaders stay outside the universal project; the old
+`@libs/ui-shared/common` path is a temporary compatibility re-export while Web
+and Native component extraction proceeds in separate pull requests.
+
 ## Transitional facade debt
 
 `boundary:facade` is a narrow migration exception, not a fourth architecture

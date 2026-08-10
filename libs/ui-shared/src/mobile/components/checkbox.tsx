@@ -1,6 +1,7 @@
 import * as CheckboxPrimitive from '@rn-primitives/checkbox'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
+
 import { Icons } from './icons'
 
 const DEFAULT_HIT_SLOP = 24

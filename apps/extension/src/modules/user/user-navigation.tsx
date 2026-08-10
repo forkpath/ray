@@ -10,7 +10,7 @@ import { useApiClient } from '@libs/api-client'
 import { hasAdminPermission } from '@libs/auth-contract'
 import { getActivePlan } from '@libs/billing-config'
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import {
   Avatar,
   AvatarFallback,

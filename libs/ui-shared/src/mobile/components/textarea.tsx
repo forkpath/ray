@@ -2,7 +2,7 @@ import type { TextInputProps } from 'react-native'
 
 import { TextInput } from 'react-native'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 function Textarea({
   className,

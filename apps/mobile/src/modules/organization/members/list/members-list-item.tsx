@@ -11,7 +11,7 @@ import { Alert, Pressable, View } from 'react-native'
 
 import { getAllRolesAtOrBelow, MemberRole, toMemberRole } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-shared/mobile/components/avatar'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import { useBottomSheet } from '@libs/ui-shared/mobile/components/bottom-sheet'

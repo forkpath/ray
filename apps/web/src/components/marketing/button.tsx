@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 营销按钮（支持 primary / secondary / brand 变体） */
 export const Button = <T extends React.ElementType = 'button'>({

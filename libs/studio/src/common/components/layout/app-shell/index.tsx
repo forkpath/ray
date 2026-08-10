@@ -24,7 +24,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'
 
 import { isKey, useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import {
   Collapsible,
   CollapsibleContent,

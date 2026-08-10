@@ -1,4 +1,4 @@
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 网格斜线缩放背景 */
 export const Scale = ({ className }: { className?: string }) => {

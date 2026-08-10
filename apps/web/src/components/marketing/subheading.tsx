@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 副标题 */
 export const SubHeading = ({

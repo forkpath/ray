@@ -3,8 +3,8 @@ import type { Table as TanstackTable } from '@tanstack/react-table'
 import { flexRender } from '@tanstack/react-table'
 
 import { useTranslation } from '@libs/i18n'
+import { cn } from '@libs/ui-core'
 
-import { cn } from '../../../../common/lib/utils'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../table'
 import { DataTablePagination } from './data-table-pagination'
 

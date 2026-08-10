@@ -19,7 +19,7 @@ import { SubHeading } from '~/components/marketing/subheading'
 import { careers } from '~/constants/marketing/careers'
 import { useTranslation } from 'react-i18next'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 招聘页面路由 */
 export const Route = createFileRoute('/_marketing/careers')({

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 页面主标题 */
 export const Heading = ({ children, className }: { children: React.ReactNode; className?: string }) => {

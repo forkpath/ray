@@ -7,7 +7,7 @@ import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { ThemeProvider, Toaster } from '@libs/studio'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 import { AnalyticsProvider } from '../lib/providers/analytics'
 import { MonitoringProvider } from '../lib/providers/monitoring'

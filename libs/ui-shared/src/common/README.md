@@ -1,16 +1,14 @@
 # ui-shared common
 
-本模块提供共享 UI 工具、Tailwind CSS 集成，以及基于 CSS 变量的全局多主题系统。
+本模块是 Web 主题样式与 DOM hooks 的过渡兼容层。跨运行时的主题值与工具已迁移到
+`@libs/ui-core`。
 
 ## 目录内容
 
 - `styles/globals.css`: Tailwind CSS 与主题变量的入口。
-- `styles/themes/themes.ts`: 主题注册表，维护主题名与配色映射。
-- `styles/themes/colors/*.ts`: 使用 OKLCH 定义的主题配色。
+- `@libs/ui-core`: 主题注册表、OKLCH 配色、类型和 `cn()`。
 - `styles/themes/build.ts`: 从主题注册表生成 `variables.css`。
 - `styles/themes/variables.css`: 自动生成的主题 CSS 变量文件。
-- `lib/utils.ts`: `cn()` 工具，用于合并 Tailwind 类名与 `tailwind-merge`。
-- `types/index.ts`: 主题类型与断点定义。
 
 ## Tailwind CSS 如何集成
 
@@ -28,8 +26,8 @@
 
 主题在 TypeScript 中定义，在构建时生成 CSS：
 
-1. `styles/themes/colors/*.ts` 定义各主题的 `light` / `dark` 配色（OKLCH 数值）。
-2. `styles/themes/themes.ts` 汇总为 `themes` 映射。
+1. `@libs/ui-core` 定义各主题的 `light` / `dark` 配色（OKLCH 数值）。
+2. `@libs/ui-core` 汇总为 `themes` 映射。
 3. `styles/themes/build.ts` 将 `themes` 生成 CSS 并写入 `styles/themes/variables.css`。
 4. `styles/themes/variables.css` 结构包含：
    - `:root` 的默认主题（取 `themes.ts` 中的第一项）
@@ -76,14 +74,12 @@ import '@libs/ui-shared/common/styles/globals.css'
 ### 4) 重新生成变量文件
 
 `styles/themes/variables.css` 为自动生成文件。修改
-`styles/themes/themes.ts` 或 `styles/themes/colors/*.ts` 后，运行
+`@libs/ui-core` 的主题源文件后，运行
 `styles/themes/build.ts` 以更新 `variables.css`。
 
 ## 导出内容
 
 来自 `index.ts` 的导出：
 
-- 主题类型与常量：`ThemeMode`、`ThemeColor`、`ThemeColors`
-- 主题注册表：`themes`
-- 工具函数：`cn()`
+- `@libs/ui-core` 的兼容再导出
 - Hooks：`useMediaQuery`、`useBreakpoint`

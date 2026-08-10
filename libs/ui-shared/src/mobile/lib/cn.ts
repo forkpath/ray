@@ -1,1 +1,1 @@
-export { cn } from '../../common/lib/utils'
+export { cn } from '@libs/ui-core'

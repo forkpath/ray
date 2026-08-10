@@ -5,7 +5,8 @@ import * as React from 'react'
 
 import { View } from 'react-native'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
+
 import { Text, TextClassContext } from './text'
 
 function Card({ className, ...props }: ViewProps & React.RefAttributes<View>) {

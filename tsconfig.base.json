@@ -53,7 +53,8 @@
       "@libs/billing-native": ["libs/billing-native/src/index.ts"],
       "@libs/billing-config": ["libs/billing-config/src/index.ts"],
       "@libs/billing-client": ["libs/billing-client/src/index.ts"],
-      "@libs/billing-server": ["libs/billing-server/src/index.ts"]
+      "@libs/billing-server": ["libs/billing-server/src/index.ts"],
+      "@libs/ui-core": ["libs/ui-core/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]
