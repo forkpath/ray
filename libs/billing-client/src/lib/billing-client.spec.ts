@@ -25,6 +25,16 @@ describe('billing client', () => {
     expect(billingKeys.summary(second)).not.toEqual(billingKeys.summary(first))
   })
 
+  it('isolates organization summaries from users and other organizations', () => {
+    const user = { kind: 'user', userId: 'same-id' } as const
+    const organization = { kind: 'organization', organizationId: 'same-id' } as const
+    const otherOrganization = { kind: 'organization', organizationId: 'org-2' } as const
+
+    expect(billingKeys.summary(organization)).toEqual(['billing', 'owner', 'organization', 'same-id', 'summary'])
+    expect(billingKeys.summary(organization)).not.toEqual(billingKeys.summary(user))
+    expect(billingKeys.summary(otherOrganization)).not.toEqual(billingKeys.summary(organization))
+  })
+
   it('loads the personal summary without sending the owner id as request data', async () => {
     const { api, get } = createApi()
     const options = billingQueries.summary(api, { kind: 'user', userId: 'user-1' })
@@ -40,6 +50,24 @@ describe('billing client', () => {
     const queryFn = options.queryFn as unknown as () => Promise<BillingSummary>
 
     expect(() => queryFn()).toThrow('authenticated user scope')
+    expect(get).not.toHaveBeenCalled()
+  })
+
+  it('loads an organization summary through the path owner without request data', async () => {
+    const { api, get } = createApi()
+    const options = billingQueries.summary(api, { kind: 'organization', organizationId: 'org/one' })
+    const queryFn = options.queryFn as unknown as () => Promise<BillingSummary>
+
+    await expect(queryFn()).resolves.toEqual([])
+    expect(get).toHaveBeenCalledWith('/organizations/org%2Fone/billing')
+  })
+
+  it('fails closed before an organization request when its scope is missing', () => {
+    const { api, get } = createApi()
+    const options = billingQueries.summary(api, { kind: 'organization', organizationId: null })
+    const queryFn = options.queryFn as unknown as () => Promise<BillingSummary>
+
+    expect(() => queryFn()).toThrow('requires an organization scope')
     expect(get).not.toHaveBeenCalled()
   })
 
@@ -62,5 +90,49 @@ describe('billing client', () => {
 
     await billingMutations.portal.fn(api, input)
     expect(post).toHaveBeenCalledWith('/billing/portal', input)
+  })
+
+  it('posts organization checkout without copying the owner into the body', async () => {
+    const { api, post } = createApi()
+    const request = {
+      variantId: 'premium-monthly',
+      successUrl: 'https://app.example.test/billing/success',
+      cancelUrl: 'https://app.example.test/billing'
+    }
+
+    await billingMutations.organizationCheckout.fn(api, {
+      scope: { kind: 'organization', organizationId: 'org-1' },
+      request
+    })
+
+    expect(post).toHaveBeenCalledWith('/organizations/org-1/billing/checkout', request)
+  })
+
+  it('fails before an organization mutation when its path scope is missing', () => {
+    const { api, post } = createApi()
+
+    expect(() =>
+      billingMutations.organizationCheckout.fn(api, {
+        scope: { kind: 'organization', organizationId: null },
+        request: {
+          variantId: 'premium-monthly',
+          successUrl: 'https://app.example.test/billing/success',
+          cancelUrl: 'https://app.example.test/billing'
+        }
+      })
+    ).toThrow('requires an organization scope')
+    expect(post).not.toHaveBeenCalled()
+  })
+
+  it('posts organization portal without copying the owner into the body', async () => {
+    const { api, post } = createApi()
+    const request = { returnUrl: 'https://app.example.test/billing' }
+
+    await billingMutations.organizationPortal.fn(api, {
+      scope: { kind: 'organization', organizationId: 'org-1' },
+      request
+    })
+
+    expect(post).toHaveBeenCalledWith('/organizations/org-1/billing/portal', request)
   })
 })

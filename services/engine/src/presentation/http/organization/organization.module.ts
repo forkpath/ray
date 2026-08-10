@@ -52,6 +52,6 @@ const CommandHandlers = [
     ...QueryHandlers,
     ...CommandHandlers
   ],
-  exports: [ORGANIZATION_REPOSITORY]
+  exports: [ORGANIZATION_REPOSITORY, UserOrganizationAccessService]
 })
 export class OrganizationModule {}

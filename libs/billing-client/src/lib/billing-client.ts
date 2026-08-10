@@ -13,6 +13,23 @@ export interface UserBillingScope {
   userId: string | null
 }
 
+export interface OrganizationBillingScope {
+  kind: 'organization'
+  organizationId: string | null
+}
+
+export type BillingScope = UserBillingScope | OrganizationBillingScope
+
+export interface OrganizationCheckoutVariables {
+  scope: OrganizationBillingScope
+  request: CheckoutReq
+}
+
+export interface OrganizationPortalVariables {
+  scope: OrganizationBillingScope
+  request: BillingPortalReq
+}
+
 const requireUserId = (scope: UserBillingScope): string => {
   if (!scope.userId) {
     throw new Error('Billing summary requires an authenticated user scope')
@@ -21,19 +38,34 @@ const requireUserId = (scope: UserBillingScope): string => {
   return scope.userId
 }
 
+const requireOrganizationId = (scope: OrganizationBillingScope): string => {
+  if (!scope.organizationId) {
+    throw new Error('Organization billing requires an organization scope')
+  }
+
+  return scope.organizationId
+}
+
+const getSummaryPath = (scope: BillingScope): string => {
+  if (scope.kind === 'user') {
+    requireUserId(scope)
+    return '/billing/me'
+  }
+
+  return `/organizations/${encodeURIComponent(requireOrganizationId(scope))}/billing`
+}
+
 export const billingKeys = {
   all: ['billing'] as const,
-  owner: (scope: UserBillingScope) => [...billingKeys.all, 'owner', scope.kind, scope.userId] as const,
-  summary: (scope: UserBillingScope) => [...billingKeys.owner(scope), 'summary'] as const
+  owner: (scope: BillingScope) =>
+    [...billingKeys.all, 'owner', scope.kind, scope.kind === 'user' ? scope.userId : scope.organizationId] as const,
+  summary: (scope: BillingScope) => [...billingKeys.owner(scope), 'summary'] as const
 } as const
 
 export const billingQueries = {
-  summary: createQueryOptionsWithParams<BillingSummary, Error, BillingSummary, UserBillingScope>((api, scope) => ({
+  summary: createQueryOptionsWithParams<BillingSummary, Error, BillingSummary, BillingScope>((api, scope) => ({
     queryKey: billingKeys.summary(scope),
-    queryFn: () => {
-      requireUserId(scope)
-      return api.get('/billing/me')
-    }
+    queryFn: () => api.get(getSummaryPath(scope))
   }))
 }
 
@@ -43,5 +75,25 @@ export const billingMutations = {
   ),
   portal: createMutationFactory<{ provider: 'stripe'; url: string }, Error, BillingPortalReq>((api, data) =>
     api.post('/billing/portal', billingPortalReqSchema.parse(data))
+  ),
+  organizationCheckout: createMutationFactory<
+    { provider: 'stripe'; url: string | null },
+    Error,
+    OrganizationCheckoutVariables
+  >((api, variables) => {
+    const organizationId = requireOrganizationId(variables.scope)
+    return api.post(
+      `/organizations/${encodeURIComponent(organizationId)}/billing/checkout`,
+      checkoutReqSchema.parse(variables.request)
+    )
+  }),
+  organizationPortal: createMutationFactory<{ provider: 'stripe'; url: string }, Error, OrganizationPortalVariables>(
+    (api, variables) => {
+      const organizationId = requireOrganizationId(variables.scope)
+      return api.post(
+        `/organizations/${encodeURIComponent(organizationId)}/billing/portal`,
+        billingPortalReqSchema.parse(variables.request)
+      )
+    }
   )
 }

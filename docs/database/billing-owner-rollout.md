@@ -11,6 +11,21 @@ or writes by itself.
 | `BILLING_OWNER_V2_READ` | Returns the explicit owner query result. |
 | `ORGANIZATION_BILLING_ENABLED` | Allows the later organization billing endpoints to be activated. |
 
+## Organization API boundary
+
+The compatible application exposes these Stripe-only routes behind
+`ORGANIZATION_BILLING_ENABLED`:
+
+- `GET /organizations/:organizationId/billing` for any organization member;
+- `POST /organizations/:organizationId/billing/checkout` for owners/admins;
+- `POST /organizations/:organizationId/billing/portal` for owners/admins.
+
+The Better Auth session supplies the acting user and email. The path supplies
+the organization owner; request bodies contain only validated Checkout or
+Portal fields. RevenueCat remains user-owned. Client Query Keys include owner
+kind and ID so switching organizations cannot reuse a personal or different
+organization's cache entry.
+
 ## Safe activation order
 
 1. Apply the Expand migration and online indexes.
