@@ -40,15 +40,16 @@ services:
     environment:
       NODE_ENV: production
       PULSE_PORT: 3001
+      PULSE_CORS_ORIGINS: ${PULSE_CORS_ORIGINS:?PULSE_CORS_ORIGINS is required}
       REDIS_HOST: redis
       MONGO_HOST: mongo
       POSTGRES_HOST: postgres
     healthcheck:
       test:
         - CMD-SHELL
-        - wget -qO- http://127.0.0.1:3001/ >/dev/null || exit 1
+        - wget -qO- http://127.0.0.1:3001/health/ready >/dev/null || exit 1
       interval: 10s
-      timeout: 5s
+      timeout: 3s
       retries: 12
       start_period: 20s
 
