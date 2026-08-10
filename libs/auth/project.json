@@ -44,7 +44,7 @@
         "cwd": "libs/auth"
       }
     },
-    "test": {
+    "contract-test": {
       "executor": "nx:run-commands",
       "cache": true,
       "dependsOn": ["schema-check"],
@@ -53,6 +53,21 @@
         "command": "node --test scripts/schema-contract.test.mjs",
         "cwd": "libs/auth"
       }
+    },
+    "integration-test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "command": "vitest --config vitest.config.mts --run",
+        "cwd": "libs/auth"
+      }
+    },
+    "test": {
+      "executor": "nx:noop",
+      "cache": true,
+      "dependsOn": ["contract-test", "integration-test"]
     },
     "seed": {
       "executor": "nx:run-commands",
