@@ -43,6 +43,11 @@ Rollback switches in the reverse order: organization billing, V2 read,
 shadow-read, then dual-write. Application rollback must keep the additive
 database schema in place.
 
+Use the [billing owner backfill and Contract gate](./billing-owner-backfill.md)
+runbook for dry-run, resumable apply, conflict quarantine, and the read-only
+Contract readiness check. Contract DDL is intentionally absent until the live
+14-day and two-release gates have been proven.
+
 Shadow mismatches are emitted as structured `billing-owner` warnings containing
 the owner, optional provider, legacy customer IDs, and V2 customer IDs. They do
 not switch the response source. Ambiguous rows with both owner columns set are

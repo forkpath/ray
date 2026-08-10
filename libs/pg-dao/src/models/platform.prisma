@@ -6,3 +6,36 @@ model RayOnlineMigration {
   @@map("_ray_online_migrations")
   @@schema("public")
 }
+
+model RayDataBackfill {
+  id            String                    @id
+  cursor        String?
+  status        String
+  scannedCount  BigInt                    @default(0) @map("scanned_count")
+  updatedCount  BigInt                    @default(0) @map("updated_count")
+  conflictCount BigInt                    @default(0) @map("conflict_count")
+  metadata      Json
+  startedAt     DateTime                  @default(now()) @map("started_at") @db.Timestamptz
+  updatedAt     DateTime                  @updatedAt @map("updated_at") @db.Timestamptz
+  completedAt   DateTime?                 @map("completed_at") @db.Timestamptz
+  conflicts     RayDataBackfillConflict[]
+
+  @@map("_ray_data_backfills")
+  @@schema("public")
+}
+
+model RayDataBackfillConflict {
+  backfillId String          @map("backfill_id")
+  backfill   RayDataBackfill @relation(fields: [backfillId], references: [id], onDelete: Cascade)
+  recordId   String          @map("record_id")
+  reason     String
+  payload    Json
+  createdAt  DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  resolvedAt DateTime?       @map("resolved_at") @db.Timestamptz
+  resolution String?
+
+  @@id([backfillId, recordId])
+  @@index([backfillId, resolvedAt])
+  @@map("_ray_data_backfill_conflicts")
+  @@schema("public")
+}

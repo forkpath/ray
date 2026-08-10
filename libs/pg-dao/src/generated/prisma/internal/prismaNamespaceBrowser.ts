@@ -65,7 +65,9 @@ export const ModelName = {
   Customer: 'Customer',
   Subscription: 'Subscription',
   Order: 'Order',
-  RayOnlineMigration: 'RayOnlineMigration'
+  RayOnlineMigration: 'RayOnlineMigration',
+  RayDataBackfill: 'RayDataBackfill',
+  RayDataBackfillConflict: 'RayDataBackfillConflict'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -300,12 +302,48 @@ export const RayOnlineMigrationScalarFieldEnum = {
 export type RayOnlineMigrationScalarFieldEnum = (typeof RayOnlineMigrationScalarFieldEnum)[keyof typeof RayOnlineMigrationScalarFieldEnum]
 
 
+export const RayDataBackfillScalarFieldEnum = {
+  id: 'id',
+  cursor: 'cursor',
+  status: 'status',
+  scannedCount: 'scannedCount',
+  updatedCount: 'updatedCount',
+  conflictCount: 'conflictCount',
+  metadata: 'metadata',
+  startedAt: 'startedAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type RayDataBackfillScalarFieldEnum = (typeof RayDataBackfillScalarFieldEnum)[keyof typeof RayDataBackfillScalarFieldEnum]
+
+
+export const RayDataBackfillConflictScalarFieldEnum = {
+  backfillId: 'backfillId',
+  recordId: 'recordId',
+  reason: 'reason',
+  payload: 'payload',
+  createdAt: 'createdAt',
+  resolvedAt: 'resolvedAt',
+  resolution: 'resolution'
+} as const
+
+export type RayDataBackfillConflictScalarFieldEnum = (typeof RayDataBackfillConflictScalarFieldEnum)[keyof typeof RayDataBackfillConflictScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -322,4 +360,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
