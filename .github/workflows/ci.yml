@@ -110,3 +110,22 @@ jobs:
           path: artifacts/ci-metrics/*.json
           if-no-files-found: warn
           retention-days: 14
+
+  publish-images:
+    needs: main
+    if: >-
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/release-images.yml
+    secrets: inherit
+
+  publish-extension:
+    needs: main
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    uses: ./.github/workflows/release-extension.yml
+    secrets: inherit

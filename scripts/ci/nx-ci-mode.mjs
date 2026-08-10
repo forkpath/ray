@@ -53,7 +53,10 @@ export function hasCiControlPlaneChange(base, head, git = spawnSync) {
   return result.stdout
     .split('\n')
     .filter(Boolean)
-    .some(file => CI_CONTROL_PLANE_FILES.has(file) || file.startsWith('scripts/ci/'))
+    .some(
+      file =>
+        CI_CONTROL_PLANE_FILES.has(file) || file.startsWith('.github/workflows/') || file.startsWith('scripts/ci/')
+    )
 }
 
 export function resolveNxCiMode({

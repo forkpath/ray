@@ -104,6 +104,15 @@ describe('Nx CI mode resolution', () => {
     assert.equal(hasCiControlPlaneChange(base, head, git), true)
   })
 
+  it('treats every GitHub workflow as CI control-plane code', () => {
+    const git = () => ({
+      status: 0,
+      stdout: '.github/workflows/release-images.yml\n'
+    })
+
+    assert.equal(hasCiControlPlaneChange(base, head, git), true)
+  })
+
   it('keeps leaf-only source changes eligible for affected execution', () => {
     const git = () => ({
       status: 0,

@@ -5,6 +5,9 @@
 /.nx/workspace-data
 node_modules
 
+# Standalone pnpm lockfile; pnpm owns its canonical YAML formatting.
+docker/migrator/pnpm-lock.yaml
+
 .agents
 .claude
 .codex

@@ -1,0 +1,16 @@
+{
+  "name": "@ray/database-migrator",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.25.0",
+  "dependencies": {
+    "pg": "8.16.3",
+    "prisma": "7.8.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma"
+    ]
+  }
+}
