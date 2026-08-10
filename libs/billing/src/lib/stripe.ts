@@ -2,6 +2,7 @@ import type { BillingCheckoutInput, BillingPortalInput } from '@libs/billing-con
 
 import Stripe from 'stripe'
 
+import { findBillingVariant, findBillingVariantByStripePriceId } from '@libs/billing-config'
 import { BillingModel, BillingOrderStatus, BillingProvider, BillingSubscriptionStatus } from '@libs/billing-contract'
 
 import { serverEnv } from '../env'
@@ -14,7 +15,6 @@ import {
   upsertBillingOrder,
   upsertBillingSubscription
 } from './server'
-import { findBillingVariant, findBillingVariantByStripePriceId } from './utils'
 
 let stripeClient: Stripe | null = null
 
@@ -95,7 +95,7 @@ async function createOrRetrieveStripeCustomer(input: { referenceId: string; emai
 
 export async function createStripeCheckoutSession(input: BillingCheckoutInput) {
   const stripe = getStripeClient()
-  const variant = findBillingVariant(input.variantId)
+  const variant = findBillingVariant(input.variantId, billingConfig)
 
   if (!variant) {
     throw new Error(`Unknown billing variant: ${input.variantId}`)
@@ -174,7 +174,7 @@ async function syncStripeSubscription(input: { stripeSubscription: Stripe.Subscr
   }
 
   const priceId = input.stripeSubscription.items.data[0]?.price.id
-  const variant = priceId ? findBillingVariantByStripePriceId(priceId) : undefined
+  const variant = priceId ? findBillingVariantByStripePriceId(priceId, billingConfig) : undefined
 
   if (!variant) {
     return

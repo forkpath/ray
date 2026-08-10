@@ -6,7 +6,7 @@ import { memo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { billingQueries, useApiClient } from '@libs/api-client'
-import { getActivePlan } from '@libs/billing'
+import { getActivePlan } from '@libs/billing-config'
 import { useTranslation } from '@libs/i18n'
 import {
   Avatar,

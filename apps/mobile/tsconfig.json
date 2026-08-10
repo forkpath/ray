@@ -18,6 +18,7 @@
       "@libs/billing": ["libs/billing/src/index.ts"],
       "@libs/billing/*": ["libs/billing/src/*"],
       "@libs/billing-contract": ["libs/billing-contract/src/index.ts"],
+      "@libs/billing-config": ["libs/billing-config/src/index.ts"],
       "@libs/billing-native": ["libs/billing-native/src/index.ts"],
       "@libs/monitoring": ["libs/monitoring/src/index.ts"],
       "@libs/monitoring/*": ["libs/monitoring/src/*"],

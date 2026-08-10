@@ -1,0 +1,18 @@
+{
+  "name": "billing-config",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/billing-config/src",
+  "projectType": "library",
+  "tags": ["type:feature", "runtime:universal", "domain:billing"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
+      "inputs": ["production", "^production"],
+      "options": {
+        "cwd": "libs/billing-config",
+        "command": "tsc --noEmit -p tsconfig.lib.json"
+      }
+    }
+  }
+}

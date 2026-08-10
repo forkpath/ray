@@ -47,9 +47,10 @@ inaccessible even though they share the Auth domain.
 Billing values and transport-neutral records now live behind the additive
 `boundary:billing-contract` marker in `billing-contract`. The legacy Billing
 facade re-exports these contracts for rollback compatibility while frontend
-consumers migrate to the explicit universal boundary. Provider SDKs,
-persistence, and environment-specific configuration remain outside the
-contract.
+consumers migrate to the explicit universal boundary. `billing-config` owns the
+pure catalog builder and entitlement/price calculations. Runtime adapters inject
+provider identifiers, so the universal project never reads environment values.
+Provider SDKs and persistence remain outside both universal projects.
 
 The RevenueCat client adapter now lives in `billing-native`, tagged
 `type:data-access`, `runtime:native`, and `domain:billing`. Mobile composition
@@ -66,10 +67,12 @@ mixed project is split. The allowlist is guarded in CI and currently contains:
   `auth-native`, and `auth-server` now own the universal, browser, native, and
   Node contracts respectively. Runtime consumers no longer import the mixed
   facade; its deprecated exports remain only as a rollback bridge;
-- `billing`: remove after `billing-contract`, the extracted `billing-native`
-  adapter, a web client, and the Node provider/persistence project replace the
-  mixed facade. The contract boundary owns Billing value types and status
-  constants, and Mobile no longer consumes the facade;
+- `billing`: remove after `billing-contract`, `billing-config`, the extracted
+  `billing-native` adapter, a web client, and the Node provider/persistence
+  project replace the mixed facade. The universal projects own Billing values,
+  catalog construction, and entitlement calculations; Mobile, Extension,
+  and Studio no longer consume the facade. API Client remains explicit facade
+  debt until the Billing web client is extracted;
 - `ui-shared`: remove after universal core, web UI, and native UI projects are
   independent;
 - `api-client`: remove after its billing dependency points only to the billing

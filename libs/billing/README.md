@@ -4,16 +4,19 @@
 
 ## 模块划分
 
-- `shared`：套餐配置、类型、价格工具、Prisma 持久化 helper
+- `billing-contract`：类型、状态常量和传输记录
+- `billing-config`：纯套餐目录、价格和权益计算
+- `server`：Prisma 持久化 helper、billing customer / subscription / order /
+  webhook event 读写，以及 RevenueCat S2S webhook
 - `web`：Stripe Checkout / Billing Portal / Webhook
 - `mobile`：RevenueCat Provider / `useCustomer` / `usePaywall`
-- `server`：billing customer / subscription / order / webhook event 读写，以及 RevenueCat S2S webhook
 
 ## 导出入口
 
 | 入口 | 内容 |
 | --- | --- |
 | `@libs/billing-contract` | 运行时无关的计费类型、状态常量和传输记录 |
+| `@libs/billing-config` | 纯套餐目录构建器、价格与权益计算；不读取环境变量 |
 | `@libs/billing` | 兼容 facade：套餐配置、env preset、工具函数，并暂时转发 contract |
 | `@libs/billing/web` | Stripe checkout / portal / webhook 实现 |
 | `@libs/billing/server` | Prisma helper + `handleRevenueCatWebhook` |
@@ -22,6 +25,8 @@
 新代码应从 `@libs/billing-contract` 导入类型和状态常量。旧
 `@libs/billing` 类型导出保留一个发布周期，只用于迁移回退；Stripe、
 RevenueCat、Prisma 和环境读取不会进入 contract 项目。
+目录中的 Stripe Price ID 和 RevenueCat Product ID 由各运行时适配器注入，
+不会进入 `billing-config` 的默认 universal 配置。
 
 ## 环境变量
 

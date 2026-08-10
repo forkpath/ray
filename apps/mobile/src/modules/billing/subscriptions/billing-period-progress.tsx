@@ -3,7 +3,7 @@ import type { Subscription } from '@libs/billing-contract'
 import dayjs from 'dayjs'
 import { View } from 'react-native'
 
-import { getBillingPeriod } from '@libs/billing'
+import { getBillingPeriod } from '@libs/billing-config'
 import { useTranslation } from '@libs/i18n'
 import { Progress } from '@libs/ui-shared/mobile/components/progress'
 import { Text } from '@libs/ui-shared/mobile/components/text'
