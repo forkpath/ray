@@ -33,6 +33,26 @@ describe('migration safety guardrails', () => {
     assert.doesNotMatch(JSON.stringify(target), /pnpx|@latest/)
   })
 
+  it('pins and aligns the governed Better Auth schema toolchain', async () => {
+    const packageJson = await readJson('package.json')
+    const toolingPackageJson = await readJson('tools/auth-schema-tooling/package.json')
+    const project = await readJson('libs/auth/project.json')
+    const versions = [
+      packageJson.dependencies['better-auth'],
+      packageJson.dependencies['@better-auth/expo'],
+      packageJson.dependencies['@better-auth/passkey'],
+      toolingPackageJson.devDependencies.auth
+    ]
+
+    assert.deepEqual(versions, ['1.6.2', '1.6.2', '1.6.2', '1.6.2'])
+    assert.equal(toolingPackageJson.devDependencies['@mrleebo/prisma-ast'], '0.13.1')
+    assert.equal(project.targets['schema-check'].cache, true)
+    assert.equal(project.targets['schema-update'].cache, false)
+    assert.equal(project.targets['schema-check'].options.command, 'node scripts/schema-contract.mjs check')
+    assert.equal(project.targets['schema-update'].options.command, 'node scripts/schema-contract.mjs update')
+    assert.doesNotMatch(JSON.stringify({ toolingPackageJson, targets: project.targets }), /\bnpx\b|\bpnpx\b|@latest/)
+  })
+
   it('fails closed when the legacy schema generation target is invoked', () => {
     const result = spawnSync('node', ['scripts/schema-generation-frozen.mjs'], {
       cwd: 'libs/auth',

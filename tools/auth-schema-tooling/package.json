@@ -1,0 +1,15 @@
+{
+  "name": "@ray/auth-schema-tooling",
+  "private": true,
+  "version": "0.0.0",
+  "devDependencies": {
+    "@mrleebo/prisma-ast": "0.13.1",
+    "auth": "1.6.2"
+  },
+  "nx": {
+    "tags": [
+      "scope:shared",
+      "type:tool"
+    ]
+  }
+}

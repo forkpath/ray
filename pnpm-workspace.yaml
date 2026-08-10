@@ -3,6 +3,7 @@ packages:
   - 'apps/mobile'
   - 'apps/extension'
   - 'iam'
+  - 'tools/auth-schema-tooling'
 autoInstallPeers: true
 onlyBuiltDependencies:
   - '@nestjs/core'

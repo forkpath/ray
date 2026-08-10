@@ -20,6 +20,40 @@
         "cwd": "libs/auth"
       }
     },
+    "schema-check": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/package.json",
+        "{workspaceRoot}/pnpm-lock.yaml",
+        "{workspaceRoot}/tools/auth-schema-tooling/package.json",
+        "{workspaceRoot}/libs/pg-dao/src/models/auth.prisma"
+      ],
+      "options": {
+        "command": "node scripts/schema-contract.mjs check",
+        "cwd": "libs/auth"
+      }
+    },
+    "schema-update": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node scripts/schema-contract.mjs update",
+        "cwd": "libs/auth"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["schema-check"],
+      "inputs": ["default", "^production"],
+      "options": {
+        "command": "node --test scripts/schema-contract.test.mjs",
+        "cwd": "libs/auth"
+      }
+    },
     "seed": {
       "executor": "nx:run-commands",
       "options": {
