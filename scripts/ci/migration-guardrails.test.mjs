@@ -53,6 +53,15 @@ describe('migration safety guardrails', () => {
     assert.doesNotMatch(JSON.stringify({ toolingPackageJson, targets: project.targets }), /\bnpx\b|\bpnpx\b|@latest/)
   })
 
+  it('keeps Better Auth contracts and integration behavior under the standard test gate', async () => {
+    const project = await readJson('libs/auth/project.json')
+
+    assert.equal(project.targets.test.executor, 'nx:noop')
+    assert.deepEqual(project.targets.test.dependsOn, ['contract-test', 'integration-test'])
+    assert.equal(project.targets['contract-test'].options.command, 'node --test scripts/schema-contract.test.mjs')
+    assert.equal(project.targets['integration-test'].options.command, 'vitest --config vitest.config.mts --run')
+  })
+
   it('fails closed when the legacy schema generation target is invoked', () => {
     const result = spawnSync('node', ['scripts/schema-generation-frozen.mjs'], {
       cwd: 'libs/auth',
