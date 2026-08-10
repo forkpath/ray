@@ -7,13 +7,10 @@
   "targets": {
     "generate-auth-schema": {
       "executor": "nx:run-commands",
+      "cache": false,
       "options": {
-        "command": "pnpx @better-auth/cli@latest generate --config ./src/server.ts --output ../pg-dao/src/models/auth.prisma --yes",
-        "cwd": "libs/auth",
-        "env": {
-          "NODE_OPTIONS": "-r tsconfig-paths/register",
-          "TS_NODE_PROJECT": "tsconfig.json"
-        }
+        "command": "node scripts/schema-generation-frozen.mjs",
+        "cwd": "libs/auth"
       }
     },
     "seed": {

@@ -39,13 +39,7 @@
       "command": "prisma generate --schema ./src",
       "options": {
         "cwd": "libs/pg-dao"
-      },
-      "dependsOn": [
-        {
-          "projects": "auth",
-          "target": "generate-auth-schema"
-        }
-      ]
+      }
     },
     "migrate": {
       "executor": "nx:run-commands",

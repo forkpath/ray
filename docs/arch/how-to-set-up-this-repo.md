@@ -116,10 +116,10 @@ nx g @nx/js:lib libs/email --minimal --bundler=none --tags=scope:shared,type:lib
 - 集成better-auth实现认证授权，构建auth模块
 
 ```shell
-pnpm add better-auth
+pnpm add --save-exact better-auth@1.6.2
 
 # 生成一个better-auth 密钥
-npx @better-auth/cli@latest secret
+openssl rand -base64 32
 
 # 构建一个前后端共用的auth模块
 nx g @nx/js:lib libs/auth --minimal --bundler=none --tags=scope:shared,type:lib --skipTsConfig

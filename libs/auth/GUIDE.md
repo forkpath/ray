@@ -173,7 +173,9 @@ pnpm db:migrate add_warehouse_table
 pnpm db:generate
 ```
 
-> `db:generate` 会先调用 `better-auth` CLI 重新生成 `auth.prisma`，然后再生成 Prisma Client。
+> `db:generate` 只会基于受版本控制的 Prisma schema 生成 Client，不会覆盖
+> `auth.prisma`。Better Auth schema 在治理流程落地前保持冻结；禁止使用临时下载的
+> `@latest` CLI 更新物理数据库契约。
 
 ### 3.4 如果仅修改 permissions.ts（无数据表变更）
 
