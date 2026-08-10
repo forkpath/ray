@@ -2,6 +2,7 @@ packages:
   - 'apps/desktop'
   - 'apps/mobile'
   - 'apps/extension'
+  - 'iam'
 autoInstallPeers: true
 onlyBuiltDependencies:
   - '@nestjs/core'
