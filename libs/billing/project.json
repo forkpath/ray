@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/billing/src",
   "projectType": "library",
-  "tags": ["scope:shared", "type:lib"],
+  "tags": ["type:feature", "runtime:node", "domain:billing", "boundary:facade"],
   "// targets": "to see all targets run: nx show project billing --web",
   "targets": {}
 }

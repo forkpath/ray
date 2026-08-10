@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api-client/src",
   "projectType": "library",
-  "tags": ["scope:shared", "type:lib"],
+  "tags": ["type:data-access", "runtime:universal", "domain:shared", "boundary:facade"],
   "// targets": "to see all targets run: nx show project api-client --web",
   "targets": {}
 }

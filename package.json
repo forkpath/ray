@@ -56,6 +56,11 @@
   "private": true,
   "nx": {
     "includedScripts": [],
+    "tags": [
+      "type:platform",
+      "runtime:node",
+      "domain:platform"
+    ],
     "targets": {
       "test": {
         "executor": "nx:run-commands",

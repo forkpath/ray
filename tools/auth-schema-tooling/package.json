@@ -9,8 +9,9 @@
   },
   "nx": {
     "tags": [
-      "scope:shared",
-      "type:tool"
+      "type:platform",
+      "runtime:node",
+      "domain:auth"
     ]
   }
 }

@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/mobile/src",
   "projectType": "application",
-  "tags": ["scope:frontend", "type:app", "platform:mobile"],
+  "tags": ["type:app", "runtime:native", "domain:composition"],
   "targets": {
     "typecheck": {
       "executor": "nx:run-commands",

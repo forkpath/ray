@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/extension/src",
   "projectType": "application",
-  "tags": ["scope:frontend", "type:app", "platform:extension"],
+  "tags": ["type:app", "runtime:web", "domain:composition"],
   "targets": {
     "build": {
       "executor": "nx:noop",
