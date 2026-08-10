@@ -633,7 +633,7 @@ importers:
         specifier: ^0.7.2
         version: 0.7.2(@ianvs/prettier-plugin-sort-imports@4.7.0(prettier@3.6.2))(prettier@3.6.2)
       prisma:
-        specifier: ^7.8.0
+        specifier: 7.8.0
         version: 7.8.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(magicast@0.5.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(typescript@5.9.3)
       react-grab:
         specifier: ^0.1.32
