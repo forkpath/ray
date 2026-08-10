@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus } from '@nestjs/common'
+import type { I18nPath } from '../i18n'
 
-import { I18nPath } from '@libs/srv-shared'
+import { HttpException, HttpStatus } from '@nestjs/common'
 
 export class ExceptionResponse extends HttpException {
   constructor(

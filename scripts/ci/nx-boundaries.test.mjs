@@ -209,7 +209,7 @@ describe('Nx boundary governance', () => {
   it('routes server configuration owners through server-kernel', async () => {
     const adapterFiles = [
       'libs/mongo-dao/src/mongo-dao.module.ts',
-      'libs/srv-core/src/config/index.ts',
+      'libs/server-nest/src/config/index.ts',
       'libs/srv-shared/src/cache/cache.module.ts',
       'libs/srv-shared/src/logger/logger.module.ts',
       'libs/srv-shared/src/rabbitmq/rabbitmq.module.ts',
@@ -226,6 +226,41 @@ describe('Nx boundary governance', () => {
       const config = await readJson(file)
       assert.deepEqual(config.compilerOptions.paths['@libs/server-kernel'], ['libs/server-kernel/src/index.ts'], file)
     }
+  })
+
+  it('keeps Nest cross-cutting behavior on an explicit Node boundary', async () => {
+    const projects = await readProjects()
+    const serverNest = projects.find(project => project.name === 'server-nest')
+
+    assert.ok(serverNest)
+    assert.ok(serverNest.tags.includes('type:platform'))
+    assert.ok(serverNest.tags.includes('runtime:node'))
+    assert.ok(serverNest.tags.includes('domain:platform'))
+
+    const nestFiles = await findSourceFiles('libs/server-nest/src')
+    for (const file of nestFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.equal(source.includes('@libs/srv-shared'), false, file)
+      assert.equal(source.includes('@libs/srv-core'), false, file)
+    }
+
+    const engineModule = await readFile(join(workspaceRoot, 'services/engine/src/app.module.ts'), 'utf8')
+    assert.equal(engineModule.includes("from '@libs/server-nest'"), true)
+    assert.equal(engineModule.includes("from '@libs/srv-core'"), false)
+
+    const tsconfig = await readJson('tsconfig.base.json')
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/srv-core'], ['libs/server-nest/src/index.ts'])
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/server-nest'], ['libs/server-nest/src/index.ts'])
+
+    const engineTsconfig = await readJson('services/engine/tsconfig.app.json')
+    assert.deepEqual(engineTsconfig.compilerOptions.paths['@libs/srv-core'], ['libs/server-nest/src/index.ts'])
+    assert.deepEqual(engineTsconfig.compilerOptions.paths['@libs/server-nest'], ['libs/server-nest/src/index.ts'])
+
+    const i18nModule = await readFile(join(workspaceRoot, 'libs/server-nest/src/i18n/i18n.module.ts'), 'utf8')
+    assert.equal(i18nModule.includes('libs/server-nest/src/i18n/i18n.types.ts'), true)
+
+    const i18nBridge = await readFile(join(workspaceRoot, 'libs/srv-shared/src/i18n/i18n.module.ts'), 'utf8')
+    assert.equal(i18nBridge.trim(), "export { I18nModule } from '@libs/server-nest'")
   })
 
   it('keeps shared UI primitives on a universal boundary', async () => {

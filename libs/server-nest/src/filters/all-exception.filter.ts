@@ -67,7 +67,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       }
       try {
         captureException(exception, {
-          scope: 'srv-core-all-exceptions-filter',
+          scope: 'server-nest-all-exceptions-filter',
           httpStatus: status,
           method: request.method,
           path: request.url

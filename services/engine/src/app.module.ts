@@ -12,16 +12,8 @@ import { ZodError } from 'zod'
 import { auth } from '@libs/auth-server'
 import { MongoDaoModule } from '@libs/mongo-dao'
 import { PgDaoModule } from '@libs/pg-dao'
-import { AllExceptionsFilter, AppConfig, WrapResInterceptor } from '@libs/srv-core'
-import {
-  AuthModule,
-  CacheModule,
-  I18nModule,
-  LoggerModule,
-  RabbitmqModule,
-  RedisModule,
-  ThrottlerModule
-} from '@libs/srv-shared'
+import { AllExceptionsFilter, AppConfig, I18nModule, WrapResInterceptor } from '@libs/server-nest'
+import { AuthModule, CacheModule, LoggerModule, RabbitmqModule, RedisModule, ThrottlerModule } from '@libs/srv-shared'
 
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
