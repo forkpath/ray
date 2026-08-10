@@ -4,7 +4,7 @@
 
 - `setup`：欢迎、登录、注册、多步引导
 - `dashboard`：用户与组织双 Tab 体系
-- `billing`：基于 `@libs/billing/mobile` 的 RevenueCat 订阅 / 一次性购买与 Paywall
+- `billing`：基于 `@libs/billing-native` 的 RevenueCat 订阅 / 一次性购买与 Paywall
 - `analytics` / `monitoring`：PostHog + Sentry 真实 SDK 集成
 
 > 详细的环境准备、证书申请、商店发布流程见 [`./GUIDE.md`](./GUIDE.md)。本文档只回答一个问题：
@@ -115,7 +115,7 @@ EXPO_PUBLIC_REVENUECAT_PRODUCT_PREMIUM_YEARLY=ray_premium_yearly
 说明：
 
 - 场景 ① ② ③ 的命令都通过 `dotenv -e .env.local --` 注入这些变量；④ 走 EAS 云端，不读 `.env.local`，对应的生产值请配置到 `apps/mobile/eas.json` 或 EAS Secrets。
-- 移动端计费固定使用 RevenueCat（`@libs/billing/mobile`），无需运行时切换 provider。
+- 移动端计费固定使用 RevenueCat（`@libs/billing-native`），无需运行时切换 provider。
 - PostHog / Sentry / RevenueCat 的 provider 在 `src/lib/{analytics,monitoring,providers/billing}.tsx` 中直接注册对应 SDK。
 
 ---

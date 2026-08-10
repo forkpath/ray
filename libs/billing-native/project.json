@@ -1,0 +1,16 @@
+{
+  "name": "billing-native",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/billing-native/src",
+  "projectType": "library",
+  "tags": ["type:data-access", "runtime:native", "domain:billing"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tsconfig.lib.json",
+        "cwd": "libs/billing-native"
+      }
+    }
+  }
+}

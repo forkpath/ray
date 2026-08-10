@@ -17,7 +17,7 @@
 | `@libs/billing` | 兼容 facade：套餐配置、env preset、工具函数，并暂时转发 contract |
 | `@libs/billing/web` | Stripe checkout / portal / webhook 实现 |
 | `@libs/billing/server` | Prisma helper + `handleRevenueCatWebhook` |
-| `@libs/billing/mobile` | `Provider`、`useCustomer`、`usePaywall`（基于 RevenueCat SDK） |
+| `@libs/billing-native` | `Provider`、`useCustomer`、`usePaywall`（基于 RevenueCat SDK） |
 
 新代码应从 `@libs/billing-contract` 导入类型和状态常量。旧
 `@libs/billing` 类型导出保留一个发布周期，只用于迁移回退；Stripe、
@@ -82,10 +82,11 @@ await handleStripeWebhook({
 
 ## Mobile 使用方式
 
-`@libs/billing/mobile` 直接暴露 RevenueCat 实现，无运行时注册步骤。
+`@libs/billing-native` 直接暴露 RevenueCat 实现，无运行时注册步骤。旧的
+`@libs/billing/mobile` 仅保留为一个发布周期的回退 facade。
 
 ```tsx
-import { Provider, useCustomer, usePaywall } from '@libs/billing/mobile'
+import { Provider, useCustomer, usePaywall } from '@libs/billing-native'
 
 export function BillingProvider({ children }: { children: React.ReactNode }) {
   return <Provider locale={locale}>{children}</Provider>

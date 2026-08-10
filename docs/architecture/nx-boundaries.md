@@ -51,6 +51,11 @@ consumers migrate to the explicit universal boundary. Provider SDKs,
 persistence, and environment-specific configuration remain outside the
 contract.
 
+The RevenueCat client adapter now lives in `billing-native`, tagged
+`type:data-access`, `runtime:native`, and `domain:billing`. Mobile composition
+imports that project directly; `@libs/billing/mobile` remains only as a
+deprecated rollback bridge inside the facade.
+
 ## Transitional facade debt
 
 `boundary:facade` is a narrow migration exception, not a fourth architecture
@@ -61,9 +66,10 @@ mixed project is split. The allowlist is guarded in CI and currently contains:
   `auth-native`, and `auth-server` now own the universal, browser, native, and
   Node contracts respectively. Runtime consumers no longer import the mixed
   facade; its deprecated exports remain only as a rollback bridge;
-- `billing`: remove after `billing-contract`, web/native clients, and the Node
-  provider/persistence project replace the mixed facade. The contract boundary
-  now owns Billing value types and status constants;
+- `billing`: remove after `billing-contract`, the extracted `billing-native`
+  adapter, a web client, and the Node provider/persistence project replace the
+  mixed facade. The contract boundary owns Billing value types and status
+  constants, and Mobile no longer consumes the facade;
 - `ui-shared`: remove after universal core, web UI, and native UI projects are
   independent;
 - `api-client`: remove after its billing dependency points only to the billing

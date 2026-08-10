@@ -29,7 +29,7 @@ Billing 正在按运行时拆分。通用值契约已经进入独立 Nx 项目�
 @libs/billing          → 兼容 facade、套餐配置、env preset、工具函数
 @libs/billing/server   → Prisma 持久化 helper（customer/subscription/order/webhook CRUD）+ RevenueCat webhook
 @libs/billing/web      → Stripe checkout/portal/webhook 实现
-@libs/billing/mobile   → RevenueCat Provider、useCustomer、usePaywall
+@libs/billing-native   → RevenueCat Provider、useCustomer、usePaywall
 ```
 
 `ray` 的 provider 策略是**确定性的**：Web 固定 Stripe、Mobile 固定 RevenueCat，不做运行时多 provider 适配，保证调用链简单、类型收敛。
@@ -45,7 +45,7 @@ Billing 正在按运行时拆分。通用值契约已经进入独立 Nx 项目�
                                │
               ┌────────────────┼────────────────┐
               ▼                ▼                 ▼
-   @libs/billing/web   @libs/billing/server  @libs/billing/mobile
+   @libs/billing/web   @libs/billing/server  @libs/billing-native
    (Stripe SDK)        (Prisma ORM)          (RevenueCat SDK)
               │                │                 │
               ▼                ▼                 ▼
@@ -378,7 +378,7 @@ flowchart TB
 sequenceDiagram
     actor User
     participant App as Mobile App
-    participant RC as RevenueCat SDK<br>(@libs/billing/mobile)
+    participant RC as RevenueCat SDK<br>(@libs/billing-native)
     participant Store as App Store / Play Store
     participant Engine as Engine (NestJS)
     participant DB as PostgreSQL
@@ -521,13 +521,13 @@ function getUserPlanLevel(summary: BillingSummary): BillingPlan {
 
 ### 7.1 架构设计
 
-Mobile 端直接绑定 **RevenueCat**。`@libs/billing/mobile` 内部封装 `react-native-purchases` + `react-native-purchases-ui`，对外仅暴露 `Provider` / `useCustomer` / `usePaywall` 三个符号。**没有运行时适配器、没有 provider 选择逻辑**。
+Mobile 端直接绑定 **RevenueCat**。`@libs/billing-native` 内部封装 `react-native-purchases` + `react-native-purchases-ui`，对外仅暴露 `Provider` / `useCustomer` / `usePaywall` 三个符号。**没有运行时适配器、没有 provider 选择逻辑**。
 
 ```
 apps/mobile
    │
    ▼
-@libs/billing/mobile  →  react-native-purchases (SDK)
+@libs/billing-native  →  react-native-purchases (SDK)
   Provider                react-native-purchases-ui (Paywall UI)
   useCustomer
   usePaywall
@@ -538,7 +538,7 @@ apps/mobile
 `Provider` 内部已处理 `Purchases.configure`，只需在 Root 层挂一次即可：
 
 ```tsx
-import { Provider as BillingRevenueCatProvider, useCustomer } from '@libs/billing/mobile'
+import { Provider as BillingRevenueCatProvider, useCustomer } from '@libs/billing-native'
 
 export const BillingProvider = ({ children }: { children: React.ReactNode }) => {
   const { locale } = useI18nConfig(state => state.config)
@@ -567,7 +567,7 @@ const Identity = () => {
 ### 7.3 Paywall 与权益
 
 ```tsx
-import { usePaywall, useCustomer } from '@libs/billing/mobile'
+import { usePaywall, useCustomer } from '@libs/billing-native'
 
 const Upgrade = () => {
   const { present, result } = usePaywall({
@@ -668,7 +668,7 @@ flowchart TB
 | 层 | 职责 | 可访问的 billing 子路径 |
 |---|---|---|
 | **Web 前端** | UI 展示、发起请求、处理重定向 | `@libs/billing`（types/config/utils） |
-| **Mobile 前端** | Paywall 展示、IAP 触发（直接使用 RevenueCat） | `@libs/billing`、`@libs/billing/mobile` |
+| **Mobile 前端** | Paywall 展示、IAP 触发（直接使用 RevenueCat） | `@libs/billing`、`@libs/billing-native` |
 | **Desktop 前端** | 同 Web（通过 Electron 加载 Web 内容） | `@libs/billing`（types/config/utils） |
 | **Engine 后端** | Stripe API 调用、Webhook 处理、DB 读写 | 全部（`@libs/billing/*`） |
 
