@@ -1,0 +1,16 @@
+{
+  "name": "auth-native",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/auth-native/src",
+  "projectType": "library",
+  "tags": ["type:data-access", "runtime:native", "domain:auth"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tsconfig.lib.json",
+        "cwd": "libs/auth-native"
+      }
+    }
+  }
+}
