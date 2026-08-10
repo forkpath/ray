@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Icons
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 type InvitationRow = GetInvitationsRes['list'][number]
 

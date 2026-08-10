@@ -18,7 +18,7 @@ import {
   Icons,
   Input,
   PasswordInput
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import { GoLink } from '../../../../common/components/go-link'
 import { pathsConfig } from '../../../../config/paths'

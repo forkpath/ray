@@ -1,0 +1,18 @@
+{
+  "name": "ui-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/ui-web/src",
+  "projectType": "library",
+  "tags": ["type:ui", "runtime:web", "domain:shared"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
+      "inputs": ["production", "^production"],
+      "options": {
+        "cwd": "libs/ui-web",
+        "command": "tsc --noEmit -p tsconfig.lib.json"
+      }
+    }
+  }
+}

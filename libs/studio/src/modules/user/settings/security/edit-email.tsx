@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { useTranslation } from '@libs/i18n'
-import { Badge, Button, Form, FormControl, FormField, FormItem, FormMessage, Icons, Input } from '@libs/ui-shared/web'
+import { Badge, Button, Form, FormControl, FormField, FormItem, FormMessage, Icons, Input } from '@libs/ui-web'
 
 import {
   SettingsCard,

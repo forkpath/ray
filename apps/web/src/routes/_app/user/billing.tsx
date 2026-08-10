@@ -20,7 +20,7 @@ import {
   CardTitle,
   Icons,
   Skeleton
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 export const Route = createFileRoute('/_app/user/billing')({
   component: BillingPage

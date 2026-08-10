@@ -1,5 +1,5 @@
 import { useTranslation } from '@libs/i18n'
-import { Icons } from '@libs/ui-shared/web'
+import { Icons } from '@libs/ui-web'
 
 import { GoLink } from '../../common/components/go-link'
 import { pathsConfig } from '../../config/paths'

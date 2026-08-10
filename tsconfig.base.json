@@ -23,6 +23,8 @@
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
       "@libs/pg-dao/*": ["libs/pg-dao/src/*"],
       "@libs/payload": ["libs/payload/src/index.ts"],
+      "@libs/ui-shared/common": ["libs/ui-web/src/compat/common.ts"],
+      "@libs/ui-shared/web": ["libs/ui-web/src/index.ts"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
       "@libs/common": ["libs/common/src/index.ts"],
       "@libs/common/*": ["libs/common/src/*"],
@@ -54,7 +56,8 @@
       "@libs/billing-config": ["libs/billing-config/src/index.ts"],
       "@libs/billing-client": ["libs/billing-client/src/index.ts"],
       "@libs/billing-server": ["libs/billing-server/src/index.ts"],
-      "@libs/ui-core": ["libs/ui-core/src/index.ts"]
+      "@libs/ui-core": ["libs/ui-core/src/index.ts"],
+      "@libs/ui-web": ["libs/ui-web/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]

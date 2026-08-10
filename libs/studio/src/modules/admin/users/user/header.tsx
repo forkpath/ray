@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { useTranslation } from '@libs/i18n'
-import { Avatar, AvatarFallback, AvatarImage, Badge, Icons } from '@libs/ui-shared/web'
+import { Avatar, AvatarFallback, AvatarImage, Badge, Icons } from '@libs/ui-web'
 
 import { PageHeader, PageHeaderDescription, PageHeaderTitle } from '../../../../common/components/layout/page-header'
 import { authClient } from '../../../../lib/auth/client'

@@ -5,7 +5,7 @@ import { Link } from '@tanstack/react-router'
 
 import { InvitationStatus, MemberRole } from '@libs/common'
 import { useTranslation } from '@libs/i18n'
-import { Avatar, AvatarFallback, AvatarImage, Badge, DataTableColumnHeader } from '@libs/ui-shared/web'
+import { Avatar, AvatarFallback, AvatarImage, Badge, DataTableColumnHeader } from '@libs/ui-web'
 
 import { pathsConfig } from '../../../../../../config/paths'
 

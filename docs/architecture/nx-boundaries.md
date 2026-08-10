@@ -71,6 +71,15 @@ SVG loaders stay outside the universal project; the old
 `@libs/ui-shared/common` path is a temporary compatibility re-export while Web
 and Native component extraction proceeds in separate pull requests.
 
+React DOM components, browser media hooks, Web SVG React wrappers, and browser
+Tailwind styles live in `ui-web`, tagged `type:ui`, `runtime:web`, and
+`domain:shared`. Web, Desktop, Extension, and Studio import its public API.
+`@libs/ui-shared/web` and `@libs/ui-shared/common` are now one-release exact-path
+aliases that resolve directly to `ui-web`. They do not add a `ui-shared →
+ui-web` project edge. Native retains its own raw SVG and base-style copy until
+the independent `ui-native` extraction, so neither runtime depends on the
+other.
+
 ## Transitional facade debt
 
 `boundary:facade` is a narrow migration exception, not a fourth architecture

@@ -1,5 +1,5 @@
 import { useTranslation } from '@libs/i18n'
-import { Icons } from '@libs/ui-shared/web'
+import { Icons } from '@libs/ui-web'
 
 export const InvitationDisclaimer = () => {
   const { t } = useTranslation('organization')

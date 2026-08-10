@@ -4,7 +4,7 @@ import { authClient } from '~/lib/auth'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Icons } from '@libs/ui-shared/web'
+import { Icons } from '@libs/ui-web'
 
 export const Logout = ({ className, ...props }: React.ComponentProps<'button'>) => {
   const { t } = useTranslation('auth')

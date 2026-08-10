@@ -4,7 +4,7 @@ import { useRouter } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
 import { useTranslation } from '@libs/i18n'
-import { Button, Icons } from '@libs/ui-shared/web'
+import { Button, Icons } from '@libs/ui-web'
 
 import { admin } from '../../../lib/api'
 

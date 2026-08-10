@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { adminOrgQueries, useApiClient } from '@libs/api-client'
-import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-shared/web'
+import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-web'
 
 import { PageHeader, PageHeaderDescription, PageHeaderTitle } from '../../../../common/components/layout/page-header'
 import { DeleteOrgAction } from './actions/delete'

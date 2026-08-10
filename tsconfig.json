@@ -40,6 +40,9 @@
       "path": "./libs/ui-core"
     },
     {
+      "path": "./libs/ui-web"
+    },
+    {
       "path": "./libs/mongo-dao"
     },
     {

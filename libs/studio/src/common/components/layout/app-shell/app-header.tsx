@@ -43,7 +43,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 // ============================================================================
 // 语言切换下拉菜单

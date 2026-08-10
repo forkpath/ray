@@ -1,3 +1,4 @@
+@import '../base/globals.css';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));

@@ -1,0 +1,35 @@
+<svg
+  width="96"
+  height="96"
+  viewBox="0 0 96 96"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label="ray logo"
+>
+  <defs>
+    <!-- 镂空遮罩：白色区域可见，黑色区域透明 -->
+    <mask id="text-mask">
+      <rect x="8" y="8" width="80" height="80" rx="16" fill="white"/>
+      <text
+        x="48"
+        y="64"
+        text-anchor="middle"
+        font-family="system-ui, sans-serif"
+        font-size="56"
+        font-weight="bold"
+        fill="black"
+      >R</text>
+    </mask>
+  </defs>
+
+  <!-- 应用遮罩的背景，文字部分会镂空显示底色 -->
+  <rect
+    x="8"
+    y="8"
+    width="80"
+    height="80"
+    rx="16"
+    fill="currentColor"
+    mask="url(#text-mask)"
+  />
+</svg>

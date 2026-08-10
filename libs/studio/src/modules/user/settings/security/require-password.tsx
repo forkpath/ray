@@ -20,7 +20,7 @@ import {
   FormMessage,
   Icons,
   PasswordInput
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 interface RequirePasswordProps {
   readonly title?: string

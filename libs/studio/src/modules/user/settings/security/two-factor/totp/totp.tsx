@@ -19,7 +19,7 @@ import {
   FormMessage,
   Icons,
   Input
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import { RequirePassword } from '../../require-password'
 import { BackupCodesModal } from '../backup-codes/backup-codes'

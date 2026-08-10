@@ -5,7 +5,7 @@ import { Message, sendMessage } from '~/lib/messaging'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Icons, Skeleton } from '@libs/ui-shared/web'
+import { Icons, Skeleton } from '@libs/ui-web'
 
 interface MainProps {
   readonly className?: string

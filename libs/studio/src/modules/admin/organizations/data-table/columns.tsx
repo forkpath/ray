@@ -4,7 +4,7 @@ import type { GetOrganizationsRes } from '@libs/payload'
 import { Link } from '@tanstack/react-router'
 
 import { useTranslation } from '@libs/i18n'
-import { Avatar, AvatarFallback, AvatarImage, DataTableColumnHeader } from '@libs/ui-shared/web'
+import { Avatar, AvatarFallback, AvatarImage, DataTableColumnHeader } from '@libs/ui-web'
 
 import { pathsConfig } from '../../../../config/paths'
 

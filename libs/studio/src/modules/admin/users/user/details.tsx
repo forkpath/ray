@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { adminUserKeys, adminUserMutations, useApiClient } from '@libs/api-client'
 import { UserRole } from '@libs/common'
 import { useTranslation } from '@libs/i18n'
-import { Icons, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@libs/ui-shared/web'
+import { Icons, Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@libs/ui-web'
 
 import { useDebounceCallback } from '../../../../common/hooks/use-debounce'
 import { DetailsList, DetailsListItem } from '../../layout/details-list'

@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   Icons
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import { SetPasswordModal } from '../set-password'
 

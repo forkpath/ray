@@ -3,7 +3,7 @@ import { useRouter } from '@tanstack/react-router'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Button, Icons } from '@libs/ui-shared/web'
+import { Button, Icons } from '@libs/ui-web'
 
 import { authClient } from '../../../lib/auth/client'
 import { admin } from '../lib/api'

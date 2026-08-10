@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger,
   Button,
   Icons
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import {
   SettingsCard,

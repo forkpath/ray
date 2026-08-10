@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 
 import { adminOrgKeys, adminOrgMutations, adminOrgQueries, useApiClient } from '@libs/api-client'
 import { useTranslation } from '@libs/i18n'
-import { Icons, Input } from '@libs/ui-shared/web'
+import { Icons, Input } from '@libs/ui-web'
 
 import { useDebounceCallback } from '../../../../common/hooks/use-debounce'
 import { DetailsList, DetailsListItem } from '../../layout/details-list'

@@ -1,11 +1,11 @@
 import type { AuthProvider, SocialProvider as SocialProviderType } from '@libs/auth-contract'
-import type { Icon } from '@libs/ui-shared/web'
+import type { Icon } from '@libs/ui-web'
 
 import { memo } from 'react'
 import { useMutation } from '@tanstack/react-query'
 
 import { useTranslation } from '@libs/i18n'
-import { Badge, Button, Icons } from '@libs/ui-shared/web'
+import { Badge, Button, Icons } from '@libs/ui-web'
 
 import { pathsConfig } from '../../../config/paths'
 import { authClient } from '../../../lib/auth/client'

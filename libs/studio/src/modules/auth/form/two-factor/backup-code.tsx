@@ -20,7 +20,7 @@ import {
   FormMessage,
   Icons,
   Input
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import { pathsConfig } from '../../../../config/paths'
 import { auth } from '../../lib/api'

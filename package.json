@@ -46,7 +46,7 @@
     "mobile:release:android": "nx run mobile:build:android",
     "verify:libs": "nx run-many -t lint,typecheck,test -p analytics,billing,monitoring",
     "verify:mobile": "nx run mobile:typecheck && nx run mobile:export",
-    "add:web-ui": "pnpx shadcn@latest add -p libs/ui-shared/src/web/components",
+    "add:web-ui": "pnpx shadcn@latest add -p libs/ui-web/src/components",
     "add:mobile-ui": "pnpx shadcn@latest add -p libs/ui-shared/src/mobile/components",
     "update": "nx migrate latest",
     "postinstall": "lefthook install",

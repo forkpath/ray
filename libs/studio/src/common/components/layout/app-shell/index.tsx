@@ -47,7 +47,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   useSidebar
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import { pathsConfig } from '../../../../config/paths'
 import { AccountSwitcher } from '../../../../modules/organization/account-switcher'

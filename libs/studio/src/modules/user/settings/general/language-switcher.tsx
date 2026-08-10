@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react'
 
 import { useTranslation } from '@libs/i18n'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@libs/ui-shared/web'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@libs/ui-web'
 
 import {
   SettingsCard,
