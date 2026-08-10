@@ -416,6 +416,7 @@ describe('deployment composition guardrails', () => {
   it('separates infrastructure from applications and removes mutable deploy entrypoints', async () => {
     const infrastructure = await readFile('docker/compose.infrastructure.yml', 'utf8')
     const application = await readFile('docker/compose.application.yml', 'utf8')
+    const kong = await readFile('docker/kong/kong.yml', 'utf8')
     const controller = await readFile('scripts/deploy/release-controller.mjs', 'utf8')
 
     assert.match(infrastructure, /^name: ray-infrastructure$/m)
@@ -424,6 +425,9 @@ describe('deployment composition guardrails', () => {
     assert.match(application, /external: true/)
     assert.match(application, /ENGINE_IMAGE.*immutable digest/)
     assert.match(application, /KONG_ADMIN_LISTEN: 'off'/)
+    assert.match(application, /http:\/\/127\.0\.0\.1:3001\/health\/ready/)
+    assert.match(kong, /url: http:\/\/pulse:3001/)
+    assert.match(kong, /- \/pulse\/socket\.io/)
     assert.doesNotMatch(application, /^\s+build:/m)
     assert.doesNotMatch(application, /image: .*latest/)
     assert.doesNotMatch(controller, /git pull|prisma migrate reset|migrate down|npx /)

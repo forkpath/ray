@@ -47,6 +47,19 @@ services:
           - http
           - https
 
+  # ─── Pulse (authenticated Socket.IO transport) ───────────────
+  - name: pulse-websocket
+    url: http://pulse:3001
+    routes:
+      - name: pulse-websocket-route
+        paths:
+          - /pulse/socket.io
+        strip_path: false
+        preserve_host: true
+        protocols:
+          - http
+          - https
+
   # ─── Web (TanStack Start SSR + SPA) ──────────────────────────
   - name: web-ssr
     url: http://web:3000
