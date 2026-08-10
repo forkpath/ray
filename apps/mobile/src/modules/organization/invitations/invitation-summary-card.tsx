@@ -1,4 +1,4 @@
-import type { Invitation } from '@libs/auth'
+import type { Invitation } from '@libs/auth-native'
 
 import dayjs from 'dayjs'
 import { View } from 'react-native'

@@ -1,4 +1,4 @@
-import type { PasswordPayload } from '@libs/auth'
+import type { PasswordPayload } from '@libs/auth-contract'
 import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
 
 import { useState } from 'react'

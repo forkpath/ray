@@ -1,4 +1,5 @@
-import type { Member, UpdateMemberPayload } from '@libs/auth'
+import type { UpdateMemberPayload } from '@libs/auth-contract'
+import type { Member } from '@libs/auth-native'
 import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -10,7 +11,7 @@ import { WIDTH } from '~/utils/device'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
-import { getAllRolesAtOrBelow, MemberRole, toMemberRole, updateMemberSchema } from '@libs/auth'
+import { getAllRolesAtOrBelow, MemberRole, toMemberRole, updateMemberSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   BottomSheet,

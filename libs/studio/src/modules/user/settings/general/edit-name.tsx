@@ -5,7 +5,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import { updateUserSchema } from '@libs/auth'
+import { updateUserSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button, Form, FormControl, FormField, FormItem, FormMessage, Icons, Input } from '@libs/ui-shared/web'
 

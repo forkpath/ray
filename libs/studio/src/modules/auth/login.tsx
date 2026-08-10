@@ -2,7 +2,7 @@ import type { LoginOption } from './form/login/constants'
 
 import { memo, useState } from 'react'
 
-import { AuthProvider, SecondFactor, SocialProvider } from '@libs/auth'
+import { AuthProvider, SecondFactor, SocialProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 
 import { AnonymousLogin } from './form/anonymous'

@@ -1,4 +1,4 @@
-import type { CreateOrganizationPayload } from '@libs/auth'
+import type { CreateOrganizationPayload } from '@libs/auth-contract'
 import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
 
 import { useMutation } from '@tanstack/react-query'
@@ -10,7 +10,7 @@ import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
 
-import { createOrganizationSchema } from '@libs/auth'
+import { createOrganizationSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   BottomSheet,

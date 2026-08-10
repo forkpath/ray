@@ -6,7 +6,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { motion } from 'motion/react'
 import { useForm } from 'react-hook-form'
 
-import { updatePasswordSchema } from '@libs/auth'
+import { updatePasswordSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   Button,

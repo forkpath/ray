@@ -1,4 +1,4 @@
-import type { Invitation } from '@libs/auth'
+import type { Invitation } from '@libs/auth-native'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -7,7 +7,7 @@ import { organization } from '~/modules/organization/lib/api'
 import dayjs from 'dayjs'
 import { Alert, Pressable, View } from 'react-native'
 
-import { getAllRolesAtOrBelow, toMemberRole } from '@libs/auth'
+import { getAllRolesAtOrBelow, toMemberRole } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-shared/common'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'

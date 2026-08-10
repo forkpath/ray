@@ -54,12 +54,18 @@ describe('migration safety guardrails', () => {
   })
 
   it('keeps Better Auth contracts and integration behavior under the standard test gate', async () => {
-    const project = await readJson('libs/auth/project.json')
+    const facadeProject = await readJson('libs/auth/project.json')
+    const serverProject = await readJson('libs/auth-server/project.json')
 
-    assert.equal(project.targets.test.executor, 'nx:noop')
-    assert.deepEqual(project.targets.test.dependsOn, ['contract-test', 'integration-test'])
-    assert.equal(project.targets['contract-test'].options.command, 'node --test scripts/schema-contract.test.mjs')
-    assert.equal(project.targets['integration-test'].options.command, 'vitest --config vitest.config.mts --run')
+    assert.equal(facadeProject.targets.test.executor, 'nx:noop')
+    assert.deepEqual(facadeProject.targets.test.dependsOn, ['contract-test', 'integration-test'])
+    assert.equal(facadeProject.targets['contract-test'].options.command, 'node --test scripts/schema-contract.test.mjs')
+    assert.deepEqual(facadeProject.targets['integration-test'].dependsOn, [
+      { projects: 'auth-server', target: 'integration-test' }
+    ])
+    assert.equal(serverProject.targets.test.executor, 'nx:noop')
+    assert.deepEqual(serverProject.targets.test.dependsOn, ['integration-test'])
+    assert.equal(serverProject.targets['integration-test'].options.command, 'vitest --config vitest.config.mts --run')
   })
 
   it('fails closed when the legacy schema generation target is invoked', () => {

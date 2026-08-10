@@ -1,8 +1,8 @@
-import type { AuthConfig } from '@libs/auth'
+import type { AuthConfig } from '@libs/auth-contract'
 
 import { Platform } from 'react-native'
 
-import { authConfigSchema, SocialProvider } from '@libs/auth'
+import { authConfigSchema, SocialProvider } from '@libs/auth-contract'
 
 import { mobileEnv } from '../lib/env'
 

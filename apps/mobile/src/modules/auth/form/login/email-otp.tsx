@@ -9,7 +9,7 @@ import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
 
-import { emailOtpLoginSchema, magicLinkLoginSchema } from '@libs/auth'
+import { emailOtpLoginSchema, magicLinkLoginSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Field, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'

@@ -15,8 +15,6 @@
       "~/*": ["apps/web/src/*"],
       "@libs/common": ["libs/common/src/index.ts"],
       "@libs/payload": ["libs/payload/src/index.ts"],
-      "@libs/auth": ["libs/auth/src/index.ts"],
-      "@libs/auth/*": ["libs/auth/src/*"],
       "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
       "@libs/auth-web": ["libs/auth-web/src/index.ts"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],

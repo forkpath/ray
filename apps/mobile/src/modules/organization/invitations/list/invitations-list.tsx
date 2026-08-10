@@ -6,7 +6,7 @@ import { authClient } from '~/lib/auth'
 import { organization } from '~/modules/organization/lib/api'
 import { FlatList, RefreshControl, View } from 'react-native'
 
-import { InvitationStatus } from '@libs/auth'
+import { InvitationStatus } from '@libs/auth-contract'
 import { pickBy } from '@libs/common/utils'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-shared/common'

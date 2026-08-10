@@ -17,7 +17,7 @@ import type {
 
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
 
-import { auth } from '@libs/auth/server'
+import { auth } from '@libs/auth-server'
 import { Prisma, prisma } from '@libs/pg-dao'
 
 import { User as UserEntity, UserRole } from '../../domain/entities/user.entity'

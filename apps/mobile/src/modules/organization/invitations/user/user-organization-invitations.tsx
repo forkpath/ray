@@ -1,6 +1,6 @@
 'use client'
 
-import type { Invitation } from '@libs/auth'
+import type { Invitation } from '@libs/auth-native'
 
 import { memo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -13,7 +13,7 @@ import dayjs from 'dayjs'
 import { Alert, Pressable, View } from 'react-native'
 
 import { handle } from '@libs/api-client/utils'
-import { InvitationStatus } from '@libs/auth'
+import { InvitationStatus } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Alert as AlertBox, AlertDescription, AlertTitle } from '@libs/ui-shared/mobile/components/alert'
 import {

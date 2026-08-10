@@ -15,7 +15,7 @@ import { AuthHeader } from '~/modules/auth/layout/header'
 import { InvitationDisclaimer } from '~/modules/auth/layout/invitation-disclaimer'
 import { View } from 'react-native'
 
-import { SecondFactor } from '@libs/auth'
+import { SecondFactor } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { FieldSeparator } from '@libs/ui-shared/mobile/components/field'
 

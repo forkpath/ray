@@ -1,9 +1,9 @@
-import type { User } from '@libs/auth'
+import type { User } from '@libs/auth-web'
 
 import { useEffect, useMemo } from 'react'
 import { createFileRoute, Outlet, redirect, useLocation } from '@tanstack/react-router'
 
-import { hasAdminPermission } from '@libs/auth'
+import { hasAdminPermission } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { getAdminNavConfig, pathsConfig, SecondaryNavProvider } from '@libs/studio'
 

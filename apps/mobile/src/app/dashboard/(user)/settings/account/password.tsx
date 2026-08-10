@@ -9,7 +9,7 @@ import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
-import { changePasswordSchema } from '@libs/auth'
+import { changePasswordSchema } from '@libs/auth-contract'
 import { Trans, useTranslation } from '@libs/i18n'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'

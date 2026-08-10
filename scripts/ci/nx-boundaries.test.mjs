@@ -38,6 +38,26 @@ const findProjectFiles = async directory => {
   return files
 }
 
+const findSourceFiles = async directory => {
+  const absoluteDirectory = join(workspaceRoot, directory)
+  const entries = await readdir(absoluteDirectory, { withFileTypes: true })
+  const files = []
+
+  for (const entry of entries) {
+    const child = join(absoluteDirectory, entry.name)
+    if (entry.isDirectory()) {
+      files.push(...(await findSourceFiles(relative(workspaceRoot, child))))
+      continue
+    }
+
+    if (/\.[cm]?[jt]sx?$/.test(entry.name)) {
+      files.push(relative(workspaceRoot, child))
+    }
+  }
+
+  return files
+}
+
 const readProjects = async () => {
   const projectFiles = (
     await Promise.all(['apps', 'libs', 'services'].map(directory => findProjectFiles(directory)))
@@ -68,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 30)
+    assert.equal(projects.length, 31)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -116,17 +136,31 @@ describe('Nx boundary governance', () => {
     }
   })
 
-  it('keeps Auth clients in their explicit frontend runtimes', async () => {
+  it('keeps Auth adapters in their explicit runtimes', async () => {
     const projects = await readProjects()
     const authWeb = projects.find(project => project.name === 'auth-web')
     const authNative = projects.find(project => project.name === 'auth-native')
+    const authServer = projects.find(project => project.name === 'auth-server')
 
     assert.ok(authWeb)
     assert.ok(authNative)
+    assert.ok(authServer)
     assert.ok(authWeb.tags.includes('type:data-access'))
     assert.ok(authWeb.tags.includes('runtime:web'))
     assert.ok(authNative.tags.includes('type:data-access'))
     assert.ok(authNative.tags.includes('runtime:native'))
+    assert.ok(authServer.tags.includes('type:platform'))
+    assert.ok(authServer.tags.includes('runtime:node'))
+  })
+
+  it('keeps runtime consumers off the mixed Auth facade', async () => {
+    const roots = ['apps/web/src', 'apps/desktop/src', 'apps/mobile/src', 'apps/extension/src', 'libs/studio/src']
+    const files = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
+
+    for (const path of files) {
+      const source = await readFile(join(workspaceRoot, path), 'utf8')
+      assert.doesNotMatch(source, /from ['"]@libs\/auth(?:\/|['"])/, path)
+    }
   })
 
   it('enforces every taxonomy value without wildcard constraints', async () => {

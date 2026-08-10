@@ -8,7 +8,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import type { User } from '@libs/auth'
+import type { User } from '@libs/auth-web'
 
 import { memo, useCallback } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'

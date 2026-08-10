@@ -4,7 +4,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { AnimatePresence, motion } from 'motion/react'
 import { useForm } from 'react-hook-form'
 
-import { forgotPasswordSchema } from '@libs/auth'
+import { forgotPasswordSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   Button,

@@ -7,7 +7,7 @@ import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
 
-import { updateUserSchema } from '@libs/auth'
+import { updateUserSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Field, FieldDescription, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'

@@ -1,4 +1,4 @@
-import type { AuthProvider, SocialProvider as SocialProviderType } from '@libs/auth'
+import type { AuthProvider, SocialProvider as SocialProviderType } from '@libs/auth-contract'
 import type { Icon } from '@libs/ui-shared/web'
 
 import { memo } from 'react'

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
-import { AuthProvider } from '@libs/auth'
+import { AuthProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Badge, Button, Icons } from '@libs/ui-shared/web'
 

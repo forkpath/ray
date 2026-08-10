@@ -1,6 +1,6 @@
 'use client'
 
-import type { User } from '@libs/auth'
+import type { User } from '@libs/auth-web'
 
 import { memo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'

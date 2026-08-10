@@ -1,4 +1,4 @@
-import { AuthProvider } from '@libs/auth'
+import { AuthProvider } from '@libs/auth-contract'
 
 export const LOGIN_OPTIONS = [AuthProvider.PASSWORD, AuthProvider.MAGIC_LINK, AuthProvider.EMAIL_OTP]
 

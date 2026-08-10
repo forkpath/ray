@@ -18,7 +18,7 @@
  */
 
 import type { CSSProperties, ReactNode } from 'react'
-import type { User } from '@libs/auth'
+import type { User } from '@libs/auth-web'
 
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from '@tanstack/react-router'

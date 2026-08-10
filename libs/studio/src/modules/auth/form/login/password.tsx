@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { useForm } from 'react-hook-form'
 
-import { AuthProvider, passwordLoginSchema } from '@libs/auth'
+import { AuthProvider, passwordLoginSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   Button,

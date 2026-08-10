@@ -1,4 +1,4 @@
-import type { Member } from '@libs/auth'
+import type { Member } from '@libs/auth-native'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -9,7 +9,7 @@ import { UpdateMemberRoleBottomSheet } from '~/modules/organization/members/upda
 import { router } from 'expo-router'
 import { Alert, Pressable, View } from 'react-native'
 
-import { getAllRolesAtOrBelow, MemberRole, toMemberRole } from '@libs/auth'
+import { getAllRolesAtOrBelow, MemberRole, toMemberRole } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-shared/common'
 import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-shared/mobile/components/avatar'

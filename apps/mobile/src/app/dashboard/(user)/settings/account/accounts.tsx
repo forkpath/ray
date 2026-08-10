@@ -1,4 +1,4 @@
-import type { SocialProvider } from '@libs/auth'
+import type { SocialProvider } from '@libs/auth-contract'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 

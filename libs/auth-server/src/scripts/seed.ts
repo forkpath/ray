@@ -1,9 +1,8 @@
+import { generateName, MemberRole, UserRole } from '@libs/auth-contract'
 import { prisma } from '@libs/pg-dao'
 
 import { env } from '../env'
-import { generateName } from '../lib/utils'
 import { auth } from '../server'
-import { MemberRole, UserRole } from '../types'
 
 const getEmail = (suffix: string | string[]) => {
   const [name, domain] = env.SEED_EMAIL.split('@')
