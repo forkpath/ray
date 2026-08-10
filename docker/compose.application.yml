@@ -55,16 +55,18 @@ services:
   worker:
     <<: *runtime
     image: ${WORKER_IMAGE:?WORKER_IMAGE must be an immutable digest}
+    expose: ['3002']
     environment:
       NODE_ENV: production
-      REDIS_HOST: redis
-      MONGO_HOST: mongo
-      POSTGRES_HOST: postgres
-      WORKER_PROCESSORS: ${WORKER_PROCESSORS:-all}
-      WORKER_QUEUES: ${WORKER_QUEUES:-jobs.ingestion.worker}
+      WORKER_PORT: 3002
+      WORKER_RUNTIME_MODE: ${WORKER_RUNTIME_MODE:-active}
+      WORKER_QUEUE_NAME: ${WORKER_QUEUE_NAME:-platform-worker-v1}
+      WORKER_ROUTING_KEY: ${WORKER_ROUTING_KEY:-platform.worker.v1}
       WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-4}
     healthcheck:
-      test: ['CMD', 'node', '-e', 'process.kill(1, 0)']
+      test:
+        - CMD-SHELL
+        - wget -qO- http://127.0.0.1:3002/health/ready >/dev/null || exit 1
       interval: 10s
       timeout: 3s
       retries: 12

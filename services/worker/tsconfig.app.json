@@ -15,7 +15,9 @@
       "@libs/srv-shared/rabbitmq": ["libs/server-rabbitmq/src/index.ts"],
       "@libs/mongo-dao": ["libs/mongo-dao/src/index.ts"],
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
-      "@libs/common": ["libs/common/src/index.ts"]
+      "@libs/common": ["libs/common/src/index.ts"],
+      "@libs/event-contract": ["libs/event-contract/src/index.ts"],
+      "@libs/worker-kernel": ["libs/worker-kernel/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts"]

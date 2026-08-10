@@ -77,6 +77,32 @@ describe('PrismaWorkerInboxRepository', () => {
     })
   })
 
+  it('atomically leases due retries and abandoned processing for republish', async () => {
+    const { prisma, queryRaw } = createPrismaStub()
+    queryRaw.mockResolvedValue([
+      {
+        consumer: 'platform-smoke',
+        message_id: 'evt_01',
+        envelope: { id: 'evt_01' }
+      }
+    ])
+
+    await expect(
+      new PrismaWorkerInboxRepository(prisma).claimDispatchable({
+        now: new Date('2026-08-11T00:01:00.000Z'),
+        dispatchLeaseExpiredAt: new Date('2026-08-11T00:00:00.000Z'),
+        processingLeaseExpiredAt: new Date('2026-08-10T23:56:00.000Z'),
+        limit: 25
+      })
+    ).resolves.toEqual([
+      {
+        consumer: 'platform-smoke',
+        messageId: 'evt_01',
+        envelope: { id: 'evt_01' }
+      }
+    ])
+  })
+
   it('updates only the exact active attempt when completing work', async () => {
     const { prisma, updateMany } = createPrismaStub()
     updateMany.mockResolvedValue({ count: 1 })

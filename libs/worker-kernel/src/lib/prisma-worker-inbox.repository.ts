@@ -3,7 +3,9 @@ import type {
   WorkerInboxClaim,
   WorkerInboxClaimInput,
   WorkerInboxIdentity,
-  WorkerInboxRepository
+  WorkerInboxRepository,
+  WorkerRetryDelivery,
+  WorkerRetryRepository
 } from './worker-kernel'
 import type { PrismaService } from '@libs/pg-dao'
 
@@ -19,7 +21,13 @@ function requireMutation(count: number, operation: string): void {
   }
 }
 
-export class PrismaWorkerInboxRepository implements WorkerInboxRepository {
+interface WorkerRetryDeliveryRow {
+  readonly consumer: string
+  readonly message_id: string
+  readonly envelope: unknown
+}
+
+export class PrismaWorkerInboxRepository implements WorkerInboxRepository, WorkerRetryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async claim(input: WorkerInboxClaimInput): Promise<WorkerInboxClaim> {
@@ -107,6 +115,51 @@ export class PrismaWorkerInboxRepository implements WorkerInboxRepository {
   async isReady(): Promise<boolean> {
     const rows = await this.prisma.$queryRaw<Array<{ readonly ready: number }>>`SELECT 1 AS "ready"`
     return rows[0]?.ready === 1
+  }
+
+  async claimDispatchable(input: {
+    readonly now: Date
+    readonly dispatchLeaseExpiredAt: Date
+    readonly processingLeaseExpiredAt: Date
+    readonly limit: number
+  }): Promise<readonly WorkerRetryDelivery[]> {
+    const rows = await this.prisma.$queryRaw<WorkerRetryDeliveryRow[]>`
+      WITH "dispatchable" AS (
+        SELECT "id"
+        FROM "public"."worker_inbox"
+        WHERE
+          (
+            "status" = 'retry_scheduled'
+            AND "next_attempt_at" <= ${input.now}
+          )
+          OR (
+            "status" = 'received'
+            AND "locked_at" <= ${input.dispatchLeaseExpiredAt}
+          )
+          OR (
+            "status" = 'processing'
+            AND "locked_at" <= ${input.processingLeaseExpiredAt}
+          )
+        ORDER BY COALESCE("next_attempt_at", "locked_at", "received_at") ASC
+        LIMIT ${input.limit}
+        FOR UPDATE SKIP LOCKED
+      )
+      UPDATE "public"."worker_inbox" AS "inbox"
+      SET
+        "status" = 'received',
+        "locked_at" = ${input.now},
+        "next_attempt_at" = NULL,
+        "updated_at" = ${input.now}
+      FROM "dispatchable"
+      WHERE "inbox"."id" = "dispatchable"."id"
+      RETURNING "inbox"."consumer", "inbox"."message_id", "inbox"."envelope"
+    `
+
+    return rows.map(row => ({
+      consumer: row.consumer,
+      messageId: row.message_id,
+      envelope: row.envelope
+    }))
   }
 
   async markDeadLetter(

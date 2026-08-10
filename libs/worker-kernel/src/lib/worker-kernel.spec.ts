@@ -12,7 +12,8 @@ import {
   calculateRetryDelayMs,
   WorkerHandlerRegistry,
   WorkerMessageProcessor,
-  WorkerReadinessProbe
+  WorkerReadinessProbe,
+  WorkerRetryDispatcher
 } from './worker-kernel'
 
 const envelope = {
@@ -170,6 +171,32 @@ describe('worker retry and readiness policy', () => {
     expect(calculateRetryDelayMs(20, { random: () => 1 })).toBe(300_000)
   })
 
+  it('claims due or abandoned work and reports durable republish failures', async () => {
+    const repository = {
+      claimDispatchable: vi.fn().mockResolvedValue([
+        { consumer: 'platform-smoke', messageId: 'evt_01', envelope },
+        { consumer: 'platform-smoke', messageId: 'evt_02', envelope: { ...envelope, id: 'evt_02' } }
+      ])
+    }
+    const publisher = {
+      publish: vi.fn().mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error('broker unavailable'))
+    }
+    const dispatcher = new WorkerRetryDispatcher(repository, publisher, {
+      batchSize: 10,
+      dispatchLeaseMs: 30_000,
+      processingLeaseMs: 120_000,
+      now: () => new Date('2026-08-11T00:01:00.000Z')
+    })
+
+    await expect(dispatcher.dispatch()).resolves.toEqual({ claimed: 2, published: 1, failed: 1 })
+    expect(repository.claimDispatchable).toHaveBeenCalledWith({
+      now: new Date('2026-08-11T00:01:00.000Z'),
+      dispatchLeaseExpiredAt: new Date('2026-08-11T00:00:30.000Z'),
+      processingLeaseExpiredAt: new Date('2026-08-10T23:59:00.000Z'),
+      limit: 10
+    })
+  })
+
   it('requires a registered handler and every dependency before standby is ready', async () => {
     const registry = new WorkerHandlerRegistry([createHandler()])
     const probe = new WorkerReadinessProbe('standby', registry, [
@@ -182,6 +209,22 @@ describe('worker retry and readiness policy', () => {
       mode: 'standby',
       handlers: ['platform.smoke'],
       dependencies: { postgres: true, rabbitmq: true }
+    })
+  })
+
+  it('reports a throwing dependency as not ready instead of failing the probe', async () => {
+    const probe = new WorkerReadinessProbe('active', new WorkerHandlerRegistry([createHandler()]), [
+      {
+        name: 'postgres',
+        isReady: async () => {
+          throw new Error('connection refused')
+        }
+      }
+    ])
+
+    await expect(probe.inspect()).resolves.toMatchObject({
+      ready: false,
+      dependencies: { postgres: false }
     })
   })
 })
