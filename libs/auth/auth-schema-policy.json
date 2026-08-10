@@ -1,0 +1,45 @@
+{
+  "databaseSchema": "public",
+  "models": {
+    "User": {
+      "table": "user",
+      "allowedAdditionalFields": []
+    },
+    "Session": {
+      "table": "session",
+      "allowedAdditionalFields": []
+    },
+    "Account": {
+      "table": "account",
+      "allowedAdditionalFields": []
+    },
+    "Verification": {
+      "table": "verification",
+      "allowedAdditionalFields": []
+    },
+    "Passkey": {
+      "table": "passkey",
+      "allowedAdditionalFields": []
+    },
+    "TwoFactor": {
+      "table": "twoFactor",
+      "allowedAdditionalFields": []
+    },
+    "Organization": {
+      "table": "organization",
+      "allowedAdditionalFields": []
+    },
+    "Member": {
+      "table": "member",
+      "allowedAdditionalFields": []
+    },
+    "Invitation": {
+      "table": "invitation",
+      "allowedAdditionalFields": []
+    },
+    "OrganizationRole": {
+      "table": "organization_role",
+      "allowedAdditionalFields": []
+    }
+  }
+}

@@ -14,6 +14,8 @@
     "db:migrate": "nx run pg-dao:migrate -- --name",
     "db:deploy": "nx run pg-dao:deploy",
     "db:reset": "nx run pg-dao:reset",
+    "auth:schema-check": "nx run auth:schema-check",
+    "auth:schema-update": "nx run auth:schema-update",
     "format:check": "nx format:check",
     "format:write": "nx format:write",
     "test": "node --test scripts/ci/*.test.mjs",
