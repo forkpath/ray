@@ -60,7 +60,8 @@
       "@libs/billing-server": ["libs/billing-server/src/index.ts"],
       "@libs/ui-core": ["libs/ui-core/src/index.ts"],
       "@libs/ui-web": ["libs/ui-web/src/index.ts"],
-      "@libs/ui-native": ["libs/ui-native/src/index.ts"]
+      "@libs/ui-native": ["libs/ui-native/src/index.ts"],
+      "@libs/server-kernel": ["libs/server-kernel/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]

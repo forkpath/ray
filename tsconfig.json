@@ -46,6 +46,9 @@
       "path": "./libs/ui-native"
     },
     {
+      "path": "./libs/server-kernel"
+    },
+    {
       "path": "./libs/mongo-dao"
     },
     {

@@ -1,5 +1,1 @@
-export interface RabbitmqConfig {
-  uri: string
-  exchangeName: string
-  exchangeType: 'direct' | 'topic' | 'fanout'
-}
+export type { RabbitmqConfig } from '@libs/server-kernel'

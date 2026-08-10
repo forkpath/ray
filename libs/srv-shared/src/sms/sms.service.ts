@@ -1,10 +1,10 @@
+import type { SmsConfig } from '@libs/server-kernel'
+
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import Client, * as $Dysmsapi from '@alicloud/dysmsapi20170525'
 import * as OpenApi from '@alicloud/openapi-client'
-
-import { SmsConfig } from './sms.config'
 
 @Injectable()
 export class SmsService {

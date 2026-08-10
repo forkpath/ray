@@ -1,8 +1,9 @@
+import type { StorageConfig } from '@libs/server-kernel'
+
 import { DynamicModule, Global, Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { createStorageProvider } from './providers'
-import { StorageConfig } from './storage.config'
 import { STORAGE_PROVIDER, StorageService } from './storage.service'
 
 @Global()

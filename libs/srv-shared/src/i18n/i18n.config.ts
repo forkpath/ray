@@ -1,4 +1,1 @@
-export interface I18nConfig {
-  fallbackLng: string
-  localePath: string
-}
+export type { I18nConfig } from '@libs/server-kernel'

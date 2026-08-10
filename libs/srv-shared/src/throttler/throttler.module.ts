@@ -1,10 +1,10 @@
+import type { ThrottlerConfig } from '@libs/server-kernel'
+
 import { DynamicModule, Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { ThrottlerModule as NestThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler'
 
 import { ThrottlerStorageRedisService } from '@nest-lab/throttler-storage-redis'
-
-import { ThrottlerConfig } from './throttler.config'
 
 @Module({})
 export class ThrottlerModule {

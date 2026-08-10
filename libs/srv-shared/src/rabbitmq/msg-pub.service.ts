@@ -1,9 +1,9 @@
+import type { RabbitmqConfig } from '@libs/server-kernel'
+
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq'
-
-import { RabbitmqConfig } from './rabbitmq.config'
 
 @Injectable()
 export class MsgPubService {

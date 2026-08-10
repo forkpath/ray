@@ -1,10 +1,10 @@
+import type { CacheConfig } from '@libs/server-kernel'
+
 import { CacheModule as NestCacheModule } from '@nestjs/cache-manager'
 import { DynamicModule, Global, Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { createKeyv } from '@keyv/redis'
-
-import { CacheConfig } from './cache.config'
 
 @Global()
 @Module({})

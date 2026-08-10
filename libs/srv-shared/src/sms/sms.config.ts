@@ -1,5 +1,1 @@
-export interface SmsConfig {
-  accessKeyId: string
-  accessKeySecret: string
-  signName: string
-}
+export type { SmsConfig } from '@libs/server-kernel'
