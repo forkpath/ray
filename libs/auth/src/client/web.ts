@@ -22,6 +22,7 @@ import { ac } from '@libs/auth-contract'
 
 import { resolvePermissionCheckSuccess } from './permission-result'
 
+/** @deprecated Import createClient from @libs/auth-web. */
 export const createClient = (options?: AuthClientOptions) => {
   const client = createAuthClient({
     ...options,

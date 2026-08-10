@@ -42,7 +42,9 @@
       "@libs/api-client/*": ["libs/api-client/src/*"],
       "@libs/studio": ["libs/studio/src/index.ts"],
       "@libs/studio/*": ["libs/studio/src/*"],
-      "@libs/auth-contract": ["libs/auth-contract/src/index.ts"]
+      "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
+      "@libs/auth-web": ["libs/auth-web/src/index.ts"],
+      "@libs/auth-native": ["libs/auth-native/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]

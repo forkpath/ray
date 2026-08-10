@@ -68,7 +68,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 28)
+    assert.equal(projects.length, 30)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -114,6 +114,19 @@ describe('Nx boundary governance', () => {
       assert.ok(constraint.onlyDependOnLibsWithTags.includes('boundary:auth-contract'))
       assert.equal(constraint.onlyDependOnLibsWithTags.includes('domain:auth'), false)
     }
+  })
+
+  it('keeps Auth clients in their explicit frontend runtimes', async () => {
+    const projects = await readProjects()
+    const authWeb = projects.find(project => project.name === 'auth-web')
+    const authNative = projects.find(project => project.name === 'auth-native')
+
+    assert.ok(authWeb)
+    assert.ok(authNative)
+    assert.ok(authWeb.tags.includes('type:data-access'))
+    assert.ok(authWeb.tags.includes('runtime:web'))
+    assert.ok(authNative.tags.includes('type:data-access'))
+    assert.ok(authNative.tags.includes('runtime:native'))
   })
 
   it('enforces every taxonomy value without wildcard constraints', async () => {

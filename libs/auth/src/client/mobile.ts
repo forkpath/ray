@@ -34,6 +34,7 @@ const createExpoClientPlugin = (options: AuthMobileClientOptions) => {
   }
 }
 
+/** @deprecated Import createClient from @libs/auth-native. */
 export const createClient = ({
   mobile,
   lastLoginMethod,

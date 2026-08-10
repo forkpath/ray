@@ -3,7 +3,7 @@ import { useI18nConfig } from '~/lib/providers/i18n'
 import * as Linking from 'expo-linking'
 import * as SecureStore from 'expo-secure-store'
 
-import { createClient } from '@libs/auth/client/mobile'
+import { createClient } from '@libs/auth-native'
 import { APP_SLUG, Platform } from '@libs/common'
 import { config as i18nConfig } from '@libs/i18n'
 

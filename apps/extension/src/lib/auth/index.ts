@@ -1,6 +1,6 @@
 import { appConfig } from '~/config/app'
 
-import { createClient } from '@libs/auth/client/web'
+import { createClient } from '@libs/auth-web'
 import { Platform } from '@libs/common'
 
 export const authClient = createClient({
