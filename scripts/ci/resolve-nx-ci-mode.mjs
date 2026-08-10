@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 import { appendFile } from 'node:fs/promises'
 
-import { hasValidCommitRange, resolveNxCiMode } from './nx-ci-mode.mjs'
+import { hasCiControlPlaneChange, hasValidCommitRange, resolveNxCiMode } from './nx-ci-mode.mjs'
 
 const base = process.env.NX_BASE_CANDIDATE ?? ''
 const head = process.env.NX_HEAD_CANDIDATE ?? ''
+const commitRangeValid = hasValidCommitRange(base, head)
 const result = resolveNxCiMode({
   eventName: process.env.CI_EVENT_NAME ?? '',
   ref: process.env.CI_REF ?? '',
@@ -13,7 +14,8 @@ const result = resolveNxCiMode({
   cloudProbeOutcome: process.env.NX_CLOUD_PROBE_OUTCOME ?? 'skipped',
   base,
   head,
-  commitRangeValid: hasValidCommitRange(base, head)
+  commitRangeValid,
+  ciControlPlaneChanged: commitRangeValid && hasCiControlPlaneChange(base, head)
 })
 
 const outputs = [

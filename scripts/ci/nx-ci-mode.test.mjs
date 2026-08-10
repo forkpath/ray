@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { hasValidCommitRange, resolveNxCiMode } from './nx-ci-mode.mjs'
+import { hasCiControlPlaneChange, hasValidCommitRange, resolveNxCiMode } from './nx-ci-mode.mjs'
 
 const base = 'a'.repeat(40)
 const head = 'b'.repeat(40)
@@ -16,6 +16,7 @@ function resolve(overrides = {}) {
     base,
     head,
     commitRangeValid: true,
+    ciControlPlaneChanged: false,
     ...overrides
   })
 }
@@ -56,6 +57,16 @@ describe('Nx CI mode resolution', () => {
     })
   })
 
+  it('forces a full run for CI control-plane changes', () => {
+    assert.deepEqual(resolve({ ciControlPlaneChanged: true }), {
+      mode: 'full',
+      base: '',
+      head: '',
+      disableCloud: false,
+      reason: 'ci-control-plane-change'
+    })
+  })
+
   it('always runs main, tags, schedules and manual dispatches in full mode', () => {
     const fullEvents = [
       { eventName: 'push', ref: 'refs/heads/main' },
@@ -79,5 +90,26 @@ describe('Nx CI mode resolution', () => {
     assert.equal(hasValidCommitRange(base, head, git), true)
     assert.deepEqual(calls.at(-1), ['merge-base', '--is-ancestor', base, head])
     assert.equal(hasValidCommitRange('not-a-sha', head, git), false)
+  })
+
+  it('recognizes global CI inputs and CI scripts as control-plane changes', () => {
+    const git = (_command, arguments_) => {
+      assert.deepEqual(arguments_, ['diff', '--name-only', '--diff-filter=ACMR', base, head])
+      return {
+        status: 0,
+        stdout: 'apps/web/src/app.tsx\nscripts/ci/nx-ci-mode.mjs\n'
+      }
+    }
+
+    assert.equal(hasCiControlPlaneChange(base, head, git), true)
+  })
+
+  it('keeps leaf-only source changes eligible for affected execution', () => {
+    const git = () => ({
+      status: 0,
+      stdout: 'apps/web/src/app.tsx\n'
+    })
+
+    assert.equal(hasCiControlPlaneChange(base, head, git), false)
   })
 })
