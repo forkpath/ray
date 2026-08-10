@@ -248,7 +248,7 @@ GitHub Actions 会自动：
 │  → dist/services/engine/     │        │  COPY dist/      │
 │    main.js + package.json    │──────► │  COPY .npmrc     │  engine 镜像
 │                              │        │  pnpm install    │
-│  node create-engine-lockfile │        │  node main.js    │
+│  pnpm nx run engine:package  │        │  node main.js    │
 │  → pnpm-lock.yaml (pruned)  │        └──────────────────┘
 └──────────────────────────────┘
 ```
@@ -276,7 +276,7 @@ Nx 的 `nx run` 命令在执行任何任务前，必须先加载全部插件计�
 - **宿主机产物**：`dist/services/engine/`
   - `main.js` — webpack bundle（源码已打包，`node_modules` 保持外部引用）
   - `package.json` — `generatePackageJson: true` 自动生成，仅含外部依赖
-  - `pnpm-lock.yaml` — `scripts/create-engine-lockfile.js` 调用 Nx 的 `createLockFile` API，
+  - `pnpm-lock.yaml` — `engine:package` 通过固定依赖中的 Nx `createLockFile` API，
     从宿主机根 lockfile 中裁剪出匹配该 `package.json` 的版本
 - **运行**：`pnpm install --frozen-lockfile --prod` + `node main.js`
 - Docker 内使用 **pnpm**（与宿主机一致），通过裁剪版 lockfile 确保依赖解析确定性
@@ -347,7 +347,8 @@ docker/
 
 scripts/
 ├── deploy.sh                   # 部署脚本
-└── create-engine-lockfile.js   # 为 engine 生成裁剪版 pnpm-lock.yaml
+├── create-service-lockfile.js  # 为服务生成裁剪版 pnpm-lock.yaml
+└── create-engine-lockfile.js   # 旧 engine 入口的兼容 facade
 
 .github/workflows/
 └── deploy.yml                  # 自动部署 workflow（tag 触发）

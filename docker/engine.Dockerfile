@@ -1,7 +1,6 @@
 # ─── engine: runtime-only image ─────────────────────────────────────
 # Build artifacts + pruned lockfile are produced on the host:
-#   1. `nx run engine:build`  → dist/services/engine/ (main.js + package.json)
-#   2. `node scripts/create-engine-lockfile.js` → pnpm-lock.yaml in dist/
+#   `pnpm nx run engine:package` → bundle + lockfile in dist/services/engine/
 #
 # Using pnpm (same as the monorepo) avoids npm/pnpm peer-dep mismatch.
 # ────────────────────────────────────────────────────────────────────
