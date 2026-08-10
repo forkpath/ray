@@ -11,12 +11,7 @@ import { Alert, View } from 'react-native'
 
 import { changePasswordSchema } from '@libs/auth-contract'
 import { Trans, useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Field, FieldDescription, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Input } from '@libs/ui-shared/mobile/components/input'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Field, FieldDescription, FieldError, FieldLabel, Icons, Input, Spin, Text } from '@libs/ui-native'
 
 export default function Password() {
   const { t } = useTranslation(['common', 'auth'])

@@ -8,10 +8,7 @@ import { MembersList } from '~/modules/organization/members/list/members-list'
 
 import { toMemberRole } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@libs/ui-shared/mobile/components/tabs'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Icons, Tabs, TabsContent, TabsList, TabsTrigger, Text } from '@libs/ui-native'
 
 export default function Members() {
   const { t } = useTranslation(['common', 'organization'])

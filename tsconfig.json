@@ -43,6 +43,9 @@
       "path": "./libs/ui-web"
     },
     {
+      "path": "./libs/ui-native"
+    },
+    {
       "path": "./libs/mongo-dao"
     },
     {

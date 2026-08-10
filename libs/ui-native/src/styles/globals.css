@@ -1,4 +1,4 @@
-@import '../../common/styles/globals.css';
+@import './base/globals.css';
 @import './uniwind-patched.css';
 
 @source '../../../../../apps/mobile/src/app';

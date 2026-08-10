@@ -15,12 +15,13 @@ import {
   BottomSheetHeader,
   BottomSheetOpenTrigger,
   BottomSheetTitle,
-  BottomSheetView
-} from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Text } from '@libs/ui-shared/mobile/components/text'
-import { MODE_ICONS, ThemeCustomizer } from '@libs/ui-shared/mobile/components/theme'
+  BottomSheetView,
+  Button,
+  Icons,
+  MODE_ICONS,
+  Text,
+  ThemeCustomizer
+} from '@libs/ui-native'
 
 export const ThemeSettings = () => {
   const { t } = useTranslation('common')

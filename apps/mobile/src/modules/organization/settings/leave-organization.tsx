@@ -10,8 +10,7 @@ import { Alert } from 'react-native'
 
 import { MemberRole } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Icons, Text } from '@libs/ui-native'
 
 export const LeaveOrganization = () => {
   const { t } = useTranslation(['common', 'organization'])

@@ -6,9 +6,7 @@ import * as Linking from 'expo-linking'
 import { Alert } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Button, buttonTextVariants } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
+import { Button, buttonTextVariants, Icons, Spin } from '@libs/ui-native'
 
 export const WebPortalLink = ({
   children,

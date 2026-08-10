@@ -2,9 +2,7 @@ import { AccountSwitcher } from '~/modules/organization/account-switcher'
 import { Platform, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Icons, Text } from '@libs/ui-native'
 
 interface BaseHeaderProps {
   readonly onBack?: () => void

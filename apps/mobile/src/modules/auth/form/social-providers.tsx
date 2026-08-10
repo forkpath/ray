@@ -1,4 +1,4 @@
-import type { Icon } from '@libs/ui-shared/mobile/components/icons'
+import type { Icon } from '@libs/ui-native'
 import type { Route } from 'expo-router'
 
 import { memo } from 'react'
@@ -16,11 +16,7 @@ import { View } from 'react-native'
 
 import { SocialProvider as SocialProviderType } from '@libs/auth-contract'
 import { Trans, useTranslation } from '@libs/i18n'
-import { Badge } from '@libs/ui-shared/mobile/components/badge'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Badge, Button, Icons, Spin, Text } from '@libs/ui-native'
 
 import { auth } from '../lib/api'
 

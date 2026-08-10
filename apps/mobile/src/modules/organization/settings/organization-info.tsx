@@ -12,9 +12,7 @@ import { View } from 'react-native'
 
 import { toMemberRole } from '@libs/auth-contract'
 import { isKey, useTranslation } from '@libs/i18n'
-import { Badge } from '@libs/ui-shared/mobile/components/badge'
-import { Skeleton } from '@libs/ui-shared/mobile/components/skeleton'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Badge, Skeleton, Text } from '@libs/ui-native'
 
 const OrganizationInfoSkeleton = () => {
   return (

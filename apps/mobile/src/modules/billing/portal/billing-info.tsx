@@ -1,4 +1,4 @@
-import type { Icon } from '@libs/ui-shared/mobile/components/icons'
+import type { Icon } from '@libs/ui-native'
 
 import { useMemo } from 'react'
 
@@ -9,9 +9,7 @@ import { View } from 'react-native'
 
 import { MOBILE_STORE_LINKS, MobileStore } from '@libs/billing-contract'
 import { useTranslation } from '@libs/i18n'
-import { buttonTextVariants } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { buttonTextVariants, Icons, Text } from '@libs/ui-native'
 
 const MobileStoreIcon: Record<MobileStore, Icon> = {
   [MobileStore.APP_STORE]: Icons.AppleStroke,

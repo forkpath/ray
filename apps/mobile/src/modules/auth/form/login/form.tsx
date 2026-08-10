@@ -11,9 +11,7 @@ import { View } from 'react-native'
 
 import { AuthProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { Badge } from '@libs/ui-shared/mobile/components/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@libs/ui-shared/mobile/components/tabs'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Badge, Tabs, TabsContent, TabsList, TabsTrigger, Text } from '@libs/ui-native'
 
 import { EmailOtpLoginForm } from './email-otp'
 import { MagicLinkLoginForm } from './magic-link'

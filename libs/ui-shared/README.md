@@ -1,16 +1,12 @@
 # ui-shared
 
-Transitional Web/Native UI facade.
+One-release compatibility project. It owns no runtime source code.
 
-Theme value types, palettes, breakpoints, and `cn()` now live in the universal
-`ui-core` project. Existing `@libs/ui-shared/common` imports remain compatible,
-but internal and runtime consumers use `@libs/ui-core` directly.
+- Universal theme values and `cn()` live in `ui-core`.
+- React DOM components and browser styles live in `ui-web`.
+- React Native components, SVG assets, and native styles live in `ui-native`.
 
-React DOM components, browser hooks, Web SVG wrappers, and browser styles now
-live in `ui-web`. Existing `@libs/ui-shared/web` and
-`@libs/ui-shared/common` imports remain compatible through exact TypeScript
-path aliases that resolve directly to `ui-web`; this avoids a `ui-shared →
-ui-web` graph edge. All tracked Web consumers use `@libs/ui-web` directly.
-
-Native components remain here until the independent `ui-native` extraction
-pull request is accepted.
+Tracked consumers use those public project entrypoints directly. Legacy
+`@libs/ui-shared/common`, `@libs/ui-shared/web`, and
+`@libs/ui-shared/mobile[/...]` paths resolve through exact TypeScript aliases
+to the owning project, so this compatibility project creates no graph edge.

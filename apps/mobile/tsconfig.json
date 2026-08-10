@@ -31,8 +31,11 @@
       "@libs/email/*": ["libs/email/src/*"],
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
       "@libs/pg-dao/*": ["libs/pg-dao/src/*"],
+      "@libs/ui-shared/mobile": ["libs/ui-native/src/index.ts"],
+      "@libs/ui-shared/mobile/*": ["libs/ui-native/src/*"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
       "@libs/ui-core": ["libs/ui-core/src/index.ts"],
+      "@libs/ui-native": ["libs/ui-native/src/index.ts"],
       "@libs/api-client": ["libs/api-client/src/index.ts"],
       "@libs/api-client/*": ["libs/api-client/src/*"],
       "@libs/api-core": ["libs/api-core/src/index.ts"],
@@ -46,7 +49,7 @@
     "expo-env.d.ts",
     "uniwind-types.d.ts",
     "../../libs/i18n/src/typings/**/*.d.ts",
-    "../../libs/ui-shared/src/mobile/typings/*.d.ts",
+    "../../libs/ui-native/src/typings/*.d.ts",
     ".expo/types/**/*.ts"
   ]
 }

@@ -11,13 +11,19 @@ import { View } from 'react-native'
 
 import { emailOtpLoginSchema, magicLinkLoginSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Field, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Input } from '@libs/ui-shared/mobile/components/input'
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@libs/ui-shared/mobile/components/input-otp'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import {
+  Button,
+  Field,
+  FieldError,
+  FieldLabel,
+  Icons,
+  Input,
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  Spin,
+  Text
+} from '@libs/ui-native'
 
 import { auth } from '../../lib/api'
 

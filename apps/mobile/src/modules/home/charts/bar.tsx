@@ -5,17 +5,17 @@ import { useCSSVariable } from 'uniwind'
 import { Bar, CartesianChart } from 'victory-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import {
+  Badge,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle
-} from '@libs/ui-shared/mobile/components/card'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+  CardTitle,
+  Icons,
+  Text
+} from '@libs/ui-native'
 
 const revenueValues = [1870, 2000, 2370, 1730, 900]
 

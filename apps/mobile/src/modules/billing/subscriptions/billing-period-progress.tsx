@@ -5,8 +5,7 @@ import { View } from 'react-native'
 
 import { getBillingPeriod } from '@libs/billing-config'
 import { useTranslation } from '@libs/i18n'
-import { Progress } from '@libs/ui-shared/mobile/components/progress'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Progress, Text } from '@libs/ui-native'
 
 interface BillingPeriodProgressProps {
   subscription: Subscription

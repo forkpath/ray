@@ -8,9 +8,7 @@ import { View } from 'react-native'
 
 import { usePaywall } from '@libs/billing-native'
 import { useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@libs/ui-shared/mobile/components/card'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Text } from '@libs/ui-native'
 
 type PaywallStatus = 'idle' | 'opening' | 'dismissed' | 'skipped' | 'error'
 

@@ -4,7 +4,7 @@ import { BarChart } from '~/modules/home/charts/bar'
 import { PieChart } from '~/modules/home/charts/pie'
 import { View } from 'react-native'
 
-import { BuiltWith } from '@libs/ui-shared/mobile/components/built-with'
+import { BuiltWith } from '@libs/ui-native'
 
 export default function Home() {
   return (

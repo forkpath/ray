@@ -1,6 +1,6 @@
 import type { UpdateMemberPayload } from '@libs/auth-contract'
 import type { Member } from '@libs/auth-native'
-import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
+import type { BottomSheetContentRef } from '@libs/ui-native'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -22,14 +22,21 @@ import {
   BottomSheetOpenTrigger,
   BottomSheetTitle,
   BottomSheetView,
+  Button,
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  Icons,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Spin,
+  Text,
   useBottomSheet
-} from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Field, FieldDescription, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@libs/ui-shared/mobile/components/select'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+} from '@libs/ui-native'
 
 interface UpdateMemberRoleBottomSheetProps {
   readonly member: Member

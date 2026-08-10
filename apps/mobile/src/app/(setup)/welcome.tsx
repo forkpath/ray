@@ -10,15 +10,15 @@ import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
 import {
+  Button,
   Slider,
   SliderList,
   SliderListItem,
   SliderPaginationDot,
-  SliderPaginationDots
-} from '@libs/ui-shared/mobile/components/slider'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+  SliderPaginationDots,
+  Text
+} from '@libs/ui-native'
 
 const images = [
   {

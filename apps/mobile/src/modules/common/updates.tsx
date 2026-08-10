@@ -12,11 +12,7 @@ import { scheduleOnRN } from 'react-native-worklets'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Progress } from '@libs/ui-shared/mobile/components/progress'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Icons, Progress, Spin, Text } from '@libs/ui-native'
 
 import { BlurView, GlassView } from './styled'
 

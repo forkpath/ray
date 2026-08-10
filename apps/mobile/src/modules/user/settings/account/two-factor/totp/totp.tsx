@@ -1,5 +1,5 @@
 import type { OtpPayload, PasswordPayload } from '@libs/auth-contract'
-import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
+import type { BottomSheetContentRef } from '@libs/ui-native'
 
 import { useMemo, useState } from 'react'
 
@@ -20,14 +20,17 @@ import {
   BottomSheetHeader,
   BottomSheetScrollView,
   BottomSheetTitle,
+  Button,
+  Field,
+  FieldError,
+  Icons,
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  Spin,
+  Text,
   useBottomSheet
-} from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Field, FieldError } from '@libs/ui-shared/mobile/components/field'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@libs/ui-shared/mobile/components/input-otp'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+} from '@libs/ui-native'
 
 import { BackupCodesSheet } from '../backup-codes/backup-codes'
 import { RequirePassword } from '../require-password'

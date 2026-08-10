@@ -25,6 +25,8 @@
       "@libs/payload": ["libs/payload/src/index.ts"],
       "@libs/ui-shared/common": ["libs/ui-web/src/compat/common.ts"],
       "@libs/ui-shared/web": ["libs/ui-web/src/index.ts"],
+      "@libs/ui-shared/mobile": ["libs/ui-native/src/index.ts"],
+      "@libs/ui-shared/mobile/*": ["libs/ui-native/src/*"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
       "@libs/common": ["libs/common/src/index.ts"],
       "@libs/common/*": ["libs/common/src/*"],
@@ -57,7 +59,8 @@
       "@libs/billing-client": ["libs/billing-client/src/index.ts"],
       "@libs/billing-server": ["libs/billing-server/src/index.ts"],
       "@libs/ui-core": ["libs/ui-core/src/index.ts"],
-      "@libs/ui-web": ["libs/ui-web/src/index.ts"]
+      "@libs/ui-web": ["libs/ui-web/src/index.ts"],
+      "@libs/ui-native": ["libs/ui-native/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]

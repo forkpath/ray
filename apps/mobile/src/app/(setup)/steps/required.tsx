@@ -8,10 +8,7 @@ import { View } from 'react-native'
 import * as z from 'zod'
 
 import { Trans, useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Checkbox } from '@libs/ui-shared/mobile/components/checkbox'
-import { Field, FieldLabel } from '@libs/ui-shared/mobile/components/field'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Checkbox, Field, FieldLabel, Text } from '@libs/ui-native'
 
 export default function RequiredStep() {
   const { t } = useTranslation(['common', 'marketing'])
