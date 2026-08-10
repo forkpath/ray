@@ -6,6 +6,7 @@
 
 - `billing-contract`：类型、状态常量和传输记录
 - `billing-config`：纯套餐目录、价格和权益计算
+- `billing-client`：owner-scoped HTTP query/mutation 与 payload 校验
 - `server`：Prisma 持久化 helper、billing customer / subscription / order /
   webhook event 读写，以及 RevenueCat S2S webhook
 - `web`：Stripe Checkout / Billing Portal / Webhook
@@ -17,6 +18,7 @@
 | --- | --- |
 | `@libs/billing-contract` | 运行时无关的计费类型、状态常量和传输记录 |
 | `@libs/billing-config` | 纯套餐目录构建器、价格与权益计算；不读取环境变量 |
+| `@libs/billing-client` | 通用 HTTP/query adapter；Query Key 包含 owner kind 和 user ID |
 | `@libs/billing` | 兼容 facade：套餐配置、env preset、工具函数，并暂时转发 contract |
 | `@libs/billing/web` | Stripe checkout / portal / webhook 实现 |
 | `@libs/billing/server` | Prisma helper + `handleRevenueCatWebhook` |

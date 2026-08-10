@@ -1,3 +1,7 @@
+/**
+ * @deprecated Compatibility facade only. New consumers must import Billing
+ * queries and mutations from @libs/billing-client so cache keys include owner identity.
+ */
 import type {
   BillingCustomerRecord,
   BillingOrderRecord,

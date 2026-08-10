@@ -32,6 +32,7 @@ export type { ApiClientProviderProps } from './lib/context'
 export type { MutationErrorContext, QueryClientOptions, QueryErrorContext } from './lib/query-client'
 
 // Domains
+// Billing exports are a one-release compatibility facade; use @libs/billing-client.
 export {
   authKeys,
   authMutations,

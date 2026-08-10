@@ -78,7 +78,7 @@ export const UserNavigation = memo<UserNavigationProps>(({ user, organization })
   const api = useApiClient()
 
   const summary = useQuery({
-    ...billingQueries.summary(api),
+    ...billingQueries.summary(api, { kind: 'user', userId: user?.id ?? null }),
     enabled: !!user
   })
   const activePlan = getActivePlan(summary.data)

@@ -50,7 +50,9 @@ facade re-exports these contracts for rollback compatibility while frontend
 consumers migrate to the explicit universal boundary. `billing-config` owns the
 pure catalog builder and entitlement/price calculations. Runtime adapters inject
 provider identifiers, so the universal project never reads environment values.
-Provider SDKs and persistence remain outside both universal projects.
+`billing-client` owns the authenticated HTTP/query adapter and includes owner
+kind and user ID in cache keys without sending that ID as authorization data.
+Provider SDKs and persistence remain outside the universal projects.
 
 The RevenueCat client adapter now lives in `billing-native`, tagged
 `type:data-access`, `runtime:native`, and `domain:billing`. Mobile composition
@@ -68,15 +70,15 @@ mixed project is split. The allowlist is guarded in CI and currently contains:
   Node contracts respectively. Runtime consumers no longer import the mixed
   facade; its deprecated exports remain only as a rollback bridge;
 - `billing`: remove after `billing-contract`, `billing-config`, the extracted
-  `billing-native` adapter, a web client, and the Node provider/persistence
+  `billing-client`, `billing-native`, and the Node provider/persistence
   project replace the mixed facade. The universal projects own Billing values,
-  catalog construction, and entitlement calculations; Mobile, Extension,
-  and Studio no longer consume the facade. API Client remains explicit facade
-  debt until the Billing web client is extracted;
+  catalog construction, entitlement calculations, and authenticated API access;
+  runtime consumers no longer use Billing exports from the shared API facade;
 - `ui-shared`: remove after universal core, web UI, and native UI projects are
   independent;
-- `api-client`: remove after its billing dependency points only to the billing
-  contract/client boundary.
+- `api-client`: remove after one compatibility release of its frozen Billing
+  exports. New runtime consumers use `billing-client`, avoiding a shared-to-
+  business-domain dependency.
 
 Adding another facade requires changing the CI allowlist and documenting its
 removal condition. Wave 3 is complete only when this list is empty.

@@ -1,0 +1,18 @@
+{
+  "name": "billing-client",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/billing-client/src",
+  "projectType": "library",
+  "tags": ["type:data-access", "runtime:universal", "domain:billing"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
+      "inputs": ["production", "^production"],
+      "options": {
+        "cwd": "libs/billing-client",
+        "command": "tsc --noEmit -p tsconfig.lib.json"
+      }
+    }
+  }
+}

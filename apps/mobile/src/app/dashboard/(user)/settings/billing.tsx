@@ -1,7 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-
 import { FeaturesList } from '~/modules/billing/features-list'
-import { billing } from '~/modules/billing/lib/api'
+import { useBillingSummary } from '~/modules/billing/lib/api'
 import { OrdersList } from '~/modules/billing/orders/list/orders-list'
 import { BillingInfo } from '~/modules/billing/portal/billing-info'
 import { SubscriptionsList } from '~/modules/billing/subscriptions/list/subscriptions-list'
@@ -97,7 +95,7 @@ const BillingLoading = () => {
 }
 
 export default function Billing() {
-  const summary = useQuery(billing.queries.summary.get)
+  const summary = useBillingSummary()
 
   if (summary.isPending) {
     return <BillingLoading />

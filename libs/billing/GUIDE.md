@@ -27,6 +27,7 @@ Billing 正在按运行时拆分。通用值契约与纯目录配置已经进入
 ```
 @libs/billing-contract → 公共类型、状态常量、传输记录
 @libs/billing-config   → 纯目录构建器、价格与权益计算
+@libs/billing-client   → owner-scoped HTTP query/mutation、payload 校验
 @libs/billing          → 兼容 facade、env preset、Node provider/persistence
 @libs/billing/server   → Prisma 持久化 helper（customer/subscription/order/webhook CRUD）+ RevenueCat webhook
 @libs/billing/web      → Stripe checkout/portal/webhook 实现
@@ -38,22 +39,18 @@ Billing 正在按运行时拆分。通用值契约与纯目录配置已经进入
 各端的依赖关系：
 
 ```
-       @libs/billing-contract    @libs/billing-config
-                 ▲                       ▲
-                 └──────────┬────────────┘
-                            │
-              ┌─────────────┼───────────────────┐
-              ▼             ▼                   ▼
-   @libs/billing/web   @libs/billing/server  @libs/billing-native
-   (Stripe SDK)        (Prisma ORM)          (RevenueCat SDK)
-              │                │                 │
-              ▼                ▼                 ▼
-   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-   │ Engine/Web   │  │ Engine       │  │ apps/mobile  │
-   │ (调用 Stripe │  │ (数据库读写) │  │ (RevenueCat) │
-   │  API)        │  │              │  │              │
-   └──────────────┘  └──────────────┘  └──────────────┘
+@libs/billing-contract ──┬──> @libs/billing-client ──> Web/Mobile/Extension/Studio
+                         ├──> @libs/billing-native ───> apps/mobile
+                         └──> @libs/billing-config ───> Web/Mobile/Extension/Studio
+                                      │
+                                      ▼
+                          @libs/billing facade ───────> Engine + Stripe/Prisma
 ```
+
+`billing-client` 只复用 `@libs/api-client` 的公共 transport factory。旧
+`@libs/api-client` Billing exports 冻结保留一个兼容周期；所有仓库内消费者
+均使用新边界。Query Key 使用 `['billing', 'owner', kind, id, 'summary']`，
+避免用户切换后复用上一身份的缓存。
 
 ---
 
@@ -63,7 +60,7 @@ Billing 正在按运行时拆分。通用值契约与纯目录配置已经进入
 
 | 维度 | postfly | ray |
 |---|---|---|
-| **分包粒度** | 3 个独立 npm 包（`shared` / `web` / `mobile`） | Nx contract/config/native 项目 + 迁移期 facade |
+| **分包粒度** | 3 个独立 npm 包（`shared` / `web` / `mobile`） | Nx contract/config/client/native 项目 + 迁移期 facade |
 | **ORM** | Drizzle（schema 与 billing 同库 `packages/db`） | Prisma multi-schema（独立 `billing` schema） |
 | **API 框架** | Hono（路由文件 `router.ts`） | NestJS（Controller + Module） |
 | **Provider 策略** | 完整策略模式（`BillingProviderStrategy` 接口 + 多 provider 实现） | 直接导出 Stripe 函数，无策略抽象层 |

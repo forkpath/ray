@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 34)
+    assert.equal(projects.length, 35)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -157,6 +157,7 @@ describe('Nx boundary governance', () => {
     const projects = await readProjects()
     const billingContract = projects.find(project => project.name === 'billing-contract')
     const billingConfig = projects.find(project => project.name === 'billing-config')
+    const billingClient = projects.find(project => project.name === 'billing-client')
     const billingNative = projects.find(project => project.name === 'billing-native')
 
     assert.ok(billingContract)
@@ -167,6 +168,10 @@ describe('Nx boundary governance', () => {
     assert.ok(billingConfig)
     assert.ok(billingConfig.tags.includes('type:feature'))
     assert.ok(billingConfig.tags.includes('runtime:universal'))
+
+    assert.ok(billingClient)
+    assert.ok(billingClient.tags.includes('type:data-access'))
+    assert.ok(billingClient.tags.includes('runtime:universal'))
 
     assert.ok(billingNative)
     assert.ok(billingNative.tags.includes('type:data-access'))
@@ -195,6 +200,23 @@ describe('Nx boundary governance', () => {
     for (const file of files) {
       const source = await readFile(join(workspaceRoot, file), 'utf8')
       if (/from ['"]@libs\/billing['"]/.test(source)) {
+        violations.push(file)
+      }
+    }
+
+    assert.deepEqual(violations, [])
+  })
+
+  it('keeps runtime Billing consumers off the shared API facade', async () => {
+    const roots = ['apps/web/src', 'apps/mobile/src', 'apps/extension/src', 'libs/studio/src']
+    const files = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
+    const violations = []
+    const legacyImport =
+      /(?:import|export)\s*\{[^}]*\bbilling(?:Keys|Queries|Mutations)\b[^}]*\}\s*from ['"]@libs\/api-client['"]/s
+
+    for (const file of files) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      if (legacyImport.test(source)) {
         violations.push(file)
       }
     }
