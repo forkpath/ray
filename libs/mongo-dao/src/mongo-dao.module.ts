@@ -1,3 +1,5 @@
+import type { MongoConfig } from '@libs/server-kernel'
+
 import { DynamicModule, Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose'
@@ -6,7 +8,6 @@ import { Connection } from 'mongoose'
 
 import { InfographicDao } from './daos/infographic.dao'
 import { NotificationDao } from './daos/notification.dao'
-import { MongoConfig } from './mongo.config'
 import { InfographicDoc, InfographicSchema } from './schemas/infographic.schema'
 import { NotificationDoc, NotificationSchema } from './schemas/notification.schema'
 

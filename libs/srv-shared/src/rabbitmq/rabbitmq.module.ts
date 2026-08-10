@@ -1,10 +1,11 @@
+import type { RabbitmqConfig } from '@libs/server-kernel'
+
 import { DynamicModule, Global, Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { MessageHandlerErrorBehavior, RabbitMQConfig, RabbitMQModule } from '@golevelup/nestjs-rabbitmq'
 
 import { MsgPubService } from './msg-pub.service'
-import { RabbitmqConfig } from './rabbitmq.config'
 
 function parsePrefetchCount(value: string | undefined): number {
   const parsed = Number(value ?? 5)

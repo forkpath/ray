@@ -1,8 +1,1 @@
-export interface ElasticsearchConfig {
-  host: string
-  port: number
-  apiKey: string
-  maxRetries: number
-  requestTimeout: number
-  dataIndex: string
-}
+export type { ElasticsearchConfig } from '@libs/server-kernel'

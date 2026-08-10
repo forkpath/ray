@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 39)
+    assert.equal(projects.length, 40)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -186,6 +186,46 @@ describe('Nx boundary governance', () => {
     assert.ok(billingServer)
     assert.ok(billingServer.tags.includes('type:platform'))
     assert.ok(billingServer.tags.includes('runtime:node'))
+  })
+
+  it('keeps server configuration contracts framework neutral', async () => {
+    const projects = await readProjects()
+    const serverKernel = projects.find(project => project.name === 'server-kernel')
+
+    assert.ok(serverKernel)
+    assert.ok(serverKernel.tags.includes('type:contract'))
+    assert.ok(serverKernel.tags.includes('runtime:universal'))
+    assert.ok(serverKernel.tags.includes('domain:platform'))
+
+    const kernelFiles = await findSourceFiles('libs/server-kernel/src')
+    for (const file of kernelFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.doesNotMatch(source, /from ['"](?:node:|@nestjs|ioredis|mongoose|@golevelup)/, file)
+      assert.equal(source.includes('process.env'), false, file)
+      assert.equal(source.includes('@libs/srv-'), false, file)
+    }
+  })
+
+  it('routes server configuration owners through server-kernel', async () => {
+    const adapterFiles = [
+      'libs/mongo-dao/src/mongo-dao.module.ts',
+      'libs/srv-core/src/config/index.ts',
+      'libs/srv-shared/src/cache/cache.module.ts',
+      'libs/srv-shared/src/logger/logger.module.ts',
+      'libs/srv-shared/src/rabbitmq/rabbitmq.module.ts',
+      'libs/srv-shared/src/redis/redis.module.ts',
+      'libs/srv-shared/src/storage/storage.module.ts'
+    ]
+
+    for (const file of adapterFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.equal(source.includes("from '@libs/server-kernel'"), true, file)
+    }
+
+    for (const file of ['services/engine/tsconfig.app.json', 'services/worker/tsconfig.app.json']) {
+      const config = await readJson(file)
+      assert.deepEqual(config.compilerOptions.paths['@libs/server-kernel'], ['libs/server-kernel/src/index.ts'], file)
+    }
   })
 
   it('keeps shared UI primitives on a universal boundary', async () => {

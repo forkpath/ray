@@ -1,17 +1,1 @@
-export interface ThrottlerConfig {
-  ttl: number
-  limit: number
-  storage:
-    | {
-        type: 'memory'
-      }
-    | {
-        type: 'redis'
-        redis: {
-          host: string
-          port: number
-          password: string
-          db: number
-        }
-      }
-}
+export type { ThrottlerConfig, ThrottlerMemoryStorageConfig, ThrottlerRedisStorageConfig } from '@libs/server-kernel'

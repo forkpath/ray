@@ -1,9 +1,10 @@
+import type { RedisConfig } from '@libs/server-kernel'
+
 import { DynamicModule, Global, Module, Provider } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import Redis, { Redis as RedisClient } from 'ioredis'
 
-import { RedisConfig } from './redis.config'
 import { REDIS_CLIENT, RedisService } from './redis.service'
 
 @Global()

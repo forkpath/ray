@@ -1,44 +1,10 @@
-import { FileSize, Interval } from 'rotating-file-stream'
+import type { LogFileSize, LogLevel, LogRotationInterval, ServerRuntimeConfig } from '@libs/server-kernel'
 
 import { APP_SLUG } from '@libs/common'
-import { MongoConfig } from '@libs/mongo-dao'
-import {
-  CacheConfig,
-  ElasticsearchConfig,
-  I18nConfig,
-  LoggerConfig,
-  LogLevel,
-  RabbitmqConfig,
-  RedisConfig,
-  SmsConfig,
-  StorageConfig,
-  ThrottlerConfig
-} from '@libs/srv-shared'
 
-export interface ServerConfig {
-  enginePort: number
-  corsOrigins: string // 如果有多个，请使用逗号分隔
-}
+export type { ServerConfig } from '@libs/server-kernel'
 
-interface Config {
-  server: ServerConfig
-  // 数据库
-  redis: RedisConfig
-  mongo: MongoConfig
-  // 中间件
-  cache: CacheConfig
-  logger: LoggerConfig
-  i18n: I18nConfig
-  throttler: ThrottlerConfig
-  // 第三方服务
-  storage: StorageConfig
-  sms: SmsConfig
-  // 其他
-  rabbitmq: RabbitmqConfig
-  elasticsearch: ElasticsearchConfig
-}
-
-const config: Config = {
+const config: ServerRuntimeConfig = {
   server: {
     enginePort: parseInt(process.env['ENGINE_PORT'] as string, 10) || 6006,
     corsOrigins: process.env['CORS_ORIGINS'] || '*'
@@ -66,8 +32,8 @@ const config: Config = {
     level: (process.env['LOGGER_LEVEL'] as LogLevel) || 'info',
     scope: process.env['LOGGER_SCOPE'] || 'neo',
     fileEnabled: (process.env['LOGGER_FILE_ENABLED'] as string).toLowerCase() === 'true',
-    fileSizeLimit: (process.env['LOGGER_FILE_SIZE_LIMIT'] || '20M') as FileSize,
-    fileExpiredIn: (process.env['LOGGER_FILE_EXPIRED_IN'] || '14d') as Interval,
+    fileSizeLimit: (process.env['LOGGER_FILE_SIZE_LIMIT'] || '20M') as LogFileSize,
+    fileExpiredIn: (process.env['LOGGER_FILE_EXPIRED_IN'] || '14d') as LogRotationInterval,
     compress: (process.env['LOGGER_FILE_COMPRESS'] as string).toLowerCase() === 'true'
   },
   i18n: {
@@ -114,4 +80,4 @@ const config: Config = {
   }
 }
 
-export const AppConfig = (): Config => config
+export const AppConfig = (): ServerRuntimeConfig => config

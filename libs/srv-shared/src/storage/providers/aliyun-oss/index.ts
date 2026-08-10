@@ -1,7 +1,8 @@
+import type { StorageConfig } from '@libs/server-kernel'
+
 import OSS, { PutObjectOptions } from 'ali-oss'
 import dayjs from 'dayjs'
 
-import { StorageConfig } from '../../storage.config'
 import { StorageProvider } from '../types'
 
 export const createStorageProvider = (config: StorageConfig): StorageProvider => {

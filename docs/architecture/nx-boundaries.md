@@ -44,6 +44,16 @@ Cross-domain access to Auth is represented by the additive
 broader `domain:auth` tag, so future Auth server and client projects remain
 inaccessible even though they share the Auth domain.
 
+Framework-neutral server configuration contracts live in `server-kernel`,
+tagged `type:contract`, `runtime:universal`, and `domain:platform`. The project
+defines the configuration shape but never reads environment variables or imports
+NestJS, database clients, caches, or message brokers. `srv-core` remains the Node
+composition owner that reads environment values, while `mongo-dao` and the
+current `srv-shared` adapters consume the explicit kernel contract. Their legacy
+config files are type-only re-export bridges for one compatibility release.
+Subsequent Server Core subwaves will extract Nest cross-cutting concerns and the
+Redis/RabbitMQ platform adapters before retiring those bridges.
+
 Billing values and transport-neutral records now live behind the additive
 `boundary:billing-contract` marker in `billing-contract`. The legacy Billing
 facade re-exports these contracts for rollback compatibility while frontend

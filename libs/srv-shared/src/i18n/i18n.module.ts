@@ -1,11 +1,10 @@
 import path from 'node:path'
+import type { I18nConfig } from '@libs/server-kernel'
 
 import { DynamicModule, Logger, Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { AcceptLanguageResolver, I18nJsonLoader, I18nModule as NestI18nModule } from 'nestjs-i18n'
-
-import { I18nConfig } from './i18n.config'
 
 @Module({})
 export class I18nModule {

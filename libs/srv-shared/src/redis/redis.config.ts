@@ -1,5 +1,1 @@
-export interface RedisConfig {
-  host: string
-  port: number
-  password: string
-}
+export type { RedisConfig } from '@libs/server-kernel'

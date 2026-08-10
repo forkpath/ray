@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import type { LoggerConfig, LogLevel } from '@libs/server-kernel'
 
 import { Injectable, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
@@ -7,8 +8,6 @@ import { ConfigService } from '@nestjs/config'
 import { PinoLogger } from 'nestjs-pino'
 import pino from 'pino'
 import { createStream } from 'rotating-file-stream'
-
-import { LoggerConfig, LogLevel } from './logger.config'
 
 @Injectable()
 export class LoggerService implements OnModuleInit {

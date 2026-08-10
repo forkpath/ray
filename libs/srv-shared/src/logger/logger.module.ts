@@ -1,10 +1,11 @@
+import type { LoggerConfig, LogLevel } from '@libs/server-kernel'
+
 import { DynamicModule, Global, Module } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { LoggerModule as PinoModule } from 'nestjs-pino'
 import { PrettyOptions } from 'pino-pretty'
 
-import { LoggerConfig, LogLevel } from './logger.config'
 import { LoggerService } from './logger.service'
 
 interface LogTarget {
