@@ -68,6 +68,28 @@ function modelAttributes(model) {
     .sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)))
 }
 
+function modelAttributeSignature(attribute) {
+  const normalized = normalizeAttribute(attribute)
+  const positionalFields = normalized.args?.[0]?.value?.args
+
+  if (Array.isArray(positionalFields) && positionalFields.every(field => typeof field === 'string')) {
+    return `${normalized.name}(${positionalFields.join(',')})`
+  }
+
+  return JSON.stringify(normalized)
+}
+
+function subtractOccurrences(source, valuesToRemove) {
+  const remaining = [...source]
+  for (const value of valuesToRemove) {
+    const index = remaining.indexOf(value)
+    if (index >= 0) {
+      remaining.splice(index, 1)
+    }
+  }
+  return remaining
+}
+
 function fieldNodes(model) {
   return model.properties.filter(property => property.type === 'field')
 }
@@ -181,8 +203,26 @@ export function evaluateContracts({ candidateText, trackedText, policy }) {
       }
     }
 
-    if (JSON.stringify(modelAttributes(candidateModel)) !== JSON.stringify(modelAttributes(trackedModel))) {
-      errors.push(`logical: indexes or model constraints differ for ${modelName}`)
+    const candidateModelAttributes = modelAttributes(candidateModel).map(modelAttributeSignature)
+    const trackedModelAttributes = modelAttributes(trackedModel).map(modelAttributeSignature)
+    const allowedAdditionalModelAttributes = new Set(modelPolicy.allowedAdditionalModelAttributes ?? [])
+    const missingModelAttributes = subtractOccurrences(candidateModelAttributes, trackedModelAttributes)
+    const additionalModelAttributes = subtractOccurrences(trackedModelAttributes, candidateModelAttributes)
+
+    for (const attribute of allowedAdditionalModelAttributes) {
+      if (!additionalModelAttributes.includes(attribute)) {
+        errors.push(`policy: ${modelName}.${attribute} is not a tracked-only model attribute`)
+      }
+    }
+
+    for (const attribute of additionalModelAttributes) {
+      if (!allowedAdditionalModelAttributes.has(attribute)) {
+        errors.push(`logical: ${modelName}.${attribute} is a local model attribute but is not whitelisted`)
+      }
+    }
+
+    for (const attribute of missingModelAttributes) {
+      errors.push(`logical: tracked schema is missing ${modelName}.${attribute}`)
     }
 
     const trackedObjectAttributes = trackedModel.properties.filter(property => property.type === 'attribute')

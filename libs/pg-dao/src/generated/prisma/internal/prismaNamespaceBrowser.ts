@@ -64,7 +64,8 @@ export const ModelName = {
   WebhookEvent: 'WebhookEvent',
   Customer: 'Customer',
   Subscription: 'Subscription',
-  Order: 'Order'
+  Order: 'Order',
+  RayOnlineMigration: 'RayOnlineMigration'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -235,7 +236,10 @@ export const WebhookEventScalarFieldEnum = {
   type: 'type',
   status: 'status',
   error: 'error',
-  processedAt: 'processedAt'
+  receivedAt: 'receivedAt',
+  processedAt: 'processedAt',
+  lastAttemptAt: 'lastAttemptAt',
+  attemptCount: 'attemptCount'
 } as const
 
 export type WebhookEventScalarFieldEnum = (typeof WebhookEventScalarFieldEnum)[keyof typeof WebhookEventScalarFieldEnum]
@@ -244,6 +248,8 @@ export type WebhookEventScalarFieldEnum = (typeof WebhookEventScalarFieldEnum)[k
 export const CustomerScalarFieldEnum = {
   id: 'id',
   referenceId: 'referenceId',
+  userId: 'userId',
+  organizationId: 'organizationId',
   externalId: 'externalId',
   provider: 'provider',
   createdAt: 'createdAt',
@@ -283,6 +289,15 @@ export const OrderScalarFieldEnum = {
 } as const
 
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
+export const RayOnlineMigrationScalarFieldEnum = {
+  id: 'id',
+  checksum: 'checksum',
+  appliedAt: 'appliedAt'
+} as const
+
+export type RayOnlineMigrationScalarFieldEnum = (typeof RayOnlineMigrationScalarFieldEnum)[keyof typeof RayOnlineMigrationScalarFieldEnum]
 
 
 export const SortOrder = {

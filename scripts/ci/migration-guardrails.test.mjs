@@ -24,6 +24,17 @@ describe('migration safety guardrails', () => {
     )
   })
 
+  it('keeps database and online migrations outside Nx Cache', async () => {
+    const project = await readJson('libs/pg-dao/project.json')
+    const nxConfiguration = await readJson('nx.json')
+
+    for (const target of ['migrate', 'deploy', 'reset', 'push']) {
+      assert.equal(nxConfiguration.targetDefaults[target].cache, false)
+    }
+    assert.equal(project.targets['online-migrate'].cache, false)
+    assert.equal(project.targets['online-migrate'].options.command, 'node ./scripts/run-online-migrations.mjs')
+  })
+
   it('does not execute an unpinned Better Auth CLI', async () => {
     const project = await readJson('libs/auth/project.json')
     const target = project.targets['generate-auth-schema']

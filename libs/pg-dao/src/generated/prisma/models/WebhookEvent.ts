@@ -20,8 +20,18 @@ export type WebhookEventModel = runtime.Types.Result.DefaultSelection<Prisma.$We
 
 export type AggregateWebhookEvent = {
   _count: WebhookEventCountAggregateOutputType | null
+  _avg: WebhookEventAvgAggregateOutputType | null
+  _sum: WebhookEventSumAggregateOutputType | null
   _min: WebhookEventMinAggregateOutputType | null
   _max: WebhookEventMaxAggregateOutputType | null
+}
+
+export type WebhookEventAvgAggregateOutputType = {
+  attemptCount: number | null
+}
+
+export type WebhookEventSumAggregateOutputType = {
+  attemptCount: number | null
 }
 
 export type WebhookEventMinAggregateOutputType = {
@@ -31,7 +41,10 @@ export type WebhookEventMinAggregateOutputType = {
   type: string | null
   status: $Enums.WebhookEventStatus | null
   error: string | null
+  receivedAt: Date | null
   processedAt: Date | null
+  lastAttemptAt: Date | null
+  attemptCount: number | null
 }
 
 export type WebhookEventMaxAggregateOutputType = {
@@ -41,7 +54,10 @@ export type WebhookEventMaxAggregateOutputType = {
   type: string | null
   status: $Enums.WebhookEventStatus | null
   error: string | null
+  receivedAt: Date | null
   processedAt: Date | null
+  lastAttemptAt: Date | null
+  attemptCount: number | null
 }
 
 export type WebhookEventCountAggregateOutputType = {
@@ -51,10 +67,21 @@ export type WebhookEventCountAggregateOutputType = {
   type: number
   status: number
   error: number
+  receivedAt: number
   processedAt: number
+  lastAttemptAt: number
+  attemptCount: number
   _all: number
 }
 
+
+export type WebhookEventAvgAggregateInputType = {
+  attemptCount?: true
+}
+
+export type WebhookEventSumAggregateInputType = {
+  attemptCount?: true
+}
 
 export type WebhookEventMinAggregateInputType = {
   id?: true
@@ -63,7 +90,10 @@ export type WebhookEventMinAggregateInputType = {
   type?: true
   status?: true
   error?: true
+  receivedAt?: true
   processedAt?: true
+  lastAttemptAt?: true
+  attemptCount?: true
 }
 
 export type WebhookEventMaxAggregateInputType = {
@@ -73,7 +103,10 @@ export type WebhookEventMaxAggregateInputType = {
   type?: true
   status?: true
   error?: true
+  receivedAt?: true
   processedAt?: true
+  lastAttemptAt?: true
+  attemptCount?: true
 }
 
 export type WebhookEventCountAggregateInputType = {
@@ -83,7 +116,10 @@ export type WebhookEventCountAggregateInputType = {
   type?: true
   status?: true
   error?: true
+  receivedAt?: true
   processedAt?: true
+  lastAttemptAt?: true
+  attemptCount?: true
   _all?: true
 }
 
@@ -125,6 +161,18 @@ export type WebhookEventAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: WebhookEventAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: WebhookEventSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
   **/
   _min?: WebhookEventMinAggregateInputType
@@ -155,6 +203,8 @@ export type WebhookEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: WebhookEventCountAggregateInputType | true
+  _avg?: WebhookEventAvgAggregateInputType
+  _sum?: WebhookEventSumAggregateInputType
   _min?: WebhookEventMinAggregateInputType
   _max?: WebhookEventMaxAggregateInputType
 }
@@ -166,8 +216,13 @@ export type WebhookEventGroupByOutputType = {
   type: string
   status: $Enums.WebhookEventStatus
   error: string | null
-  processedAt: Date
+  receivedAt: Date
+  processedAt: Date | null
+  lastAttemptAt: Date | null
+  attemptCount: number
   _count: WebhookEventCountAggregateOutputType | null
+  _avg: WebhookEventAvgAggregateOutputType | null
+  _sum: WebhookEventSumAggregateOutputType | null
   _min: WebhookEventMinAggregateOutputType | null
   _max: WebhookEventMaxAggregateOutputType | null
 }
@@ -197,7 +252,10 @@ export type WebhookEventWhereInput = {
   type?: Prisma.StringFilter<"WebhookEvent"> | string
   status?: Prisma.EnumWebhookEventStatusFilter<"WebhookEvent"> | $Enums.WebhookEventStatus
   error?: Prisma.StringNullableFilter<"WebhookEvent"> | string | null
-  processedAt?: Prisma.DateTimeFilter<"WebhookEvent"> | Date | string
+  receivedAt?: Prisma.DateTimeFilter<"WebhookEvent"> | Date | string
+  processedAt?: Prisma.DateTimeNullableFilter<"WebhookEvent"> | Date | string | null
+  lastAttemptAt?: Prisma.DateTimeNullableFilter<"WebhookEvent"> | Date | string | null
+  attemptCount?: Prisma.IntFilter<"WebhookEvent"> | number
 }
 
 export type WebhookEventOrderByWithRelationInput = {
@@ -207,7 +265,10 @@ export type WebhookEventOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
-  processedAt?: Prisma.SortOrder
+  receivedAt?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
 }
 
 export type WebhookEventWhereUniqueInput = Prisma.AtLeast<{
@@ -221,7 +282,10 @@ export type WebhookEventWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.StringFilter<"WebhookEvent"> | string
   status?: Prisma.EnumWebhookEventStatusFilter<"WebhookEvent"> | $Enums.WebhookEventStatus
   error?: Prisma.StringNullableFilter<"WebhookEvent"> | string | null
-  processedAt?: Prisma.DateTimeFilter<"WebhookEvent"> | Date | string
+  receivedAt?: Prisma.DateTimeFilter<"WebhookEvent"> | Date | string
+  processedAt?: Prisma.DateTimeNullableFilter<"WebhookEvent"> | Date | string | null
+  lastAttemptAt?: Prisma.DateTimeNullableFilter<"WebhookEvent"> | Date | string | null
+  attemptCount?: Prisma.IntFilter<"WebhookEvent"> | number
 }, "id" | "eventId_provider">
 
 export type WebhookEventOrderByWithAggregationInput = {
@@ -231,10 +295,15 @@ export type WebhookEventOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
-  processedAt?: Prisma.SortOrder
+  receivedAt?: Prisma.SortOrder
+  processedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
   _count?: Prisma.WebhookEventCountOrderByAggregateInput
+  _avg?: Prisma.WebhookEventAvgOrderByAggregateInput
   _max?: Prisma.WebhookEventMaxOrderByAggregateInput
   _min?: Prisma.WebhookEventMinOrderByAggregateInput
+  _sum?: Prisma.WebhookEventSumOrderByAggregateInput
 }
 
 export type WebhookEventScalarWhereWithAggregatesInput = {
@@ -247,7 +316,10 @@ export type WebhookEventScalarWhereWithAggregatesInput = {
   type?: Prisma.StringWithAggregatesFilter<"WebhookEvent"> | string
   status?: Prisma.EnumWebhookEventStatusWithAggregatesFilter<"WebhookEvent"> | $Enums.WebhookEventStatus
   error?: Prisma.StringNullableWithAggregatesFilter<"WebhookEvent"> | string | null
-  processedAt?: Prisma.DateTimeWithAggregatesFilter<"WebhookEvent"> | Date | string
+  receivedAt?: Prisma.DateTimeWithAggregatesFilter<"WebhookEvent"> | Date | string
+  processedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebhookEvent"> | Date | string | null
+  lastAttemptAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WebhookEvent"> | Date | string | null
+  attemptCount?: Prisma.IntWithAggregatesFilter<"WebhookEvent"> | number
 }
 
 export type WebhookEventCreateInput = {
@@ -257,7 +329,10 @@ export type WebhookEventCreateInput = {
   type: string
   status: $Enums.WebhookEventStatus
   error?: string | null
-  processedAt?: Date | string
+  receivedAt?: Date | string
+  processedAt?: Date | string | null
+  lastAttemptAt?: Date | string | null
+  attemptCount?: number
 }
 
 export type WebhookEventUncheckedCreateInput = {
@@ -267,7 +342,10 @@ export type WebhookEventUncheckedCreateInput = {
   type: string
   status: $Enums.WebhookEventStatus
   error?: string | null
-  processedAt?: Date | string
+  receivedAt?: Date | string
+  processedAt?: Date | string | null
+  lastAttemptAt?: Date | string | null
+  attemptCount?: number
 }
 
 export type WebhookEventUpdateInput = {
@@ -277,7 +355,10 @@ export type WebhookEventUpdateInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWebhookEventStatusFieldUpdateOperationsInput | $Enums.WebhookEventStatus
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  processedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type WebhookEventUncheckedUpdateInput = {
@@ -287,7 +368,10 @@ export type WebhookEventUncheckedUpdateInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWebhookEventStatusFieldUpdateOperationsInput | $Enums.WebhookEventStatus
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  processedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type WebhookEventCreateManyInput = {
@@ -297,7 +381,10 @@ export type WebhookEventCreateManyInput = {
   type: string
   status: $Enums.WebhookEventStatus
   error?: string | null
-  processedAt?: Date | string
+  receivedAt?: Date | string
+  processedAt?: Date | string | null
+  lastAttemptAt?: Date | string | null
+  attemptCount?: number
 }
 
 export type WebhookEventUpdateManyMutationInput = {
@@ -307,7 +394,10 @@ export type WebhookEventUpdateManyMutationInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWebhookEventStatusFieldUpdateOperationsInput | $Enums.WebhookEventStatus
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  processedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type WebhookEventUncheckedUpdateManyInput = {
@@ -317,7 +407,10 @@ export type WebhookEventUncheckedUpdateManyInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumWebhookEventStatusFieldUpdateOperationsInput | $Enums.WebhookEventStatus
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  processedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  receivedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type WebhookEventEventIdProviderCompoundUniqueInput = {
@@ -332,7 +425,14 @@ export type WebhookEventCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   error?: Prisma.SortOrder
+  receivedAt?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
+  lastAttemptAt?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+}
+
+export type WebhookEventAvgOrderByAggregateInput = {
+  attemptCount?: Prisma.SortOrder
 }
 
 export type WebhookEventMaxOrderByAggregateInput = {
@@ -342,7 +442,10 @@ export type WebhookEventMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   error?: Prisma.SortOrder
+  receivedAt?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
+  lastAttemptAt?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
 }
 
 export type WebhookEventMinOrderByAggregateInput = {
@@ -352,7 +455,14 @@ export type WebhookEventMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   error?: Prisma.SortOrder
+  receivedAt?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
+  lastAttemptAt?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
+}
+
+export type WebhookEventSumOrderByAggregateInput = {
+  attemptCount?: Prisma.SortOrder
 }
 
 export type EnumWebhookEventStatusFieldUpdateOperationsInput = {
@@ -368,7 +478,10 @@ export type WebhookEventSelect<ExtArgs extends runtime.Types.Extensions.Internal
   type?: boolean
   status?: boolean
   error?: boolean
+  receivedAt?: boolean
   processedAt?: boolean
+  lastAttemptAt?: boolean
+  attemptCount?: boolean
 }, ExtArgs["result"]["webhookEvent"]>
 
 export type WebhookEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -378,7 +491,10 @@ export type WebhookEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   type?: boolean
   status?: boolean
   error?: boolean
+  receivedAt?: boolean
   processedAt?: boolean
+  lastAttemptAt?: boolean
+  attemptCount?: boolean
 }, ExtArgs["result"]["webhookEvent"]>
 
 export type WebhookEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -388,7 +504,10 @@ export type WebhookEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   type?: boolean
   status?: boolean
   error?: boolean
+  receivedAt?: boolean
   processedAt?: boolean
+  lastAttemptAt?: boolean
+  attemptCount?: boolean
 }, ExtArgs["result"]["webhookEvent"]>
 
 export type WebhookEventSelectScalar = {
@@ -398,10 +517,13 @@ export type WebhookEventSelectScalar = {
   type?: boolean
   status?: boolean
   error?: boolean
+  receivedAt?: boolean
   processedAt?: boolean
+  lastAttemptAt?: boolean
+  attemptCount?: boolean
 }
 
-export type WebhookEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "provider" | "type" | "status" | "error" | "processedAt", ExtArgs["result"]["webhookEvent"]>
+export type WebhookEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "provider" | "type" | "status" | "error" | "receivedAt" | "processedAt" | "lastAttemptAt" | "attemptCount", ExtArgs["result"]["webhookEvent"]>
 
 export type $WebhookEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "WebhookEvent"
@@ -413,7 +535,10 @@ export type $WebhookEventPayload<ExtArgs extends runtime.Types.Extensions.Intern
     type: string
     status: $Enums.WebhookEventStatus
     error: string | null
-    processedAt: Date
+    receivedAt: Date
+    processedAt: Date | null
+    lastAttemptAt: Date | null
+    attemptCount: number
   }, ExtArgs["result"]["webhookEvent"]>
   composites: {}
 }
@@ -843,7 +968,10 @@ export interface WebhookEventFieldRefs {
   readonly type: Prisma.FieldRef<"WebhookEvent", 'String'>
   readonly status: Prisma.FieldRef<"WebhookEvent", 'WebhookEventStatus'>
   readonly error: Prisma.FieldRef<"WebhookEvent", 'String'>
+  readonly receivedAt: Prisma.FieldRef<"WebhookEvent", 'DateTime'>
   readonly processedAt: Prisma.FieldRef<"WebhookEvent", 'DateTime'>
+  readonly lastAttemptAt: Prisma.FieldRef<"WebhookEvent", 'DateTime'>
+  readonly attemptCount: Prisma.FieldRef<"WebhookEvent", 'Int'>
 }
     
 

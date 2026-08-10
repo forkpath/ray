@@ -86,6 +86,48 @@ test('requires local extensions to be explicitly whitelisted', () => {
   assert.match(stalePolicyReport.errors.join('\n'), /missingField is not a tracked-only local extension/)
 })
 
+test('requires local model attributes to be explicitly whitelisted', () => {
+  const constrainedTracked = tracked.replace('@@map("user")', '@@unique([id, createdAt])\n  @@map("user")')
+  const report = evaluateContracts({
+    candidateText: candidate,
+    trackedText: constrainedTracked,
+    policy
+  })
+
+  assert.equal(report.status, 'drift')
+  assert.match(report.errors.join('\n'), /User\.unique\(id,createdAt\) is a local model attribute/)
+
+  const allowedReport = evaluateContracts({
+    candidateText: candidate,
+    trackedText: constrainedTracked,
+    policy: {
+      ...policy,
+      models: {
+        User: {
+          ...policy.models.User,
+          allowedAdditionalModelAttributes: ['unique(id,createdAt)']
+        }
+      }
+    }
+  })
+  assert.equal(allowedReport.status, 'clean')
+
+  const stalePolicyReport = evaluateContracts({
+    candidateText: candidate,
+    trackedText: tracked,
+    policy: {
+      ...policy,
+      models: {
+        User: {
+          ...policy.models.User,
+          allowedAdditionalModelAttributes: ['unique(id,createdAt)']
+        }
+      }
+    }
+  })
+  assert.match(stalePolicyReport.errors.join('\n'), /is not a tracked-only model attribute/)
+})
+
 test('detects logical drift and physical mapping drift independently', () => {
   const driftedTracked = tracked
     .replace('createdAt DateTime', 'createdAt DateTime?')

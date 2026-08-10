@@ -57,10 +57,11 @@
 // link: https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference
 
 generator client {
-  provider     = "prisma-client"
-  output       = "./generated/prisma"
-  engineType   = "client"
-  moduleFormat = "cjs"
+  provider        = "prisma-client"
+  output          = "./generated/prisma"
+  engineType      = "client"
+  moduleFormat    = "cjs"
+  previewFeatures = ["partialIndexes"]
   // output into a separate subdirectory so multiple schemas can be used in a monorepo
   // this make the import path `@prisma/client/one` instead of `@prisma/client`
   // Customize to make the most sense for your project

@@ -27,6 +27,8 @@ export type AggregateCustomer = {
 export type CustomerMinAggregateOutputType = {
   id: string | null
   referenceId: string | null
+  userId: string | null
+  organizationId: string | null
   externalId: string | null
   provider: string | null
   createdAt: Date | null
@@ -36,6 +38,8 @@ export type CustomerMinAggregateOutputType = {
 export type CustomerMaxAggregateOutputType = {
   id: string | null
   referenceId: string | null
+  userId: string | null
+  organizationId: string | null
   externalId: string | null
   provider: string | null
   createdAt: Date | null
@@ -45,6 +49,8 @@ export type CustomerMaxAggregateOutputType = {
 export type CustomerCountAggregateOutputType = {
   id: number
   referenceId: number
+  userId: number
+  organizationId: number
   externalId: number
   provider: number
   createdAt: number
@@ -56,6 +62,8 @@ export type CustomerCountAggregateOutputType = {
 export type CustomerMinAggregateInputType = {
   id?: true
   referenceId?: true
+  userId?: true
+  organizationId?: true
   externalId?: true
   provider?: true
   createdAt?: true
@@ -65,6 +73,8 @@ export type CustomerMinAggregateInputType = {
 export type CustomerMaxAggregateInputType = {
   id?: true
   referenceId?: true
+  userId?: true
+  organizationId?: true
   externalId?: true
   provider?: true
   createdAt?: true
@@ -74,6 +84,8 @@ export type CustomerMaxAggregateInputType = {
 export type CustomerCountAggregateInputType = {
   id?: true
   referenceId?: true
+  userId?: true
+  organizationId?: true
   externalId?: true
   provider?: true
   createdAt?: true
@@ -156,6 +168,8 @@ export type CustomerGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type CustomerGroupByOutputType = {
   id: string
   referenceId: string
+  userId: string | null
+  organizationId: string | null
   externalId: string
   provider: string
   createdAt: Date
@@ -186,10 +200,14 @@ export type CustomerWhereInput = {
   NOT?: Prisma.CustomerWhereInput | Prisma.CustomerWhereInput[]
   id?: Prisma.StringFilter<"Customer"> | string
   referenceId?: Prisma.StringFilter<"Customer"> | string
+  userId?: Prisma.StringNullableFilter<"Customer"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"Customer"> | string | null
   externalId?: Prisma.StringFilter<"Customer"> | string
   provider?: Prisma.StringFilter<"Customer"> | string
   createdAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   subscriptions?: Prisma.SubscriptionListRelationFilter
   orders?: Prisma.OrderListRelationFilter
 }
@@ -197,10 +215,14 @@ export type CustomerWhereInput = {
 export type CustomerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   externalId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
+  organization?: Prisma.OrganizationOrderByWithRelationInput
   subscriptions?: Prisma.SubscriptionOrderByRelationAggregateInput
   orders?: Prisma.OrderOrderByRelationAggregateInput
 }
@@ -209,21 +231,29 @@ export type CustomerWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   referenceId_provider?: Prisma.CustomerReferenceIdProviderCompoundUniqueInput
   externalId_provider?: Prisma.CustomerExternalIdProviderCompoundUniqueInput
+  userId_provider?: Prisma.CustomerUserIdProviderCompoundUniqueInput
+  organizationId_provider?: Prisma.CustomerOrganizationIdProviderCompoundUniqueInput
   AND?: Prisma.CustomerWhereInput | Prisma.CustomerWhereInput[]
   OR?: Prisma.CustomerWhereInput[]
   NOT?: Prisma.CustomerWhereInput | Prisma.CustomerWhereInput[]
   referenceId?: Prisma.StringFilter<"Customer"> | string
+  userId?: Prisma.StringNullableFilter<"Customer"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"Customer"> | string | null
   externalId?: Prisma.StringFilter<"Customer"> | string
   provider?: Prisma.StringFilter<"Customer"> | string
   createdAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  organization?: Prisma.XOR<Prisma.OrganizationNullableScalarRelationFilter, Prisma.OrganizationWhereInput> | null
   subscriptions?: Prisma.SubscriptionListRelationFilter
   orders?: Prisma.OrderListRelationFilter
-}, "id" | "referenceId_provider" | "externalId_provider">
+}, "id" | "referenceId_provider" | "externalId_provider" | "userId_provider" | "organizationId_provider">
 
 export type CustomerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationId?: Prisma.SortOrderInput | Prisma.SortOrder
   externalId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -239,6 +269,8 @@ export type CustomerScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CustomerScalarWhereWithAggregatesInput | Prisma.CustomerScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Customer"> | string
   referenceId?: Prisma.StringWithAggregatesFilter<"Customer"> | string
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Customer"> | string | null
+  organizationId?: Prisma.StringNullableWithAggregatesFilter<"Customer"> | string | null
   externalId?: Prisma.StringWithAggregatesFilter<"Customer"> | string
   provider?: Prisma.StringWithAggregatesFilter<"Customer"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Customer"> | Date | string
@@ -252,6 +284,8 @@ export type CustomerCreateInput = {
   provider: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutBillingCustomersInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutBillingCustomersInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutCustomerInput
   orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
 }
@@ -259,6 +293,8 @@ export type CustomerCreateInput = {
 export type CustomerUncheckedCreateInput = {
   id?: string
   referenceId: string
+  userId?: string | null
+  organizationId?: string | null
   externalId: string
   provider: string
   createdAt?: Date | string
@@ -274,6 +310,8 @@ export type CustomerUpdateInput = {
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutBillingCustomersNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutBillingCustomersNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutCustomerNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
 }
@@ -281,6 +319,8 @@ export type CustomerUpdateInput = {
 export type CustomerUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -292,6 +332,8 @@ export type CustomerUncheckedUpdateInput = {
 export type CustomerCreateManyInput = {
   id?: string
   referenceId: string
+  userId?: string | null
+  organizationId?: string | null
   externalId: string
   provider: string
   createdAt?: Date | string
@@ -310,10 +352,22 @@ export type CustomerUpdateManyMutationInput = {
 export type CustomerUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CustomerListRelationFilter = {
+  every?: Prisma.CustomerWhereInput
+  some?: Prisma.CustomerWhereInput
+  none?: Prisma.CustomerWhereInput
+}
+
+export type CustomerOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type CustomerReferenceIdProviderCompoundUniqueInput = {
@@ -326,9 +380,21 @@ export type CustomerExternalIdProviderCompoundUniqueInput = {
   provider: string
 }
 
+export type CustomerUserIdProviderCompoundUniqueInput = {
+  userId: string
+  provider: string
+}
+
+export type CustomerOrganizationIdProviderCompoundUniqueInput = {
+  organizationId: string
+  provider: string
+}
+
 export type CustomerCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -338,6 +404,8 @@ export type CustomerCountOrderByAggregateInput = {
 export type CustomerMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -347,6 +415,8 @@ export type CustomerMaxOrderByAggregateInput = {
 export type CustomerMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   referenceId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  organizationId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -356,6 +426,90 @@ export type CustomerMinOrderByAggregateInput = {
 export type CustomerScalarRelationFilter = {
   is?: Prisma.CustomerWhereInput
   isNot?: Prisma.CustomerWhereInput
+}
+
+export type CustomerCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutUserInput, Prisma.CustomerUncheckedCreateWithoutUserInput> | Prisma.CustomerCreateWithoutUserInput[] | Prisma.CustomerUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutUserInput | Prisma.CustomerCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.CustomerCreateManyUserInputEnvelope
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+}
+
+export type CustomerUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutUserInput, Prisma.CustomerUncheckedCreateWithoutUserInput> | Prisma.CustomerCreateWithoutUserInput[] | Prisma.CustomerUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutUserInput | Prisma.CustomerCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.CustomerCreateManyUserInputEnvelope
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+}
+
+export type CustomerUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutUserInput, Prisma.CustomerUncheckedCreateWithoutUserInput> | Prisma.CustomerCreateWithoutUserInput[] | Prisma.CustomerUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutUserInput | Prisma.CustomerCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.CustomerUpsertWithWhereUniqueWithoutUserInput | Prisma.CustomerUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.CustomerCreateManyUserInputEnvelope
+  set?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  disconnect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  delete?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  update?: Prisma.CustomerUpdateWithWhereUniqueWithoutUserInput | Prisma.CustomerUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.CustomerUpdateManyWithWhereWithoutUserInput | Prisma.CustomerUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+}
+
+export type CustomerUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutUserInput, Prisma.CustomerUncheckedCreateWithoutUserInput> | Prisma.CustomerCreateWithoutUserInput[] | Prisma.CustomerUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutUserInput | Prisma.CustomerCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.CustomerUpsertWithWhereUniqueWithoutUserInput | Prisma.CustomerUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.CustomerCreateManyUserInputEnvelope
+  set?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  disconnect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  delete?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  update?: Prisma.CustomerUpdateWithWhereUniqueWithoutUserInput | Prisma.CustomerUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.CustomerUpdateManyWithWhereWithoutUserInput | Prisma.CustomerUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+}
+
+export type CustomerCreateNestedManyWithoutOrganizationInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutOrganizationInput, Prisma.CustomerUncheckedCreateWithoutOrganizationInput> | Prisma.CustomerCreateWithoutOrganizationInput[] | Prisma.CustomerUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutOrganizationInput | Prisma.CustomerCreateOrConnectWithoutOrganizationInput[]
+  createMany?: Prisma.CustomerCreateManyOrganizationInputEnvelope
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+}
+
+export type CustomerUncheckedCreateNestedManyWithoutOrganizationInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutOrganizationInput, Prisma.CustomerUncheckedCreateWithoutOrganizationInput> | Prisma.CustomerCreateWithoutOrganizationInput[] | Prisma.CustomerUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutOrganizationInput | Prisma.CustomerCreateOrConnectWithoutOrganizationInput[]
+  createMany?: Prisma.CustomerCreateManyOrganizationInputEnvelope
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+}
+
+export type CustomerUpdateManyWithoutOrganizationNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutOrganizationInput, Prisma.CustomerUncheckedCreateWithoutOrganizationInput> | Prisma.CustomerCreateWithoutOrganizationInput[] | Prisma.CustomerUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutOrganizationInput | Prisma.CustomerCreateOrConnectWithoutOrganizationInput[]
+  upsert?: Prisma.CustomerUpsertWithWhereUniqueWithoutOrganizationInput | Prisma.CustomerUpsertWithWhereUniqueWithoutOrganizationInput[]
+  createMany?: Prisma.CustomerCreateManyOrganizationInputEnvelope
+  set?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  disconnect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  delete?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  update?: Prisma.CustomerUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.CustomerUpdateWithWhereUniqueWithoutOrganizationInput[]
+  updateMany?: Prisma.CustomerUpdateManyWithWhereWithoutOrganizationInput | Prisma.CustomerUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+}
+
+export type CustomerUncheckedUpdateManyWithoutOrganizationNestedInput = {
+  create?: Prisma.XOR<Prisma.CustomerCreateWithoutOrganizationInput, Prisma.CustomerUncheckedCreateWithoutOrganizationInput> | Prisma.CustomerCreateWithoutOrganizationInput[] | Prisma.CustomerUncheckedCreateWithoutOrganizationInput[]
+  connectOrCreate?: Prisma.CustomerCreateOrConnectWithoutOrganizationInput | Prisma.CustomerCreateOrConnectWithoutOrganizationInput[]
+  upsert?: Prisma.CustomerUpsertWithWhereUniqueWithoutOrganizationInput | Prisma.CustomerUpsertWithWhereUniqueWithoutOrganizationInput[]
+  createMany?: Prisma.CustomerCreateManyOrganizationInputEnvelope
+  set?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  disconnect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  delete?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  connect?: Prisma.CustomerWhereUniqueInput | Prisma.CustomerWhereUniqueInput[]
+  update?: Prisma.CustomerUpdateWithWhereUniqueWithoutOrganizationInput | Prisma.CustomerUpdateWithWhereUniqueWithoutOrganizationInput[]
+  updateMany?: Prisma.CustomerUpdateManyWithWhereWithoutOrganizationInput | Prisma.CustomerUpdateManyWithWhereWithoutOrganizationInput[]
+  deleteMany?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
 }
 
 export type CustomerCreateNestedOneWithoutSubscriptionsInput = {
@@ -386,6 +540,120 @@ export type CustomerUpdateOneRequiredWithoutOrdersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CustomerUpdateToOneWithWhereWithoutOrdersInput, Prisma.CustomerUpdateWithoutOrdersInput>, Prisma.CustomerUncheckedUpdateWithoutOrdersInput>
 }
 
+export type CustomerCreateWithoutUserInput = {
+  id?: string
+  referenceId: string
+  externalId: string
+  provider: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  organization?: Prisma.OrganizationCreateNestedOneWithoutBillingCustomersInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutCustomerInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerUncheckedCreateWithoutUserInput = {
+  id?: string
+  referenceId: string
+  organizationId?: string | null
+  externalId: string
+  provider: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutCustomerInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerCreateOrConnectWithoutUserInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutUserInput, Prisma.CustomerUncheckedCreateWithoutUserInput>
+}
+
+export type CustomerCreateManyUserInputEnvelope = {
+  data: Prisma.CustomerCreateManyUserInput | Prisma.CustomerCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type CustomerUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  update: Prisma.XOR<Prisma.CustomerUpdateWithoutUserInput, Prisma.CustomerUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutUserInput, Prisma.CustomerUncheckedCreateWithoutUserInput>
+}
+
+export type CustomerUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  data: Prisma.XOR<Prisma.CustomerUpdateWithoutUserInput, Prisma.CustomerUncheckedUpdateWithoutUserInput>
+}
+
+export type CustomerUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.CustomerScalarWhereInput
+  data: Prisma.XOR<Prisma.CustomerUpdateManyMutationInput, Prisma.CustomerUncheckedUpdateManyWithoutUserInput>
+}
+
+export type CustomerScalarWhereInput = {
+  AND?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+  OR?: Prisma.CustomerScalarWhereInput[]
+  NOT?: Prisma.CustomerScalarWhereInput | Prisma.CustomerScalarWhereInput[]
+  id?: Prisma.StringFilter<"Customer"> | string
+  referenceId?: Prisma.StringFilter<"Customer"> | string
+  userId?: Prisma.StringNullableFilter<"Customer"> | string | null
+  organizationId?: Prisma.StringNullableFilter<"Customer"> | string | null
+  externalId?: Prisma.StringFilter<"Customer"> | string
+  provider?: Prisma.StringFilter<"Customer"> | string
+  createdAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
+}
+
+export type CustomerCreateWithoutOrganizationInput = {
+  id?: string
+  referenceId: string
+  externalId: string
+  provider: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutBillingCustomersInput
+  subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutCustomerInput
+  orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerUncheckedCreateWithoutOrganizationInput = {
+  id?: string
+  referenceId: string
+  userId?: string | null
+  externalId: string
+  provider: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subscriptions?: Prisma.SubscriptionUncheckedCreateNestedManyWithoutCustomerInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutCustomerInput
+}
+
+export type CustomerCreateOrConnectWithoutOrganizationInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutOrganizationInput, Prisma.CustomerUncheckedCreateWithoutOrganizationInput>
+}
+
+export type CustomerCreateManyOrganizationInputEnvelope = {
+  data: Prisma.CustomerCreateManyOrganizationInput | Prisma.CustomerCreateManyOrganizationInput[]
+  skipDuplicates?: boolean
+}
+
+export type CustomerUpsertWithWhereUniqueWithoutOrganizationInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  update: Prisma.XOR<Prisma.CustomerUpdateWithoutOrganizationInput, Prisma.CustomerUncheckedUpdateWithoutOrganizationInput>
+  create: Prisma.XOR<Prisma.CustomerCreateWithoutOrganizationInput, Prisma.CustomerUncheckedCreateWithoutOrganizationInput>
+}
+
+export type CustomerUpdateWithWhereUniqueWithoutOrganizationInput = {
+  where: Prisma.CustomerWhereUniqueInput
+  data: Prisma.XOR<Prisma.CustomerUpdateWithoutOrganizationInput, Prisma.CustomerUncheckedUpdateWithoutOrganizationInput>
+}
+
+export type CustomerUpdateManyWithWhereWithoutOrganizationInput = {
+  where: Prisma.CustomerScalarWhereInput
+  data: Prisma.XOR<Prisma.CustomerUpdateManyMutationInput, Prisma.CustomerUncheckedUpdateManyWithoutOrganizationInput>
+}
+
 export type CustomerCreateWithoutSubscriptionsInput = {
   id?: string
   referenceId: string
@@ -393,12 +661,16 @@ export type CustomerCreateWithoutSubscriptionsInput = {
   provider: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutBillingCustomersInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutBillingCustomersInput
   orders?: Prisma.OrderCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUncheckedCreateWithoutSubscriptionsInput = {
   id?: string
   referenceId: string
+  userId?: string | null
+  organizationId?: string | null
   externalId: string
   provider: string
   createdAt?: Date | string
@@ -429,12 +701,16 @@ export type CustomerUpdateWithoutSubscriptionsInput = {
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutBillingCustomersNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutBillingCustomersNestedInput
   orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerUncheckedUpdateWithoutSubscriptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -449,12 +725,16 @@ export type CustomerCreateWithoutOrdersInput = {
   provider: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutBillingCustomersInput
+  organization?: Prisma.OrganizationCreateNestedOneWithoutBillingCustomersInput
   subscriptions?: Prisma.SubscriptionCreateNestedManyWithoutCustomerInput
 }
 
 export type CustomerUncheckedCreateWithoutOrdersInput = {
   id?: string
   referenceId: string
+  userId?: string | null
+  organizationId?: string | null
   externalId: string
   provider: string
   createdAt?: Date | string
@@ -485,17 +765,109 @@ export type CustomerUpdateWithoutOrdersInput = {
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutBillingCustomersNestedInput
+  organization?: Prisma.OrganizationUpdateOneWithoutBillingCustomersNestedInput
   subscriptions?: Prisma.SubscriptionUpdateManyWithoutCustomerNestedInput
 }
 
 export type CustomerUncheckedUpdateWithoutOrdersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
   provider?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerCreateManyUserInput = {
+  id?: string
+  referenceId: string
+  organizationId?: string | null
+  externalId: string
+  provider: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CustomerUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  organization?: Prisma.OrganizationUpdateOneWithoutBillingCustomersNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutCustomerNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutCustomerNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  organizationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CustomerCreateManyOrganizationInput = {
+  id?: string
+  referenceId: string
+  userId?: string | null
+  externalId: string
+  provider: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CustomerUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneWithoutBillingCustomersNestedInput
+  subscriptions?: Prisma.SubscriptionUpdateManyWithoutCustomerNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUncheckedUpdateWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subscriptions?: Prisma.SubscriptionUncheckedUpdateManyWithoutCustomerNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutCustomerNestedInput
+}
+
+export type CustomerUncheckedUpdateManyWithoutOrganizationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  provider?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -541,10 +913,14 @@ export type CustomerCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types
 export type CustomerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   referenceId?: boolean
+  userId?: boolean
+  organizationId?: boolean
   externalId?: boolean
   provider?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.Customer$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Customer$organizationArgs<ExtArgs>
   subscriptions?: boolean | Prisma.Customer$subscriptionsArgs<ExtArgs>
   orders?: boolean | Prisma.Customer$ordersArgs<ExtArgs>
   _count?: boolean | Prisma.CustomerCountOutputTypeDefaultArgs<ExtArgs>
@@ -553,48 +929,70 @@ export type CustomerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type CustomerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   referenceId?: boolean
+  userId?: boolean
+  organizationId?: boolean
   externalId?: boolean
   provider?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.Customer$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Customer$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["customer"]>
 
 export type CustomerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   referenceId?: boolean
+  userId?: boolean
+  organizationId?: boolean
   externalId?: boolean
   provider?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  user?: boolean | Prisma.Customer$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Customer$organizationArgs<ExtArgs>
 }, ExtArgs["result"]["customer"]>
 
 export type CustomerSelectScalar = {
   id?: boolean
   referenceId?: boolean
+  userId?: boolean
+  organizationId?: boolean
   externalId?: boolean
   provider?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CustomerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceId" | "externalId" | "provider" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
+export type CustomerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceId" | "userId" | "organizationId" | "externalId" | "provider" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
 export type CustomerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.Customer$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Customer$organizationArgs<ExtArgs>
   subscriptions?: boolean | Prisma.Customer$subscriptionsArgs<ExtArgs>
   orders?: boolean | Prisma.Customer$ordersArgs<ExtArgs>
   _count?: boolean | Prisma.CustomerCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type CustomerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type CustomerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type CustomerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.Customer$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Customer$organizationArgs<ExtArgs>
+}
+export type CustomerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  user?: boolean | Prisma.Customer$userArgs<ExtArgs>
+  organization?: boolean | Prisma.Customer$organizationArgs<ExtArgs>
+}
 
 export type $CustomerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Customer"
   objects: {
+    user: Prisma.$UserPayload<ExtArgs> | null
+    organization: Prisma.$OrganizationPayload<ExtArgs> | null
     subscriptions: Prisma.$SubscriptionPayload<ExtArgs>[]
     orders: Prisma.$OrderPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     referenceId: string
+    userId: string | null
+    organizationId: string | null
     externalId: string
     provider: string
     createdAt: Date
@@ -993,6 +1391,8 @@ readonly fields: CustomerFieldRefs;
  */
 export interface Prisma__CustomerClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  user<T extends Prisma.Customer$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  organization<T extends Prisma.Customer$organizationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$organizationArgs<ExtArgs>>): Prisma.Prisma__OrganizationClient<runtime.Types.Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   subscriptions<T extends Prisma.Customer$subscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orders<T extends Prisma.Customer$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Customer$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1026,6 +1426,8 @@ export interface Prisma__CustomerClient<T, Null = never, ExtArgs extends runtime
 export interface CustomerFieldRefs {
   readonly id: Prisma.FieldRef<"Customer", 'String'>
   readonly referenceId: Prisma.FieldRef<"Customer", 'String'>
+  readonly userId: Prisma.FieldRef<"Customer", 'String'>
+  readonly organizationId: Prisma.FieldRef<"Customer", 'String'>
   readonly externalId: Prisma.FieldRef<"Customer", 'String'>
   readonly provider: Prisma.FieldRef<"Customer", 'String'>
   readonly createdAt: Prisma.FieldRef<"Customer", 'DateTime'>
@@ -1284,6 +1686,10 @@ export type CustomerCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    */
   data: Prisma.CustomerCreateManyInput | Prisma.CustomerCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1354,6 +1760,10 @@ export type CustomerUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many Customers to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CustomerIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1420,6 +1830,44 @@ export type CustomerDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Customers to delete.
    */
   limit?: number
+}
+
+/**
+ * Customer.user
+ */
+export type Customer$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * Customer.organization
+ */
+export type Customer$organizationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Organization
+   */
+  select?: Prisma.OrganizationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Organization
+   */
+  omit?: Prisma.OrganizationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrganizationInclude<ExtArgs> | null
+  where?: Prisma.OrganizationWhereInput
 }
 
 /**

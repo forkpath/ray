@@ -87,3 +87,8 @@ export type Subscription = Prisma.SubscriptionModel
  * 
  */
 export type Order = Prisma.OrderModel
+/**
+ * Model RayOnlineMigration
+ *
+ */
+export type RayOnlineMigration = Prisma.RayOnlineMigrationModel
