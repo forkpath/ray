@@ -26,6 +26,14 @@ export class UserOrganizationAccessService {
     }
   }
 
+  async ensureBillingManagementAccess(organizationId: string, userId: string): Promise<void> {
+    const role = await this.ensureMember(organizationId, userId)
+
+    if (role !== MemberRole.OWNER && role !== MemberRole.ADMIN) {
+      throw new ForbiddenException('Only organization owners and admins can manage billing')
+    }
+  }
+
   async isOnlyOwner(organizationId: string, userId: string): Promise<{ isOnlyOwner: boolean }> {
     const role = await this.ensureMember(organizationId, userId)
     if (role !== MemberRole.OWNER) {

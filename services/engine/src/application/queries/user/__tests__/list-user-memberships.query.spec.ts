@@ -29,10 +29,10 @@ describe('ListUserMembershipsHandler', () => {
     const result = await handler.execute(new ListUserMembershipsQuery('u1', { page: 1, perPage: 10 }))
 
     expect(result).toEqual(expected)
-    expect(mockRepo.findMemberships).toHaveBeenCalledWith('u1', {
-      page: 1,
-      perPage: 10
-    })
+    expect(mockRepo.findMemberships).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'u1' }),
+      expect.objectContaining({ page: 1, perPage: 10 })
+    )
   })
 
   it('should return empty results', async () => {

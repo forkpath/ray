@@ -1,8 +1,9 @@
 import type { BillingCheckoutInput, BillingOwner, BillingPortalInput } from '@libs/billing-contract'
 
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 
 import {
+  billingOwnerFeatureFlags,
   createStripeBillingPortalSession,
   createStripeCheckoutSession,
   getBillingSummaryByOwner,
@@ -22,6 +23,12 @@ export class BillingService {
 
   createBillingPortal(input: BillingPortalInput) {
     return createStripeBillingPortalSession(input)
+  }
+
+  assertOrganizationBillingEnabled() {
+    if (!billingOwnerFeatureFlags.organizationBilling) {
+      throw new NotFoundException('Organization billing is not enabled')
+    }
   }
 
   handleStripeWebhook(input: { payload: Buffer | string; signature: string }) {

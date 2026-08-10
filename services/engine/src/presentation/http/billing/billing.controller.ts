@@ -1,14 +1,23 @@
-import { BadRequestException, Body, Controller, Get, Headers, Post, Req } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Get, Headers, Param, Post, Req } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 
 import { AllowAnonymous, Session } from '@libs/srv-shared'
 
-import { CreateBillingPortalCommand } from '#/application/commands/billing/create-billing-portal.command'
-import { CreateCheckoutSessionCommand } from '#/application/commands/billing/create-checkout-session.command'
+import {
+  CreateBillingPortalCommand,
+  CreateOrganizationBillingPortalCommand
+} from '#/application/commands/billing/create-billing-portal.command'
+import {
+  CreateCheckoutSessionCommand,
+  CreateOrganizationCheckoutSessionCommand
+} from '#/application/commands/billing/create-checkout-session.command'
 import { HandleRevenueCatWebhookCommand } from '#/application/commands/billing/handle-revenuecat-webhook.command'
 import { HandleStripeWebhookCommand } from '#/application/commands/billing/handle-stripe-webhook.command'
 import { BillingPortalDto, CheckoutDto } from '#/application/dtos/billing/billing.dto'
-import { GetBillingSummaryQuery } from '#/application/queries/billing/get-billing-summary.query'
+import {
+  GetBillingSummaryQuery,
+  GetOrganizationBillingSummaryQuery
+} from '#/application/queries/billing/get-billing-summary.query'
 
 interface SessionUser {
   id: string
@@ -90,6 +99,49 @@ export class BillingController {
         payload: req.body,
         authorization
       })
+    )
+  }
+}
+
+@Controller('organizations/:organizationId/billing')
+export class OrganizationBillingController {
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus
+  ) {}
+
+  @Get()
+  async getSummary(@Param('organizationId') organizationId: string, @Session() session: AuthSession) {
+    return this.queryBus.execute(new GetOrganizationBillingSummaryQuery(organizationId, session.user.id))
+  }
+
+  @Post('checkout')
+  async createCheckoutSession(
+    @Param('organizationId') organizationId: string,
+    @Session() session: AuthSession,
+    @Body() dto: CheckoutDto
+  ) {
+    return this.commandBus.execute(
+      new CreateOrganizationCheckoutSessionCommand(
+        organizationId,
+        { userId: session.user.id, email: session.user.email },
+        dto
+      )
+    )
+  }
+
+  @Post('portal')
+  async createBillingPortal(
+    @Param('organizationId') organizationId: string,
+    @Session() session: AuthSession,
+    @Body() dto: BillingPortalDto
+  ) {
+    return this.commandBus.execute(
+      new CreateOrganizationBillingPortalCommand(
+        organizationId,
+        { userId: session.user.id, email: session.user.email },
+        dto
+      )
     )
   }
 }
