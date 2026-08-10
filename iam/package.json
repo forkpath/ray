@@ -6,6 +6,11 @@
   "nx": {
     "includedScripts": [
       "typecheck"
+    ],
+    "tags": [
+      "type:platform",
+      "runtime:node",
+      "domain:platform"
     ]
   },
   "scripts": {

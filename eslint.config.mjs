@@ -35,8 +35,114 @@ export default [
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?[jt]s$'],
           depConstraints: [
             {
-              sourceTag: '*',
-              onlyDependOnLibsWithTags: ['*']
+              sourceTag: 'runtime:universal',
+              onlyDependOnLibsWithTags: ['runtime:universal', 'boundary:facade']
+            },
+            {
+              sourceTag: 'runtime:web',
+              onlyDependOnLibsWithTags: ['runtime:web', 'runtime:universal', 'boundary:facade']
+            },
+            {
+              sourceTag: 'runtime:native',
+              onlyDependOnLibsWithTags: ['runtime:native', 'runtime:universal', 'boundary:facade']
+            },
+            {
+              sourceTag: 'runtime:node',
+              onlyDependOnLibsWithTags: ['runtime:node', 'runtime:universal', 'boundary:facade']
+            },
+            {
+              sourceTag: 'type:app',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:data-access',
+                'type:contract',
+                'type:ui',
+                'type:util',
+                'type:platform',
+                'boundary:facade'
+              ]
+            },
+            {
+              sourceTag: 'type:feature',
+              onlyDependOnLibsWithTags: [
+                'type:feature',
+                'type:data-access',
+                'type:contract',
+                'type:ui',
+                'type:util',
+                'type:platform',
+                'boundary:facade'
+              ]
+            },
+            {
+              sourceTag: 'type:data-access',
+              onlyDependOnLibsWithTags: ['type:contract', 'type:util', 'type:platform', 'boundary:facade']
+            },
+            {
+              sourceTag: 'type:contract',
+              onlyDependOnLibsWithTags: ['type:contract', 'type:util']
+            },
+            {
+              sourceTag: 'type:ui',
+              onlyDependOnLibsWithTags: ['type:ui', 'type:contract', 'type:util']
+            },
+            {
+              sourceTag: 'type:util',
+              onlyDependOnLibsWithTags: ['type:util', 'type:contract']
+            },
+            {
+              sourceTag: 'type:platform',
+              onlyDependOnLibsWithTags: [
+                'type:platform',
+                'type:data-access',
+                'type:contract',
+                'type:util',
+                'boundary:facade'
+              ]
+            },
+            {
+              sourceTag: 'domain:shared',
+              onlyDependOnLibsWithTags: ['domain:shared', 'domain:platform', 'boundary:facade']
+            },
+            {
+              sourceTag: 'domain:platform',
+              onlyDependOnLibsWithTags: ['domain:platform', 'domain:shared', 'boundary:facade']
+            },
+            {
+              sourceTag: 'domain:auth',
+              onlyDependOnLibsWithTags: ['domain:auth', 'domain:shared', 'domain:platform', 'boundary:facade']
+            },
+            {
+              sourceTag: 'domain:billing',
+              onlyDependOnLibsWithTags: [
+                'domain:billing',
+                'domain:auth',
+                'domain:shared',
+                'domain:platform',
+                'boundary:facade'
+              ]
+            },
+            {
+              sourceTag: 'domain:organization',
+              onlyDependOnLibsWithTags: [
+                'domain:organization',
+                'domain:auth',
+                'domain:shared',
+                'domain:platform',
+                'boundary:facade'
+              ]
+            },
+            {
+              sourceTag: 'domain:composition',
+              onlyDependOnLibsWithTags: [
+                'domain:composition',
+                'domain:auth',
+                'domain:billing',
+                'domain:organization',
+                'domain:shared',
+                'domain:platform',
+                'boundary:facade'
+              ]
             }
           ]
         }

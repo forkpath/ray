@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/payload/src",
   "projectType": "library",
-  "tags": ["scope:shared", "type:lib"],
+  "tags": ["type:contract", "runtime:universal", "domain:shared"],
   "targets": {
     "typecheck": {
       "executor": "nx:run-commands",
