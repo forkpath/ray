@@ -1,4 +1,4 @@
-import type { PaywallCallbacks } from '../lib/types'
+import type { PaywallCallbacks } from '@libs/billing-contract'
 import type { CustomerInfo } from 'react-native-purchases'
 import type { PresentPaywallParams } from 'react-native-purchases-ui'
 
@@ -7,23 +7,9 @@ import { useState } from 'react'
 import Purchases from 'react-native-purchases'
 import RevenueCatUI, { PAYWALL_RESULT } from 'react-native-purchases-ui'
 
-import { PaywallResult } from '../lib/types'
+import { PaywallResult } from '@libs/billing-contract'
 
-const toPaywallResult = (result: PAYWALL_RESULT): PaywallResult => {
-  switch (result) {
-    case PAYWALL_RESULT.PURCHASED:
-      return PaywallResult.PURCHASED
-    case PAYWALL_RESULT.RESTORED:
-      return PaywallResult.RESTORED
-    case PAYWALL_RESULT.CANCELLED:
-      return PaywallResult.DISMISSED
-    case PAYWALL_RESULT.NOT_PRESENTED:
-      return PaywallResult.SKIPPED
-    case PAYWALL_RESULT.ERROR:
-    default:
-      return PaywallResult.ERROR
-  }
-}
+import { normalizePaywallResult } from './paywall-result'
 
 type UsePaywallArgs = Omit<PaywallCallbacks, 'onPresent' | 'onPurchase' | 'onRestore' | 'onError'> & {
   onPresent?: ({ params }: { params: PresentPaywallParams }) => void
@@ -41,8 +27,7 @@ export const usePaywall = (args?: UsePaywallArgs) => {
       args?.onPresent?.({ params })
 
       const nativeResult = await RevenueCatUI.presentPaywall(params)
-      const normalized = toPaywallResult(nativeResult)
-      setResult(normalized)
+      setResult(normalizePaywallResult(nativeResult))
 
       if (nativeResult === PAYWALL_RESULT.NOT_PRESENTED) {
         args?.onSkip?.()

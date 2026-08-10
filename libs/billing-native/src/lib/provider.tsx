@@ -29,15 +29,18 @@ export const RevenueCatProvider = ({ children, locale }: ProviderProps) => {
 
     Purchases.configure({ apiKey })
     if (locale) {
-      // overridePreferredLocale may not exist on all versions; guarded at runtime
-      const pc = Purchases as unknown as { overridePreferredLocale?: (value: string | null) => void }
-      pc.overridePreferredLocale?.(locale)
+      const purchases = Purchases as unknown as {
+        overridePreferredLocale?: (value: string | null) => void
+      }
+      purchases.overridePreferredLocale?.(locale)
     }
   }, [])
 
   useEffect(() => {
-    const pc = Purchases as unknown as { overridePreferredLocale?: (value: string | null) => void }
-    pc.overridePreferredLocale?.(locale ?? null)
+    const purchases = Purchases as unknown as {
+      overridePreferredLocale?: (value: string | null) => void
+    }
+    purchases.overridePreferredLocale?.(locale ?? null)
   }, [locale])
 
   return <>{children}</>

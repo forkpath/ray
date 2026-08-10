@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { useCustomer } from '@libs/billing/mobile'
+import { useCustomer } from '@libs/billing-native'
 import { Button, buttonTextVariants } from '@libs/ui-shared/mobile/components/button'
 import { Icons } from '@libs/ui-shared/mobile/components/icons'
 import { Spin } from '@libs/ui-shared/mobile/components/spin'

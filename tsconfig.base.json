@@ -46,7 +46,8 @@
       "@libs/auth-web": ["libs/auth-web/src/index.ts"],
       "@libs/auth-native": ["libs/auth-native/src/index.ts"],
       "@libs/auth-server": ["libs/auth-server/src/index.ts"],
-      "@libs/billing-contract": ["libs/billing-contract/src/index.ts"]
+      "@libs/billing-contract": ["libs/billing-contract/src/index.ts"],
+      "@libs/billing-native": ["libs/billing-native/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]

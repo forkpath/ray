@@ -5,7 +5,9 @@ import * as Linking from 'expo-linking'
 import { Platform } from 'react-native'
 import Purchases from 'react-native-purchases'
 
-import { BillingProvider, MOBILE_STORE_LINKS, MobileStore } from '../lib/types'
+import { BillingProvider } from '@libs/billing-contract'
+
+import { resolveBillingPortalUrl } from './portal'
 
 export const useCustomer = () => {
   const customer = useQuery({
@@ -36,22 +38,13 @@ export const useCustomer = () => {
   }
 
   const linkToPortal = async ({ store, variantId }: { store: string; variantId?: string }) => {
-    if (!Object.values(MobileStore).includes(store as MobileStore)) {
-      throw new Error(`Invalid store: ${store}`)
-    }
+    const portalUrl = resolveBillingPortalUrl({ store, variantId, platform: Platform.OS })
 
-    if (store === MobileStore.APP_STORE && Platform.OS === 'ios') {
+    if (!portalUrl) {
       return Purchases.showManageSubscriptions()
     }
 
-    const target = MOBILE_STORE_LINKS[store as keyof typeof MOBILE_STORE_LINKS]
-    const url = new URL(target)
-
-    if (store === MobileStore.PLAY_STORE && variantId) {
-      url.searchParams.set('sku', variantId)
-    }
-
-    await Linking.openURL(url.toString())
+    await Linking.openURL(portalUrl)
   }
 
   return {

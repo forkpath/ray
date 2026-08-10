@@ -10,7 +10,7 @@ import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { getActivePlan } from '@libs/billing'
-import { useCustomer } from '@libs/billing/mobile'
+import { useCustomer } from '@libs/billing-native'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-shared/common'
 import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-shared/mobile/components/avatar'

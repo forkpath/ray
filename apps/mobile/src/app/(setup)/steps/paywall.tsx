@@ -6,7 +6,7 @@ import { ScrollView } from '~/modules/common/styled'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
-import { usePaywall } from '@libs/billing/mobile'
+import { usePaywall } from '@libs/billing-native'
 import { useTranslation } from '@libs/i18n'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@libs/ui-shared/mobile/components/card'
