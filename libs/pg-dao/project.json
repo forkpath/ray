@@ -67,6 +67,14 @@
         "cwd": "libs/pg-dao"
       }
     },
+    "online-migrate": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "options": {
+        "command": "node ./scripts/run-online-migrations.mjs",
+        "cwd": "libs/pg-dao"
+      }
+    },
     "push": {
       "command": "prisma db push --schema ./src --accept-data-loss",
       "options": {

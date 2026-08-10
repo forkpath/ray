@@ -18,6 +18,7 @@ model User {
   twofactors       TwoFactor[]
   members          Member[]
   invitations      Invitation[]
+  billingCustomers Customer[]
 
   @@unique([email])
   @@map("user")
@@ -114,14 +115,15 @@ model TwoFactor {
 }
 
 model Organization {
-  id          String       @id
-  name        String
-  slug        String
-  logo        String?
-  createdAt   DateTime     @map("created_at")
-  metadata    String?
-  members     Member[]
-  invitations Invitation[]
+  id               String       @id
+  name             String
+  slug             String
+  logo             String?
+  createdAt        DateTime     @map("created_at")
+  metadata         String?
+  members          Member[]
+  invitations      Invitation[]
+  billingCustomers Customer[]
 
   organizationroles OrganizationRole[]
 
@@ -139,6 +141,7 @@ model Member {
   role           String       @default("member")
   createdAt      DateTime     @map("created_at")
 
+  @@unique([organizationId, userId])
   @@index([organizationId])
   @@index([userId])
   @@map("member")
@@ -159,6 +162,8 @@ model Invitation {
 
   @@index([organizationId])
   @@index([email])
+  @@index([organizationId, status])
+  @@index([email, status])
   @@map("invitation")
   @@schema("public")
 }
@@ -172,6 +177,7 @@ model OrganizationRole {
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime?    @updatedAt @map("updated_at")
 
+  @@unique([organizationId, role])
   @@index([organizationId])
   @@index([role])
   @@map("organization_role")

@@ -33,6 +33,8 @@ export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
 
 
 export const WebhookEventStatus = {
+  received: 'received',
+  processing: 'processing',
   processed: 'processed',
   failed: 'failed',
   skipped: 'skipped'

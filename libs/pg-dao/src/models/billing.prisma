@@ -20,6 +20,8 @@ enum PaymentStatus {
 }
 
 enum WebhookEventStatus {
+  received
+  processing
   processed
   failed
   skipped
@@ -28,13 +30,16 @@ enum WebhookEventStatus {
 }
 
 model WebhookEvent {
-  id          String             @id @default(cuid())
-  eventId     String             @map("event_id")
-  provider    String
-  type        String
-  status      WebhookEventStatus
-  error       String?
-  processedAt DateTime           @default(now()) @map("processed_at")
+  id            String             @id @default(cuid())
+  eventId       String             @map("event_id")
+  provider      String
+  type          String
+  status        WebhookEventStatus
+  error         String?
+  receivedAt    DateTime           @default(now()) @map("received_at")
+  processedAt   DateTime?          @default(now()) @map("processed_at")
+  lastAttemptAt DateTime?          @map("last_attempt_at")
+  attemptCount  Int                @default(0) @map("attempt_count")
 
   @@unique([eventId, provider])
   @@index([provider, type])
@@ -44,17 +49,23 @@ model WebhookEvent {
 }
 
 model Customer {
-  id            String         @id @default(cuid())
-  referenceId   String         @map("reference_id")
-  externalId    String         @map("external_id")
-  provider      String
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  subscriptions Subscription[]
-  orders        Order[]
+  id             String         @id @default(cuid())
+  referenceId    String         @map("reference_id")
+  userId         String?        @map("user_id")
+  user           User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?        @map("organization_id")
+  organization   Organization?  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  externalId     String         @map("external_id")
+  provider       String
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  subscriptions  Subscription[]
+  orders         Order[]
 
   @@unique([referenceId, provider])
   @@unique([externalId, provider])
+  @@unique([userId, provider], map: "customer_user_id_provider_key_v2", where: { userId: { not: null } })
+  @@unique([organizationId, provider], map: "customer_organization_id_provider_key_v2", where: { organizationId: { not: null } })
   @@map("customer")
   @@schema("billing")
 }
@@ -75,6 +86,7 @@ model Subscription {
   updatedAt      DateTime           @updatedAt @map("updated_at")
 
   @@unique([externalId, store])
+  @@index([customerId, status, createdAt])
   @@map("subscription")
   @@schema("billing")
 }
@@ -91,6 +103,7 @@ model Order {
   updatedAt  DateTime      @updatedAt @map("updated_at")
 
   @@unique([externalId, store])
+  @@index([customerId, status, createdAt])
   @@map("order")
   @@schema("billing")
 }

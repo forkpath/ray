@@ -397,7 +397,8 @@ export const ModelName = {
   WebhookEvent: 'WebhookEvent',
   Customer: 'Customer',
   Subscription: 'Subscription',
-  Order: 'Order'
+  Order: 'Order',
+  RayOnlineMigration: 'RayOnlineMigration'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -413,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "passkey" | "twoFactor" | "organization" | "member" | "invitation" | "organizationRole" | "webhookEvent" | "customer" | "subscription" | "order"
+    modelProps: "user" | "session" | "account" | "verification" | "passkey" | "twoFactor" | "organization" | "member" | "invitation" | "organizationRole" | "webhookEvent" | "customer" | "subscription" | "order" | "rayOnlineMigration"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1453,6 +1454,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RayOnlineMigration: {
+      payload: Prisma.$RayOnlineMigrationPayload<ExtArgs>
+      fields: Prisma.RayOnlineMigrationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RayOnlineMigrationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RayOnlineMigrationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>
+        }
+        findFirst: {
+          args: Prisma.RayOnlineMigrationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RayOnlineMigrationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>
+        }
+        findMany: {
+          args: Prisma.RayOnlineMigrationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>[]
+        }
+        create: {
+          args: Prisma.RayOnlineMigrationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>
+        }
+        createMany: {
+          args: Prisma.RayOnlineMigrationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RayOnlineMigrationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>[]
+        }
+        delete: {
+          args: Prisma.RayOnlineMigrationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>
+        }
+        update: {
+          args: Prisma.RayOnlineMigrationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>
+        }
+        deleteMany: {
+          args: Prisma.RayOnlineMigrationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RayOnlineMigrationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RayOnlineMigrationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>[]
+        }
+        upsert: {
+          args: Prisma.RayOnlineMigrationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RayOnlineMigrationPayload>
+        }
+        aggregate: {
+          args: Prisma.RayOnlineMigrationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRayOnlineMigration>
+        }
+        groupBy: {
+          args: Prisma.RayOnlineMigrationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RayOnlineMigrationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RayOnlineMigrationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RayOnlineMigrationCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1644,7 +1719,10 @@ export const WebhookEventScalarFieldEnum = {
   type: 'type',
   status: 'status',
   error: 'error',
-  processedAt: 'processedAt'
+  receivedAt: 'receivedAt',
+  processedAt: 'processedAt',
+  lastAttemptAt: 'lastAttemptAt',
+  attemptCount: 'attemptCount'
 } as const
 
 export type WebhookEventScalarFieldEnum = (typeof WebhookEventScalarFieldEnum)[keyof typeof WebhookEventScalarFieldEnum]
@@ -1653,6 +1731,8 @@ export type WebhookEventScalarFieldEnum = (typeof WebhookEventScalarFieldEnum)[k
 export const CustomerScalarFieldEnum = {
   id: 'id',
   referenceId: 'referenceId',
+  userId: 'userId',
+  organizationId: 'organizationId',
   externalId: 'externalId',
   provider: 'provider',
   createdAt: 'createdAt',
@@ -1692,6 +1772,15 @@ export const OrderScalarFieldEnum = {
 } as const
 
 export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
+export const RayOnlineMigrationScalarFieldEnum = {
+  id: 'id',
+  checksum: 'checksum',
+  appliedAt: 'appliedAt'
+} as const
+
+export type RayOnlineMigrationScalarFieldEnum = (typeof RayOnlineMigrationScalarFieldEnum)[keyof typeof RayOnlineMigrationScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1952,6 +2041,7 @@ export type GlobalOmitConfig = {
   customer?: Prisma.CustomerOmit
   subscription?: Prisma.SubscriptionOmit
   order?: Prisma.OrderOmit
+  rayOnlineMigration?: Prisma.RayOnlineMigrationOmit
 }
 
 /* Types for Logging */

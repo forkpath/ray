@@ -205,6 +205,7 @@ export type OrganizationRoleOrderByWithRelationInput = {
 
 export type OrganizationRoleWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  organizationId_role?: Prisma.OrganizationRoleOrganizationIdRoleCompoundUniqueInput
   AND?: Prisma.OrganizationRoleWhereInput | Prisma.OrganizationRoleWhereInput[]
   OR?: Prisma.OrganizationRoleWhereInput[]
   NOT?: Prisma.OrganizationRoleWhereInput | Prisma.OrganizationRoleWhereInput[]
@@ -214,7 +215,7 @@ export type OrganizationRoleWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"OrganizationRole"> | Date | string
   updatedAt?: Prisma.DateTimeNullableFilter<"OrganizationRole"> | Date | string | null
   organization?: Prisma.XOR<Prisma.OrganizationScalarRelationFilter, Prisma.OrganizationWhereInput>
-}, "id">
+}, "id" | "organizationId_role">
 
 export type OrganizationRoleOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -310,6 +311,11 @@ export type OrganizationRoleListRelationFilter = {
 
 export type OrganizationRoleOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type OrganizationRoleOrganizationIdRoleCompoundUniqueInput = {
+  organizationId: string
+  role: string
 }
 
 export type OrganizationRoleCountOrderByAggregateInput = {

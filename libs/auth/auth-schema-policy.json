@@ -3,7 +3,7 @@
   "models": {
     "User": {
       "table": "user",
-      "allowedAdditionalFields": []
+      "allowedAdditionalFields": ["billingCustomers"]
     },
     "Session": {
       "table": "session",
@@ -27,19 +27,22 @@
     },
     "Organization": {
       "table": "organization",
-      "allowedAdditionalFields": []
+      "allowedAdditionalFields": ["billingCustomers"]
     },
     "Member": {
       "table": "member",
-      "allowedAdditionalFields": []
+      "allowedAdditionalFields": [],
+      "allowedAdditionalModelAttributes": ["unique(organizationId,userId)"]
     },
     "Invitation": {
       "table": "invitation",
-      "allowedAdditionalFields": []
+      "allowedAdditionalFields": [],
+      "allowedAdditionalModelAttributes": ["index(organizationId,status)", "index(email,status)"]
     },
     "OrganizationRole": {
       "table": "organization_role",
-      "allowedAdditionalFields": []
+      "allowedAdditionalFields": [],
+      "allowedAdditionalModelAttributes": ["unique(organizationId,role)"]
     }
   }
 }

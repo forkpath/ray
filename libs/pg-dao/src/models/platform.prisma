@@ -1,0 +1,8 @@
+model RayOnlineMigration {
+  id        String   @id
+  checksum  String
+  appliedAt DateTime @default(now()) @map("applied_at") @db.Timestamptz
+
+  @@map("_ray_online_migrations")
+  @@schema("public")
+}
