@@ -28,9 +28,10 @@ Billing 正在按运行时拆分。通用值契约与纯目录配置已经进入
 @libs/billing-contract → 公共类型、状态常量、传输记录
 @libs/billing-config   → 纯目录构建器、价格与权益计算
 @libs/billing-client   → owner-scoped HTTP query/mutation、payload 校验
-@libs/billing          → 兼容 facade、env preset、Node provider/persistence
-@libs/billing/server   → Prisma 持久化 helper（customer/subscription/order/webhook CRUD）+ RevenueCat webhook
-@libs/billing/web      → Stripe checkout/portal/webhook 实现
+@libs/billing-server   → Node-only Prisma persistence + Stripe/RevenueCat server provider
+@libs/billing          → 一周期兼容 facade、env preset
+@libs/billing/server   → 已废弃的 Node adapter 精确路径别名
+@libs/billing/web      → 已废弃的 Stripe server 精确路径别名
 @libs/billing-native   → RevenueCat Provider、useCustomer、usePaywall
 ```
 
@@ -44,13 +45,17 @@ Billing 正在按运行时拆分。通用值契约与纯目录配置已经进入
                          └──> @libs/billing-config ───> Web/Mobile/Extension/Studio
                                       │
                                       ▼
-                          @libs/billing facade ───────> Engine + Stripe/Prisma
+                          @libs/billing-server ───────> Engine + Stripe/Prisma
 ```
 
 `billing-client` 只复用 `@libs/api-client` 的公共 transport factory。旧
 `@libs/api-client` Billing exports 冻结保留一个兼容周期；所有仓库内消费者
 均使用新边界。Query Key 使用 `['billing', 'owner', kind, id, 'summary']`，
 避免用户切换后复用上一身份的缓存。
+
+Engine 直接依赖 `@libs/billing-server`。旧 `@libs/billing/server` 和
+`@libs/billing/web` 仅保留一个发布周期用于应用回退；它们直接解析到新项目，
+不会在 mixed facade 与 Node server 之间创建 Nx 项目图依赖。
 
 ---
 

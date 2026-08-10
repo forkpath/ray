@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common'
 
-import { getBillingSummaryByReferenceId, handleRevenueCatWebhook } from '@libs/billing/server'
-import { createStripeBillingPortalSession, createStripeCheckoutSession, handleStripeWebhook } from '@libs/billing/web'
+import {
+  createStripeBillingPortalSession,
+  createStripeCheckoutSession,
+  getBillingSummaryByReferenceId,
+  handleRevenueCatWebhook,
+  handleStripeWebhook
+} from '@libs/billing-server'
 
 @Injectable()
 export class BillingService {

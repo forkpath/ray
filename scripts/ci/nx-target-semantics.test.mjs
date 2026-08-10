@@ -18,6 +18,7 @@ const typecheckProjects = [
   ['libs/billing-config/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/billing-client/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/billing-native/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
+  ['libs/billing-server/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/email/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/i18n/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/mongo-dao/project.json', 'tsc --noEmit -p tsconfig.lib.json'],

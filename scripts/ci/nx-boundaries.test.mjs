@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 35)
+    assert.equal(projects.length, 36)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -119,6 +119,11 @@ describe('Nx boundary governance', () => {
       .sort()
 
     assert.deepEqual(actualFacades, facadeProjects)
+
+    const apiClient = projects.find(project => project.name === 'api-client')
+    assert.ok(apiClient)
+    assert.ok(apiClient.tags.includes('domain:composition'))
+    assert.equal(apiClient.tags.includes('domain:shared'), false)
   })
 
   it('exposes Auth cross-domain dependencies through the contract only', async () => {
@@ -159,6 +164,7 @@ describe('Nx boundary governance', () => {
     const billingConfig = projects.find(project => project.name === 'billing-config')
     const billingClient = projects.find(project => project.name === 'billing-client')
     const billingNative = projects.find(project => project.name === 'billing-native')
+    const billingServer = projects.find(project => project.name === 'billing-server')
 
     assert.ok(billingContract)
     assert.ok(billingContract.tags.includes('type:contract'))
@@ -166,7 +172,7 @@ describe('Nx boundary governance', () => {
     assert.ok(billingContract.tags.includes('boundary:billing-contract'))
 
     assert.ok(billingConfig)
-    assert.ok(billingConfig.tags.includes('type:feature'))
+    assert.ok(billingConfig.tags.includes('type:util'))
     assert.ok(billingConfig.tags.includes('runtime:universal'))
 
     assert.ok(billingClient)
@@ -176,6 +182,54 @@ describe('Nx boundary governance', () => {
     assert.ok(billingNative)
     assert.ok(billingNative.tags.includes('type:data-access'))
     assert.ok(billingNative.tags.includes('runtime:native'))
+
+    assert.ok(billingServer)
+    assert.ok(billingServer.tags.includes('type:platform'))
+    assert.ok(billingServer.tags.includes('runtime:node'))
+  })
+
+  it('keeps Engine on the explicit Node Billing boundary', async () => {
+    const engineFiles = await findSourceFiles('services/engine/src')
+    const legacyImports = []
+
+    for (const file of engineFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      if (/from ['"]@libs\/billing(?:\/server|\/web|['"])/.test(source)) {
+        legacyImports.push(file)
+      }
+    }
+
+    assert.deepEqual(legacyImports, [])
+  })
+
+  it('keeps legacy Node Billing paths as graph-safe compatibility aliases', async () => {
+    const tsconfig = await readJson('tsconfig.base.json')
+    const billingFiles = await findSourceFiles('libs/billing/src')
+
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/billing/server'], ['libs/billing-server/src/index.ts'])
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/billing/web'], ['libs/billing-server/src/index.ts'])
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/billing/mobile'], ['libs/billing-native/src/index.ts'])
+
+    for (const file of billingFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.equal(source.includes('@libs/billing-server'), false, file)
+      assert.equal(source.includes('@libs/billing-native'), false, file)
+    }
+  })
+
+  it('keeps browser and native runtimes off Billing server adapters', async () => {
+    const roots = ['apps/web/src', 'apps/desktop/src', 'apps/mobile/src', 'apps/extension/src', 'libs/studio/src']
+    const files = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
+    const violations = []
+
+    for (const file of files) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      if (source.includes('@libs/billing-server')) {
+        violations.push(file)
+      }
+    }
+
+    assert.deepEqual(violations, [])
   })
 
   it('keeps native Billing consumers off the mixed facade', async () => {
@@ -193,7 +247,7 @@ describe('Nx boundary governance', () => {
   })
 
   it('keeps transport-neutral Billing consumers off the Node facade', async () => {
-    const roots = ['apps/mobile/src', 'apps/extension/src', 'libs/studio/src']
+    const roots = ['apps/web/src', 'apps/mobile/src', 'apps/extension/src', 'libs/api-client/src', 'libs/studio/src']
     const files = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
     const violations = []
 
