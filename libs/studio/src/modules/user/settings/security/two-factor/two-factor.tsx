@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Switch } from '@libs/ui-shared/web'
+import { Switch } from '@libs/ui-web'
 
 import {
   SettingsCard,

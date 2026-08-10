@@ -17,7 +17,7 @@ import {
   ImpersonatingBanner,
   pathsConfig
 } from '@libs/studio'
-import { Icons } from '@libs/ui-shared/web'
+import { Icons } from '@libs/ui-web'
 
 // 应用内页共享布局 - pathless route (不添加到 URL)
 // 采用 SPA 模式，需要认证

@@ -1,6 +1,5 @@
 /* 导入共享样式 */
-@import '../../../../libs/ui-shared/src/common/styles/globals.css';
-@import '../../../../libs/ui-shared/src/web/styles/globals.css';
+@import '../../../../libs/ui-web/src/styles/web/globals.css';
 
-@source '../../../../libs/ui-shared/src';
+@source '../../../../libs/ui-web/src';
 @source '../../../../libs/studio/src';

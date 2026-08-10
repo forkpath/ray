@@ -3,7 +3,7 @@ import type { GetUserSubscriptionsRes } from '@libs/payload'
 
 import { BillingSubscriptionStatus } from '@libs/common'
 import { useTranslation } from '@libs/i18n'
-import { Badge, DataTableColumnHeader } from '@libs/ui-shared/web'
+import { Badge, DataTableColumnHeader } from '@libs/ui-web'
 
 type SubRow = GetUserSubscriptionsRes['list'][number]
 

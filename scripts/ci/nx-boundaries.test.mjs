@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 37)
+    assert.equal(projects.length, 38)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -204,6 +204,47 @@ describe('Nx boundary governance', () => {
     }
   })
 
+  it('keeps browser UI on an explicit Web boundary', async () => {
+    const projects = await readProjects()
+    const uiWeb = projects.find(project => project.name === 'ui-web')
+
+    assert.ok(uiWeb)
+    assert.ok(uiWeb.tags.includes('type:ui'))
+    assert.ok(uiWeb.tags.includes('runtime:web'))
+    assert.ok(uiWeb.tags.includes('domain:shared'))
+
+    const webFiles = await findSourceFiles('libs/ui-web/src')
+    for (const file of webFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.doesNotMatch(source, /from ['"](?:node:|react-native|expo-)/, file)
+      assert.equal(source.includes('@libs/ui-shared/'), false, file)
+    }
+  })
+
+  it('routes browser UI consumers through ui-web', async () => {
+    const roots = ['apps', 'services', 'libs']
+    const files = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
+    const violations = []
+
+    for (const file of files) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      if (source.includes('@libs/ui-shared/web')) {
+        violations.push(file)
+      }
+    }
+
+    assert.deepEqual(violations, [])
+
+    const tsconfig = await readJson('tsconfig.base.json')
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/ui-shared/web'], ['libs/ui-web/src/index.ts'])
+
+    const facadeFiles = await findSourceFiles('libs/ui-shared/src')
+    for (const file of facadeFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.equal(source.includes('@libs/ui-web'), false, file)
+    }
+  })
+
   it('routes shared theme consumers through ui-core', async () => {
     const roots = ['apps', 'services', 'libs']
     const files = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
@@ -219,8 +260,8 @@ describe('Nx boundary governance', () => {
 
     assert.deepEqual(violations, [])
 
-    const compatibilityFacade = await readFile(join(workspaceRoot, 'libs/ui-shared/src/common/index.ts'), 'utf8')
-    assert.match(compatibilityFacade, /export \* from ['"]@libs\/ui-core['"]/)
+    const tsconfig = await readJson('tsconfig.base.json')
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/ui-shared/common'], ['libs/ui-web/src/compat/common.ts'])
   })
 
   it('keeps Engine on the explicit Node Billing boundary', async () => {

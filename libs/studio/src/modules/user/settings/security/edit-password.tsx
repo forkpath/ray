@@ -16,7 +16,7 @@ import {
   Icons,
   PasswordInput,
   Skeleton
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import {
   SettingsCard,

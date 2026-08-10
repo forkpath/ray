@@ -4,7 +4,7 @@ import type { GetCustomersRes } from '@libs/payload'
 import { Link } from '@tanstack/react-router'
 
 import { useTranslation } from '@libs/i18n'
-import { Avatar, AvatarFallback, AvatarImage, Badge, DataTableColumnHeader, Icons } from '@libs/ui-shared/web'
+import { Avatar, AvatarFallback, AvatarImage, Badge, DataTableColumnHeader, Icons } from '@libs/ui-web'
 
 import { pathsConfig } from '../../../../config/paths'
 import { authClient } from '../../../../lib/auth/client'

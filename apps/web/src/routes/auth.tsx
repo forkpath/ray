@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 import { useTranslation } from '@libs/i18n'
 import { authClient, GoLink, pathsConfig } from '@libs/studio'
-import { Icons } from '@libs/ui-shared/web'
+import { Icons } from '@libs/ui-web'
 
 export const Route = createFileRoute('/auth')({
   ssr: false,

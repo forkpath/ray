@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   Icons,
   Input
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 interface SetPasswordModalProps {
   readonly userId: string

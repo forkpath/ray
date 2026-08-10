@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   Icons
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import { RequirePassword } from '../../require-password'
 import { useTwoFactor } from '../use-two-factor'

@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 
 import { AuthProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { Badge, Button, Icons } from '@libs/ui-shared/web'
+import { Badge, Button, Icons } from '@libs/ui-web'
 
 import { pathsConfig } from '../../../../config/paths'
 import { authClient } from '../../../../lib/auth/client'

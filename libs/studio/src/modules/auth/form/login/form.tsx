@@ -4,7 +4,7 @@ import { Suspense } from 'react'
 
 import { AuthProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { Badge, Tabs, TabsContent, TabsList, TabsTrigger } from '@libs/ui-shared/web'
+import { Badge, Tabs, TabsContent, TabsList, TabsTrigger } from '@libs/ui-web'
 
 import { GoLink } from '../../../../common/components/go-link'
 import { pathsConfig } from '../../../../config/paths'

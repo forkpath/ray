@@ -100,7 +100,7 @@ import {
   ZoomOut
 } from 'lucide-react'
 
-import { Icons as GlobalIcons } from '../../../common/assets'
+import { Icons as GlobalIcons } from '../../assets'
 
 export const Icons = {
   ...GlobalIcons,

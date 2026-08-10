@@ -3,7 +3,7 @@ import { createShadowRootUi } from 'wxt/utils/content-script-ui/shadow-root'
 import { defineContentScript } from 'wxt/utils/define-content-script'
 
 import { logger } from '@libs/common'
-import { Button } from '@libs/ui-shared/web'
+import { Button } from '@libs/ui-web'
 
 import '~/assets/styles/globals.css'
 

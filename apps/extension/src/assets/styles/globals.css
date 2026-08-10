@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap');
-@import '../../../../../libs/ui-shared/src/common/styles/globals.css';
-@import '../../../../../libs/ui-shared/src/web/styles/globals.css';
+@import '../../../../../libs/ui-web/src/styles/web/globals.css';
+
+@source '../../../../../libs/ui-web/src';
+@source '../../../../../libs/studio/src';
 
 @theme {
   --font-sans: 'Geist', sans-serif;

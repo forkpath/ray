@@ -2,7 +2,7 @@ import type { UseQueryOptions } from '@tanstack/react-query'
 import type { GetOrganizationsRes } from '@libs/payload'
 
 import { adminOrgQueries, useApiClient } from '@libs/api-client'
-import { DataTable, DataTableToolbar } from '@libs/ui-shared/web'
+import { DataTable, DataTableToolbar } from '@libs/ui-web'
 
 import { useDataTable } from '../../../../common/hooks/use-data-table'
 import { useColumns } from './columns'

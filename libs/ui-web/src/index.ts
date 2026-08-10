@@ -1,10 +1,9 @@
 /// <reference types="./typings/svg.d.ts" />
 
 export * from '@libs/ui-core'
-export * from '../common/hooks/use-media-query'
-export * from '../common/hooks/use-mobile'
+export * from './hooks/use-media-query'
+export * from './hooks/use-mobile'
 
-// web primitive components
 export * from './components/ui/alert-dialog'
 export * from './components/ui/avatar'
 export * from './components/ui/badge'

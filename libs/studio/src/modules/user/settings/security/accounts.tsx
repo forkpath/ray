@@ -17,7 +17,7 @@ import {
   Button,
   Icons,
   Skeleton
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import {
   SettingsCard,

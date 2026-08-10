@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { useTranslation } from '@libs/i18n'
-import { Button, Icons } from '@libs/ui-shared/web'
+import { Button, Icons } from '@libs/ui-web'
 
 import { admin } from '../../../lib/api'
 

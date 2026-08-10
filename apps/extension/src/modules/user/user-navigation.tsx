@@ -26,7 +26,7 @@ import {
   DropdownMenuTrigger,
   Icons,
   Skeleton
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 import { Logout } from './logout'
 

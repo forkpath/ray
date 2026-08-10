@@ -3,7 +3,7 @@ import type { GetUserOrdersRes } from '@libs/payload'
 
 import { BillingOrderStatus } from '@libs/common'
 import { useTranslation } from '@libs/i18n'
-import { Badge, DataTableColumnHeader } from '@libs/ui-shared/web'
+import { Badge, DataTableColumnHeader } from '@libs/ui-web'
 
 type OrderRow = GetUserOrdersRes['list'][number]
 

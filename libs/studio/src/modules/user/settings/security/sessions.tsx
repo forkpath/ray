@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
 import { useTranslation } from '@libs/i18n'
-import { Badge, Button, Icons, Skeleton } from '@libs/ui-shared/web'
+import { Badge, Button, Icons, Skeleton } from '@libs/ui-web'
 
 import {
   SettingsCard,

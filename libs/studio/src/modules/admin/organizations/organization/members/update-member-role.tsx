@@ -24,7 +24,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue
-} from '@libs/ui-shared/web'
+} from '@libs/ui-web'
 
 type MemberRow = GetMembersRes['list'][number]
 

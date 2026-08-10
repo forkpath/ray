@@ -2,7 +2,7 @@ import type { UseQueryOptions } from '@tanstack/react-query'
 import type { GetUserSubscriptionsRes } from '@libs/payload'
 
 import { adminUserQueries, useApiClient } from '@libs/api-client'
-import { DataTable, DataTableSkeleton, DataTableToolbar } from '@libs/ui-shared/web'
+import { DataTable, DataTableSkeleton, DataTableToolbar } from '@libs/ui-web'
 
 import { useDataTable } from '../../../../../../common/hooks/use-data-table'
 import { useColumns } from './columns'

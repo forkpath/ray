@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { Suspense as ReactSuspense } from 'react'
 
-import { Icons } from '@libs/ui-shared/web'
+import { Icons } from '@libs/ui-web'
 
 const Loading = () => {
   return (

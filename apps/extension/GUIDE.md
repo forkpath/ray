@@ -207,7 +207,7 @@ apps/extension/
 - **@libs/billing**: 账单工具函数（`getActivePlan` 等）
 - **@libs/analytics**: 扩展分析适配器（`extension-adapter`，基于 PostHog）
 - **@libs/monitoring**: 扩展监控适配器（`extension-adapter`，基于 PostHog/Sentry）
-- **@libs/ui-shared/web**: Shadcn UI 组件库
+- **@libs/ui-web**: Shadcn UI 组件库
 - **@libs/common**: 共享常量（`Platform.EXTENSION`）、工具函数、logger
 
 ### API 层架构差异

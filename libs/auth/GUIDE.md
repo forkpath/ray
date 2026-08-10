@@ -274,7 +274,7 @@ function InventoryPage() {
 import type { SecondaryNavConfig } from '../../common/components/layout/app-shell/nav-config'
 import type { TFunction } from 'i18next'
 
-import { Icons } from '@libs/ui-shared/web'
+import { Icons } from '@libs/ui-web'
 import { pathsConfig } from '../../config/paths'
 
 export function getWarehouseNavConfig(
