@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 40)
+    assert.equal(projects.length, 41)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -213,7 +213,7 @@ describe('Nx boundary governance', () => {
       'libs/srv-shared/src/cache/cache.module.ts',
       'libs/srv-shared/src/logger/logger.module.ts',
       'libs/srv-shared/src/rabbitmq/rabbitmq.module.ts',
-      'libs/srv-shared/src/redis/redis.module.ts',
+      'libs/server-redis/src/redis.module.ts',
       'libs/srv-shared/src/storage/storage.module.ts'
     ]
 
@@ -261,6 +261,36 @@ describe('Nx boundary governance', () => {
 
     const i18nBridge = await readFile(join(workspaceRoot, 'libs/srv-shared/src/i18n/i18n.module.ts'), 'utf8')
     assert.equal(i18nBridge.trim(), "export { I18nModule } from '@libs/server-nest'")
+  })
+
+  it('keeps Redis infrastructure on an explicit Node adapter boundary', async () => {
+    const projects = await readProjects()
+    const serverRedis = projects.find(project => project.name === 'server-redis')
+
+    assert.ok(serverRedis)
+    assert.ok(serverRedis.tags.includes('type:platform'))
+    assert.ok(serverRedis.tags.includes('runtime:node'))
+    assert.ok(serverRedis.tags.includes('domain:platform'))
+
+    const redisFiles = await findSourceFiles('libs/server-redis/src')
+    for (const file of redisFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.equal(source.includes('@libs/srv-shared'), false, file)
+      assert.equal(source.includes('@libs/srv-core'), false, file)
+      assert.equal(source.includes('@libs/server-nest'), false, file)
+    }
+
+    const engineModule = await readFile(join(workspaceRoot, 'services/engine/src/app.module.ts'), 'utf8')
+    assert.equal(engineModule.includes("import { RedisModule } from '@libs/server-redis'"), true)
+
+    const tsconfig = await readJson('tsconfig.base.json')
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/server-redis'], ['libs/server-redis/src/index.ts'])
+
+    const engineTsconfig = await readJson('services/engine/tsconfig.app.json')
+    assert.deepEqual(engineTsconfig.compilerOptions.paths['@libs/server-redis'], ['libs/server-redis/src/index.ts'])
+
+    const redisModuleBridge = await readFile(join(workspaceRoot, 'libs/srv-shared/src/redis/redis.module.ts'), 'utf8')
+    assert.equal(redisModuleBridge.trim(), "export { RedisModule } from '@libs/server-redis'")
   })
 
   it('keeps shared UI primitives on a universal boundary', async () => {

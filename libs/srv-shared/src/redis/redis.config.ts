@@ -1,1 +1,1 @@
-export type { RedisConfig } from '@libs/server-kernel'
+export type { RedisConfig } from '@libs/server-redis'

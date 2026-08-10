@@ -62,7 +62,8 @@
       "@libs/ui-web": ["libs/ui-web/src/index.ts"],
       "@libs/ui-native": ["libs/ui-native/src/index.ts"],
       "@libs/server-kernel": ["libs/server-kernel/src/index.ts"],
-      "@libs/server-nest": ["libs/server-nest/src/index.ts"]
+      "@libs/server-nest": ["libs/server-nest/src/index.ts"],
+      "@libs/server-redis": ["libs/server-redis/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]

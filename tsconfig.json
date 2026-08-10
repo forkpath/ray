@@ -28,6 +28,9 @@
       "path": "./libs/server-nest"
     },
     {
+      "path": "./libs/server-redis"
+    },
+    {
       "path": "./libs/srv-shared"
     },
     {
