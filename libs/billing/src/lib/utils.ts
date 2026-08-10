@@ -4,15 +4,18 @@ import type {
   BillingPlanConfig,
   BillingSubscriptionRecord,
   BillingVariant
-} from './types'
+} from '@libs/billing-contract'
+
+import {
+  ACTIVE_SUBSCRIPTION_STATUSES,
+  BillingModel,
+  BillingPlan,
+  BillingSubscriptionStatus
+} from '@libs/billing-contract'
 
 import { billingConfig } from './config'
-import { BillingModel, BillingPlan, BillingSubscriptionStatus } from './types'
 
-export const ACTIVE_SUBSCRIPTION_STATUSES: BillingSubscriptionRecord['status'][] = [
-  BillingSubscriptionStatus.ACTIVE,
-  BillingSubscriptionStatus.TRIALING
-]
+export { ACTIVE_SUBSCRIPTION_STATUSES }
 
 export const getBillingPeriod = <
   T extends {

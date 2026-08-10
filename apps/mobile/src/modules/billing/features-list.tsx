@@ -1,4 +1,4 @@
-import type { BillingPlan } from '@libs/billing'
+import type { BillingPlan } from '@libs/billing-contract'
 
 import { View } from 'react-native'
 

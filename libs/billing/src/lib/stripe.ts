@@ -1,6 +1,8 @@
-import type { BillingCheckoutInput, BillingPortalInput } from './types'
+import type { BillingCheckoutInput, BillingPortalInput } from '@libs/billing-contract'
 
 import Stripe from 'stripe'
+
+import { BillingModel, BillingOrderStatus, BillingProvider, BillingSubscriptionStatus } from '@libs/billing-contract'
 
 import { serverEnv } from '../env'
 import { billingConfig } from './config'
@@ -12,7 +14,6 @@ import {
   upsertBillingOrder,
   upsertBillingSubscription
 } from './server'
-import { BillingModel, BillingOrderStatus, BillingProvider, BillingSubscriptionStatus } from './types'
 import { findBillingVariant, findBillingVariantByStripePriceId } from './utils'
 
 let stripeClient: Stripe | null = null

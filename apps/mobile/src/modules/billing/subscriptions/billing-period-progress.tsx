@@ -1,4 +1,4 @@
-import type { Subscription } from '@libs/billing'
+import type { Subscription } from '@libs/billing-contract'
 
 import dayjs from 'dayjs'
 import { View } from 'react-native'

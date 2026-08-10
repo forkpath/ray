@@ -21,10 +21,12 @@
 
 ## 一、架构概览
 
-`@libs/billing` 采用分层架构，通过 4 个子路径为不同运行环境提供精确的 API 边界：
+Billing 正在按运行时拆分。通用值契约已经进入独立 Nx 项目，其余入口在
+兼容期内仍由旧 facade 提供：
 
 ```
-@libs/billing          → 公共类型、套餐配置、env preset、工具函数
+@libs/billing-contract → 公共类型、状态常量、传输记录
+@libs/billing          → 兼容 facade、套餐配置、env preset、工具函数
 @libs/billing/server   → Prisma 持久化 helper（customer/subscription/order/webhook CRUD）+ RevenueCat webhook
 @libs/billing/web      → Stripe checkout/portal/webhook 实现
 @libs/billing/mobile   → RevenueCat Provider、useCustomer、usePaywall

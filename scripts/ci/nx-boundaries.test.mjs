@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 31)
+    assert.equal(projects.length, 32)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -151,6 +151,16 @@ describe('Nx boundary governance', () => {
     assert.ok(authNative.tags.includes('runtime:native'))
     assert.ok(authServer.tags.includes('type:platform'))
     assert.ok(authServer.tags.includes('runtime:node'))
+  })
+
+  it('exposes Billing value contracts through a universal boundary', async () => {
+    const projects = await readProjects()
+    const billingContract = projects.find(project => project.name === 'billing-contract')
+
+    assert.ok(billingContract)
+    assert.ok(billingContract.tags.includes('type:contract'))
+    assert.ok(billingContract.tags.includes('runtime:universal'))
+    assert.ok(billingContract.tags.includes('boundary:billing-contract'))
   })
 
   it('keeps runtime consumers off the mixed Auth facade', async () => {

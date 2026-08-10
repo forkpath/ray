@@ -1,3 +1,4 @@
+import { MobileStore } from '@libs/billing-contract'
 import { BillingOrderStatus, BillingProvider, BillingSubscriptionStatus } from '@libs/common'
 
 import {
@@ -7,7 +8,6 @@ import {
   upsertBillingOrder,
   upsertBillingSubscription
 } from './server'
-import { MobileStore } from './types'
 
 const RELEVANT_EVENTS = new Set([
   'INITIAL_PURCHASE',

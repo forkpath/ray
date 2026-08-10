@@ -4,7 +4,7 @@ import type {
   BillingOrderStatus,
   BillingSubscriptionRecord,
   BillingSubscriptionStatus
-} from './types'
+} from '@libs/billing-contract'
 
 import { prisma } from '@libs/pg-dao'
 
