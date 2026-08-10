@@ -1,29 +1,100 @@
+import type { BillingOwnerFeatureFlags, BillingOwnerShadowMismatchReporter } from './owner-routing'
 import type {
   BillingCustomerRecord,
   BillingOrderRecord,
   BillingOrderStatus,
+  BillingOwner,
   BillingSubscriptionRecord,
   BillingSubscriptionStatus
 } from '@libs/billing-contract'
 
 import { prisma } from '@libs/pg-dao'
 
-function mapCustomer(input: {
-  id: string
-  referenceId: string
-  provider: string
-  externalId: string
-  createdAt: Date
-  updatedAt: Date
-}): BillingCustomerRecord {
+import {
+  findBillingOwnerShadowMismatch,
+  getBillingOwnerFeatureFlags,
+  getBillingOwnerId,
+  getBillingOwnerWhere,
+  getBillingOwnerWriteData,
+  getStoredBillingOwner,
+  reportBillingOwnerShadowMismatch
+} from './owner-routing'
+
+export interface BillingOwnerPersistenceOptions {
+  flags?: BillingOwnerFeatureFlags
+  reportShadowMismatch?: BillingOwnerShadowMismatchReporter
+}
+
+interface BillingCustomerWhere {
+  referenceId?: string
+  userId?: string
+  organizationId?: string
+  provider?: string
+}
+
+function mapCustomer(
+  input: {
+    id: string
+    referenceId: string
+    userId: string | null
+    organizationId: string | null
+    provider: string
+    externalId: string
+    createdAt: Date
+    updatedAt: Date
+  },
+  expectedOwner?: BillingOwner
+): BillingCustomerRecord {
+  const storedOwner = getStoredBillingOwner(input)
+  if (
+    storedOwner &&
+    expectedOwner &&
+    (storedOwner.kind !== expectedOwner.kind || getBillingOwnerId(storedOwner) !== getBillingOwnerId(expectedOwner))
+  ) {
+    throw new Error(`Billing customer ${input.id} does not match the requested owner`)
+  }
+
   return {
     id: input.id,
+    owner: storedOwner ?? expectedOwner ?? null,
     referenceId: input.referenceId,
     provider: input.provider,
     externalId: input.externalId,
     createdAt: input.createdAt,
     updatedAt: input.updatedAt
   }
+}
+
+async function readBillingCustomersByOwner<T extends { id: string }>(input: {
+  owner: BillingOwner
+  provider?: string
+  options?: BillingOwnerPersistenceOptions
+  query: (where: BillingCustomerWhere) => Promise<T[]>
+}): Promise<T[]> {
+  const flags = input.options?.flags ?? getBillingOwnerFeatureFlags()
+  const providerWhere = input.provider ? { provider: input.provider } : {}
+  const readLegacy = !flags.v2Read || flags.shadowRead
+  const readV2 = flags.v2Read || flags.shadowRead
+  const [legacyCustomers, v2Customers] = await Promise.all([
+    readLegacy ? input.query({ referenceId: getBillingOwnerId(input.owner), ...providerWhere }) : Promise.resolve([]),
+    readV2 ? input.query({ ...getBillingOwnerWhere(input.owner), ...providerWhere }) : Promise.resolve([])
+  ])
+
+  if (flags.shadowRead) {
+    const mismatch = findBillingOwnerShadowMismatch({
+      owner: input.owner,
+      provider: input.provider,
+      legacyCustomerIds: legacyCustomers.map(customer => customer.id),
+      v2CustomerIds: v2Customers.map(customer => customer.id)
+    })
+
+    if (mismatch) {
+      const reporter = input.options?.reportShadowMismatch ?? reportBillingOwnerShadowMismatch
+      reporter(mismatch)
+    }
+  }
+
+  return flags.v2Read ? v2Customers : legacyCustomers
 }
 
 function mapSubscription(input: {
@@ -78,18 +149,30 @@ function mapOrder(input: {
   }
 }
 
-export async function getBillingCustomersByReferenceId(referenceId: string, provider?: string) {
-  const customers = await prisma.customer.findMany({
-    where: {
-      referenceId,
-      ...(provider ? { provider } : {})
-    },
-    orderBy: {
-      createdAt: 'desc'
-    }
+export async function getBillingCustomersByOwner(
+  owner: BillingOwner,
+  provider?: string,
+  options?: BillingOwnerPersistenceOptions
+) {
+  const customers = await readBillingCustomersByOwner({
+    owner,
+    provider,
+    options,
+    query: where =>
+      prisma.customer.findMany({
+        where,
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
   })
 
-  return customers.map(mapCustomer)
+  return customers.map(customer => mapCustomer(customer, owner))
+}
+
+/** @deprecated Use getBillingCustomersByOwner with a user owner. */
+export function getBillingCustomersByReferenceId(referenceId: string, provider?: string) {
+  return getBillingCustomersByOwner({ kind: 'user', userId: referenceId }, provider)
 }
 
 export async function getBillingCustomerByExternalId(externalId: string, provider: string) {
@@ -105,21 +188,30 @@ export async function getBillingCustomerByExternalId(externalId: string, provide
   return customer ? mapCustomer(customer) : null
 }
 
-export async function upsertBillingCustomer(input: { referenceId: string; provider: string; externalId: string }) {
+export async function upsertBillingCustomer(
+  input: { owner: BillingOwner; provider: string; externalId: string },
+  options?: BillingOwnerPersistenceOptions
+) {
+  const flags = options?.flags ?? getBillingOwnerFeatureFlags()
+  const referenceId = getBillingOwnerId(input.owner)
+  const ownerData = getBillingOwnerWriteData(input.owner, flags)
   const customer = await prisma.customer.upsert({
     where: {
-      externalId_provider: {
-        externalId: input.externalId,
+      referenceId_provider: {
+        referenceId,
         provider: input.provider
       }
     },
     create: {
-      referenceId: input.referenceId,
+      referenceId,
+      ...ownerData,
       provider: input.provider,
       externalId: input.externalId
     },
     update: {
-      referenceId: input.referenceId
+      referenceId,
+      externalId: input.externalId,
+      ...ownerData
     }
   })
 
@@ -222,23 +314,31 @@ export async function createWebhookEvent(input: {
   })
 }
 
-export async function getBillingSummaryByReferenceId(referenceId: string) {
-  const customers = await prisma.customer.findMany({
-    where: {
-      referenceId
-    },
-    include: {
-      subscriptions: true,
-      orders: true
-    },
-    orderBy: {
-      createdAt: 'desc'
-    }
+export async function getBillingSummaryByOwner(owner: BillingOwner, options?: BillingOwnerPersistenceOptions) {
+  const customers = await readBillingCustomersByOwner({
+    owner,
+    options,
+    query: where =>
+      prisma.customer.findMany({
+        where,
+        include: {
+          subscriptions: true,
+          orders: true
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      })
   })
 
   return customers.map(customer => ({
-    ...mapCustomer(customer),
+    ...mapCustomer(customer, owner),
     subscriptions: customer.subscriptions.map(mapSubscription),
     orders: customer.orders.map(mapOrder)
   }))
+}
+
+/** @deprecated Use getBillingSummaryByOwner with a user owner. */
+export function getBillingSummaryByReferenceId(referenceId: string) {
+  return getBillingSummaryByOwner({ kind: 'user', userId: referenceId })
 }

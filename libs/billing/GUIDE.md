@@ -261,7 +261,7 @@ sequenceDiagram
 
     Note over Engine: AuthGuard 校验 session
 
-    Engine->>Billing: createStripeCheckoutSession({<br>  referenceId: user.id,<br>  email: user.email,<br>  variantId, successUrl, cancelUrl<br>})
+    Engine->>Billing: createStripeCheckoutSession({<br>  owner: { kind: 'user', userId: user.id },<br>  email: user.email,<br>  variantId, successUrl, cancelUrl<br>})
 
     Billing->>Billing: findBillingVariant(variantId)<br>→ 获取 stripePriceId
 
@@ -297,7 +297,7 @@ sequenceDiagram
     Stripe->>User: 重定向到 successUrl
     User->>Web: 看到成功页面
     Web->>Engine: GET /api/billing/me
-    Engine->>DB: getBillingSummaryByReferenceId()
+    Engine->>DB: getBillingSummaryByOwner({ kind: 'user', userId })
     DB-->>Engine: { customers, subscriptions, orders }
     Engine-->>Web: 账单摘要
 ```
@@ -314,7 +314,7 @@ sequenceDiagram
 
     User->>Web: 点击「管理订阅」
     Web->>Engine: POST /api/billing/portal<br>{returnUrl}
-    Engine->>Billing: createStripeBillingPortalSession({<br>  referenceId, email, returnUrl<br>})
+    Engine->>Billing: createStripeBillingPortalSession({<br>  owner: { kind: 'user', userId }, email, returnUrl<br>})
     Billing->>Stripe: customers.list / create
     Billing->>Stripe: billingPortal.sessions.create({<br>  customer, return_url<br>})
     Stripe-->>Billing: { url }

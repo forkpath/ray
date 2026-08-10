@@ -156,7 +156,7 @@ export async function handleRevenueCatWebhook({ payload, authorization, callback
     const subscriber = await fetchSubscriber(event.app_user_id)
 
     const customer = await upsertBillingCustomer({
-      referenceId: event.app_user_id,
+      owner: { kind: 'user', userId: event.app_user_id },
       externalId: event.app_user_id,
       provider: BillingProvider.REVENUECAT
     })

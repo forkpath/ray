@@ -67,7 +67,7 @@ import {
 } from '@libs/billing-server'
 
 const checkout = await createStripeCheckoutSession({
-  referenceId: user.id,
+  owner: { kind: 'user', userId: user.id },
   email: user.email,
   variantId: 'premium-monthly',
   successUrl: 'https://app.example.com/billing/success',
@@ -75,7 +75,7 @@ const checkout = await createStripeCheckoutSession({
 })
 
 const portal = await createStripeBillingPortalSession({
-  referenceId: user.id,
+  owner: { kind: 'user', userId: user.id },
   email: user.email,
   returnUrl: 'https://app.example.com/settings/billing'
 })

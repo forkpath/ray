@@ -74,8 +74,22 @@ export interface BillingConfig {
   discounts: BillingDiscount[]
 }
 
+export interface UserBillingOwner {
+  kind: 'user'
+  userId: string
+}
+
+export interface OrganizationBillingOwner {
+  kind: 'organization'
+  organizationId: string
+}
+
+export type BillingOwner = UserBillingOwner | OrganizationBillingOwner
+
 export interface BillingCustomerRecord {
   id: string
+  owner: BillingOwner | null
+  /** @deprecated Use owner. Kept for one compatibility cycle. */
   referenceId: string
   externalId: string
   provider: string
@@ -121,7 +135,7 @@ export type Subscription = BillingSubscriptionRecord
 export type Order = BillingOrderRecord
 
 export interface BillingCheckoutInput {
-  referenceId: string
+  owner: BillingOwner
   email: string
   variantId: string
   successUrl: string
@@ -129,7 +143,7 @@ export interface BillingCheckoutInput {
 }
 
 export interface BillingPortalInput {
-  referenceId: string
+  owner: BillingOwner
   email: string
   returnUrl: string
 }

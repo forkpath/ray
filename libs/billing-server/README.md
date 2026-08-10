@@ -7,7 +7,13 @@ It owns:
 - Prisma persistence for Billing customers, subscriptions, orders, and webhook events;
 - Stripe Checkout, Portal, and webhook synchronization;
 - RevenueCat server-to-server webhook synchronization;
+- owner-aware dual-write, shadow-read, and V2 read compatibility;
 - the validated server environment and provider catalog configuration.
+
+Billing entry points accept a discriminated `BillingOwner`. User HTTP routes
+must derive it from the Better Auth session; organization routes must derive it
+from the authorized path organization. Never accept an arbitrary owner ID from
+the request body. See `docs/database/billing-owner-rollout.md` for flag order.
 
 Engine imports this public API directly. The old `@libs/billing/server` and
 `@libs/billing/web` paths are deprecated compatibility facades for one release.

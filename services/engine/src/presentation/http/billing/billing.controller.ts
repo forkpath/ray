@@ -30,14 +30,14 @@ export class BillingController {
 
   @Get('me')
   async getSummary(@Session() session: AuthSession) {
-    return this.queryBus.execute(new GetBillingSummaryQuery(session.user.id))
+    return this.queryBus.execute(new GetBillingSummaryQuery({ kind: 'user', userId: session.user.id }))
   }
 
   @Post('checkout')
   async createCheckoutSession(@Session() session: AuthSession, @Body() dto: CheckoutDto) {
     return this.commandBus.execute(
       new CreateCheckoutSessionCommand({
-        referenceId: session.user.id,
+        owner: { kind: 'user', userId: session.user.id },
         email: session.user.email,
         variantId: dto.variantId,
         successUrl: dto.successUrl,
@@ -50,7 +50,7 @@ export class BillingController {
   async createBillingPortal(@Session() session: AuthSession, @Body() dto: BillingPortalDto) {
     return this.commandBus.execute(
       new CreateBillingPortalCommand({
-        referenceId: session.user.id,
+        owner: { kind: 'user', userId: session.user.id },
         email: session.user.email,
         returnUrl: dto.returnUrl
       })
