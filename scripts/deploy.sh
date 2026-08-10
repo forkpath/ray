@@ -104,8 +104,8 @@ cmd_nx_build() {
   info "Building web + engine in parallel..."
   NODE_ENV=production pnpm exec nx run-many --targets=build --projects=web,engine --parallel=2
 
-  info "Generating pruned lockfile for engine..."
-  node scripts/create-engine-lockfile.js
+  info "Packaging engine deployment artifacts..."
+  pnpm exec nx run engine:package
 
   # TanStack Start (Vinxi) always outputs to {projectRoot}/.output/ regardless
   # of any nitro() plugin config. Move it to dist/apps/web/ for consistency

@@ -28,6 +28,8 @@ const bundlerProjects = [
   'libs/srv-shared/tsconfig.json'
 ]
 
+const packagedServices = ['services/engine/project.json', 'services/pulse/project.json', 'services/worker/project.json']
+
 describe('Nx target semantics', () => {
   it('provides deterministic no-emit typecheck targets', async () => {
     for (const [path, command] of typecheckProjects) {
@@ -58,5 +60,40 @@ describe('Nx target semantics', () => {
 
     assert.match(workspace, /^\s+- 'iam'$/m)
     assert.deepEqual(packageJson.nx.includedScripts, ['typecheck'])
+  })
+
+  it('uses package as the standard server deployment assembly target', async () => {
+    for (const path of packagedServices) {
+      const project = await readJson(path)
+      const service = path.split('/')[1]
+
+      assert.equal(project.targets.package.executor, 'nx:noop', path)
+      assert.deepEqual(project.targets.package.dependsOn, ['prune-lockfile', 'copy-workspace-modules'], path)
+      assert.equal(
+        project.targets['prune-lockfile'].options.command,
+        `node scripts/create-service-lockfile.js ${service}`,
+        path
+      )
+      assert.equal(
+        project.targets['copy-workspace-modules'].options.command,
+        `node scripts/prepare-service-workspace-modules.js ${service}`,
+        path
+      )
+      assert.ok(
+        project.targets['prune-lockfile'].inputs.includes('{workspaceRoot}/scripts/create-service-lockfile.js'),
+        path
+      )
+      assert.ok(
+        project.targets['copy-workspace-modules'].inputs.includes(
+          '{workspaceRoot}/scripts/prepare-service-workspace-modules.js'
+        ),
+        path
+      )
+      assert.deepEqual(project.targets.prune.dependsOn, ['package'], path)
+    }
+
+    const deployScript = await readFile('scripts/deploy.sh', 'utf8')
+    assert.match(deployScript, /pnpm exec nx run engine:package/)
+    assert.doesNotMatch(deployScript, /node scripts\/create-engine-lockfile\.js/)
   })
 })

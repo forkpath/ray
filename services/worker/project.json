@@ -24,26 +24,32 @@
     "prune-lockfile": {
       "dependsOn": ["build"],
       "cache": true,
-      "executor": "@nx/js:prune-lockfile",
+      "executor": "nx:run-commands",
+      "inputs": ["production", "^production", "{workspaceRoot}/scripts/create-service-lockfile.js"],
       "outputs": [
         "{workspaceRoot}/dist/services/worker/package.json",
         "{workspaceRoot}/dist/services/worker/pnpm-lock.yaml"
       ],
       "options": {
-        "buildTarget": "build"
+        "command": "node scripts/create-service-lockfile.js worker"
       }
     },
     "copy-workspace-modules": {
       "dependsOn": ["build"],
       "cache": true,
+      "inputs": ["production", "^production", "{workspaceRoot}/scripts/prepare-service-workspace-modules.js"],
       "outputs": ["{workspaceRoot}/dist/services/worker/workspace_modules"],
-      "executor": "@nx/js:copy-workspace-modules",
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "build"
+        "command": "node scripts/prepare-service-workspace-modules.js worker"
       }
     },
-    "prune": {
+    "package": {
       "dependsOn": ["prune-lockfile", "copy-workspace-modules"],
+      "executor": "nx:noop"
+    },
+    "prune": {
+      "dependsOn": ["package"],
       "executor": "nx:noop"
     },
     "serve": {
