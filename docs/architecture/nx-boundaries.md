@@ -58,6 +58,13 @@ infrastructure adapters consume the kernel contract. The old `@libs/srv-core`
 path resolves directly to `server-nest`; previous `srv-shared` i18n, Redis, and
 RabbitMQ exports are type/module-only compatibility bridges for one release.
 
+All `@libs/` path mappings are now either a project root public API or a finite,
+named subpath entry point. Wildcard mappings such as `@libs/package/*` are
+forbidden by CI because they let consumers bypass project boundaries and import
+arbitrary source files. Runtime entry points such as `monitoring/web`,
+`analytics/mobile`, and the one-release compatibility paths remain explicit and
+auditable.
+
 Billing values and transport-neutral records now live behind the additive
 `boundary:billing-contract` marker in `billing-contract`. The legacy Billing
 facade re-exports these contracts for rollback compatibility while frontend
