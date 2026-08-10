@@ -36,6 +36,15 @@
         "command": "vite build"
       }
     },
+    "package": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "dependsOn": ["build"],
+      "outputs": ["{workspaceRoot}/dist/apps/web"],
+      "options": {
+        "command": "node scripts/release/package-web-output.mjs"
+      }
+    },
     "dev": {
       "executor": "nx:run-commands",
       "continuous": true,

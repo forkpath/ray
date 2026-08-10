@@ -110,6 +110,7 @@ const readProjects = async () => {
   const projectFiles = (
     await Promise.all(['apps', 'libs', 'services'].map(directory => findProjectFiles(directory)))
   ).flat()
+  projectFiles.push('docker/migrator/project.json')
   const packageFiles = ['package.json', 'iam/package.json', 'tools/auth-schema-tooling/package.json']
 
   return Promise.all(
@@ -136,7 +137,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 42)
+    assert.equal(projects.length, 43)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)

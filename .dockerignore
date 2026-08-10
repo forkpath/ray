@@ -6,6 +6,8 @@ node_modules
 #         that Dockerfiles need to COPY.
 /dist
 !/dist/services/engine
+!/dist/services/pulse
+!/dist/services/worker
 !/dist/apps/web
 .git
 .github
@@ -17,7 +19,9 @@ node_modules
 .env
 .env.*
 !.env.example
-docker
+docker/*
+!docker/migrator/
+!docker/migrator/**
 docs
 coverage
 tmp
