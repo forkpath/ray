@@ -1,7 +1,7 @@
-import type { PermissionCheckParams, RoleName } from '../permissions'
 import type { auth } from '../server'
 import type { AuthClientOptions, AuthMobileClientOptions } from '../types'
 import type { LastLoginMethodClientConfig } from '@better-auth/expo/plugins'
+import type { PermissionCheckParams, RoleName } from '@libs/auth-contract'
 import type { BetterAuthClientPlugin } from 'better-auth'
 
 import { expoClient } from '@better-auth/expo/client'
@@ -17,7 +17,8 @@ import {
 } from 'better-auth/client/plugins'
 import { createAuthClient } from 'better-auth/react'
 
-import { ac } from '../permissions'
+import { ac } from '@libs/auth-contract'
+
 import { resolvePermissionCheckSuccess } from './permission-result'
 
 const createExpoClientPlugin = (options: AuthMobileClientOptions) => {

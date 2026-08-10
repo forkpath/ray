@@ -1,6 +1,6 @@
-import type { PermissionCheckParams, RoleName } from '../permissions'
 import type { auth } from '../server'
 import type { AuthClientOptions } from '../types'
+import type { PermissionCheckParams, RoleName } from '@libs/auth-contract'
 
 import { passkeyClient } from '@better-auth/passkey/client'
 import {
@@ -18,7 +18,8 @@ import { createAuthClient } from 'better-auth/react'
  * React 客户端 - 用于组件内的 useSession 等 hooks
  */
 
-import { ac } from '../permissions'
+import { ac } from '@libs/auth-contract'
+
 import { resolvePermissionCheckSuccess } from './permission-result'
 
 export const createClient = (options?: AuthClientOptions) => {

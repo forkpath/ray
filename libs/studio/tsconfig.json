@@ -11,6 +11,7 @@
       "@libs/payload": ["libs/payload/src/index.ts"],
       "@libs/auth": ["libs/auth/src/index.ts"],
       "@libs/auth/*": ["libs/auth/src/*"],
+      "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
       "@libs/i18n": ["libs/i18n/src/index.ts"],
       "@libs/api-client": ["libs/api-client/src/index.ts"],
       "@libs/api-client/*": ["libs/api-client/src/*"],

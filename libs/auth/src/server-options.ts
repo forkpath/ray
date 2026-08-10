@@ -5,13 +5,12 @@ import { expo } from '@better-auth/expo'
 import { passkey } from '@better-auth/passkey'
 import { admin, anonymous, emailOTP, lastLoginMethod, magicLink, organization, twoFactor } from 'better-auth/plugins'
 
+import { ac, AuthProvider, roles, SocialProvider, VerificationType } from '@libs/auth-contract'
 import { APP_NAME, APP_SLUG, NodeEnv } from '@libs/common'
 import { EmailTemplate } from '@libs/email'
 import { getLocaleFromRequest } from '@libs/i18n'
 
 import { getUrl } from './lib/utils'
-import { ac, roles } from './permissions'
-import { AuthProvider, SocialProvider, VerificationType } from './types'
 
 type NodeEnvironment = (typeof NodeEnv)[keyof typeof NodeEnv]
 type AuthEmailSender = typeof sendEmail

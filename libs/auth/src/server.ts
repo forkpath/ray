@@ -1,3 +1,5 @@
+import type { AuthErrorCode as ContractAuthErrorCode } from '@libs/auth-contract'
+
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { betterAuth } from 'better-auth/minimal'
 
@@ -33,7 +35,16 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, { provider: 'postgresql' })
 })
 
-export type AuthErrorCode = keyof typeof auth.$ERROR_CODES
+type BetterAuthErrorCode = keyof typeof auth.$ERROR_CODES
+type ExactErrorCodeContract = [BetterAuthErrorCode] extends [ContractAuthErrorCode]
+  ? [ContractAuthErrorCode] extends [BetterAuthErrorCode]
+    ? true
+    : false
+  : false
+type Assert<T extends true> = T
+
+export type AuthErrorCode = BetterAuthErrorCode
+export type AuthErrorCodeContractIsExact = Assert<ExactErrorCodeContract>
 export type Session = typeof auth.$Infer.Session
 export type User = Session['user']
 export type Invitation = typeof auth.$Infer.Invitation

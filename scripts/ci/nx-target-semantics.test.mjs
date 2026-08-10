@@ -10,6 +10,7 @@ const typecheckProjects = [
   ['apps/web-e2e/project.json', 'tsc --noEmit -p tsconfig.json'],
   ['libs/api-core/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/auth/project.json', 'tsc --noEmit -p tsconfig.typecheck.json'],
+  ['libs/auth-contract/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/email/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/i18n/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/mongo-dao/project.json', 'tsc --noEmit -p tsconfig.lib.json'],

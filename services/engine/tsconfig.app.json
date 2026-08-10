@@ -25,6 +25,7 @@
       "@libs/payload": ["libs/payload/src/index.ts"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
       "@libs/auth/*": ["libs/auth/src/*"],
+      "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
       "@libs/email": ["libs/email/src/index.ts"],
       "@libs/email/*": ["libs/email/src/*"],
       "@libs/email/server": ["libs/email/src/server.ts"],

@@ -41,7 +41,8 @@
       "@libs/api-client": ["libs/api-client/src/index.ts"],
       "@libs/api-client/*": ["libs/api-client/src/*"],
       "@libs/studio": ["libs/studio/src/index.ts"],
-      "@libs/studio/*": ["libs/studio/src/*"]
+      "@libs/studio/*": ["libs/studio/src/*"],
+      "@libs/auth-contract": ["libs/auth-contract/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]
