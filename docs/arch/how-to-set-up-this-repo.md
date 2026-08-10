@@ -44,11 +44,12 @@ npx lefthook install
 pnpm add -D @ianvs/prettier-plugin-sort-imports prettier-plugin-tailwindcss
 ```
 
-- 创建service等核心依赖core和共享模块shared
+- 创建服务端配置契约、Nest 适配器和过渡期共享适配器
 
 ```shell
-nx g @nx/nest:lib libs/srv-core --linter=eslint --tags=scope:backend,type:lib --skipTsConfig
-nx g @nx/nest:lib libs/srv-shared --linter=eslint --tags=scope:backend,type:lib --skipTsConfig
+pnpm nx g @nx/js:library libs/server-kernel --bundler=none --tags=type:contract,runtime:universal,domain:platform
+pnpm nx g @nx/js:library libs/server-nest --bundler=none --tags=type:platform,runtime:node,domain:platform
+pnpm nx g @nx/nest:lib libs/srv-shared --linter=eslint --tags=type:platform,runtime:node,domain:platform
 ```
 
 - 创建pg-dao，用prisma作为orm

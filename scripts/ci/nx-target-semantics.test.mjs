@@ -25,7 +25,7 @@ const typecheckProjects = [
   ['libs/payload/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/pg-dao/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/server-kernel/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
-  ['libs/srv-core/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
+  ['libs/server-nest/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/srv-shared/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/ui-core/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/ui-native/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
@@ -37,7 +37,7 @@ const bundlerProjects = [
   'libs/api-core/tsconfig.json',
   'libs/mongo-dao/tsconfig.json',
   'libs/payload/tsconfig.json',
-  'libs/srv-core/tsconfig.json',
+  'libs/server-nest/tsconfig.json',
   'libs/srv-shared/tsconfig.json'
 ]
 

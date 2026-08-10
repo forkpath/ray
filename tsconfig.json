@@ -25,7 +25,7 @@
       "path": "./libs/api-core"
     },
     {
-      "path": "./libs/srv-core"
+      "path": "./libs/server-nest"
     },
     {
       "path": "./libs/srv-shared"

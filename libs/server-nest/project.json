@@ -1,15 +1,17 @@
 {
-  "name": "srv-core",
+  "name": "server-nest",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/srv-core/src",
+  "sourceRoot": "libs/server-nest/src",
   "projectType": "library",
   "tags": ["type:platform", "runtime:node", "domain:platform"],
   "targets": {
     "typecheck": {
       "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
+      "inputs": ["production", "^production"],
       "options": {
-        "command": "tsc --noEmit -p tsconfig.lib.json",
-        "cwd": "libs/srv-core"
+        "cwd": "libs/server-nest",
+        "command": "tsc --noEmit -p tsconfig.lib.json"
       }
     }
   }
