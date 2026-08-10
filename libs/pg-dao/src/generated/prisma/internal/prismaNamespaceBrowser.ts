@@ -171,7 +171,9 @@ export const TwoFactorScalarFieldEnum = {
   secret: 'secret',
   backupCodes: 'backupCodes',
   userId: 'userId',
-  verified: 'verified'
+  verified: 'verified',
+  failedVerificationCount: 'failedVerificationCount',
+  lockedUntil: 'lockedUntil'
 } as const
 
 export type TwoFactorScalarFieldEnum = (typeof TwoFactorScalarFieldEnum)[keyof typeof TwoFactorScalarFieldEnum]
