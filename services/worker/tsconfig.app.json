@@ -15,7 +15,6 @@
       "@libs/srv-shared/rabbitmq": ["libs/server-rabbitmq/src/index.ts"],
       "@libs/mongo-dao": ["libs/mongo-dao/src/index.ts"],
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
-      "@libs/pg-dao/*": ["libs/pg-dao/src/*"],
       "@libs/common": ["libs/common/src/index.ts"]
     }
   },

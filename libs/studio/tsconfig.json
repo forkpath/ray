@@ -13,10 +13,8 @@
       "@libs/auth-web": ["libs/auth-web/src/index.ts"],
       "@libs/i18n": ["libs/i18n/src/index.ts"],
       "@libs/api-client": ["libs/api-client/src/index.ts"],
-      "@libs/api-client/*": ["libs/api-client/src/*"],
       "@libs/api-core": ["libs/api-core/src/index.ts"],
       "@libs/billing": ["libs/billing/src/index.ts"],
-      "@libs/billing/*": ["libs/billing/src/*"],
       "@libs/billing-contract": ["libs/billing-contract/src/index.ts"],
       "@libs/billing-config": ["libs/billing-config/src/index.ts"],
       "@libs/billing-client": ["libs/billing-client/src/index.ts"],
@@ -25,7 +23,6 @@
       "@libs/email/server": ["libs/email/src/server.ts"],
       "@libs/ui-shared/common": ["libs/ui-web/src/compat/common.ts"],
       "@libs/ui-shared/web": ["libs/ui-web/src/index.ts"],
-      "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
       "@libs/ui-core": ["libs/ui-core/src/index.ts"],
       "@libs/ui-web": ["libs/ui-web/src/index.ts"]
     }

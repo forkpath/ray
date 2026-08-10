@@ -14,6 +14,32 @@ const allowedTags = {
 
 const facadeProjects = ['api-client', 'auth', 'billing', 'ui-shared']
 
+const publicSubpathAliases = {
+  '@libs/analytics/desktop': ['libs/analytics/src/desktop.tsx'],
+  '@libs/analytics/env': ['libs/analytics/src/env.ts'],
+  '@libs/analytics/extension': ['libs/analytics/src/extension.tsx'],
+  '@libs/analytics/mobile': ['libs/analytics/src/mobile.tsx'],
+  '@libs/analytics/server': ['libs/analytics/src/server.ts'],
+  '@libs/analytics/web': ['libs/analytics/src/web.tsx'],
+  '@libs/api-client/utils': ['libs/api-client/src/utils.ts'],
+  '@libs/billing/mobile': ['libs/billing-native/src/index.ts'],
+  '@libs/billing/server': ['libs/billing-server/src/index.ts'],
+  '@libs/billing/web': ['libs/billing-server/src/index.ts'],
+  '@libs/common/hooks': ['libs/common/src/hooks/index.ts'],
+  '@libs/common/utils': ['libs/common/src/utils/index.ts'],
+  '@libs/email/server': ['libs/email/src/server.ts'],
+  '@libs/monitoring/desktop': ['libs/monitoring/src/desktop.tsx'],
+  '@libs/monitoring/env': ['libs/monitoring/src/env.ts'],
+  '@libs/monitoring/extension': ['libs/monitoring/src/extension.tsx'],
+  '@libs/monitoring/mobile': ['libs/monitoring/src/mobile.tsx'],
+  '@libs/monitoring/server': ['libs/monitoring/src/server.ts'],
+  '@libs/monitoring/web': ['libs/monitoring/src/web.tsx'],
+  '@libs/srv-shared/rabbitmq': ['libs/server-rabbitmq/src/index.ts'],
+  '@libs/ui-shared/common': ['libs/ui-web/src/compat/common.ts'],
+  '@libs/ui-shared/mobile': ['libs/ui-native/src/index.ts'],
+  '@libs/ui-shared/web': ['libs/ui-web/src/index.ts']
+}
+
 const readJson = async path => JSON.parse(await readFile(join(workspaceRoot, path), 'utf8'))
 
 const findProjectFiles = async directory => {
@@ -51,6 +77,28 @@ const findSourceFiles = async directory => {
     }
 
     if (/\.[cm]?[jt]sx?$/.test(entry.name)) {
+      files.push(relative(workspaceRoot, child))
+    }
+  }
+
+  return files
+}
+
+const findTsconfigFiles = async directory => {
+  const absoluteDirectory = join(workspaceRoot, directory)
+  const entries = await readdir(absoluteDirectory, { withFileTypes: true })
+  const files = []
+
+  for (const entry of entries) {
+    if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue
+
+    const child = join(absoluteDirectory, entry.name)
+    if (entry.isDirectory()) {
+      files.push(...(await findTsconfigFiles(relative(workspaceRoot, child))))
+      continue
+    }
+
+    if (/^tsconfig(?:\.[\w-]+)?\.json$/.test(entry.name)) {
       files.push(relative(workspaceRoot, child))
     }
   }
@@ -124,6 +172,44 @@ describe('Nx boundary governance', () => {
     assert.ok(apiClient)
     assert.ok(apiClient.tags.includes('domain:composition'))
     assert.equal(apiClient.tags.includes('domain:shared'), false)
+  })
+
+  it('permits only explicit public subpath aliases', async () => {
+    const tsconfigFiles = [
+      'tsconfig.base.json',
+      ...(await findTsconfigFiles('apps')),
+      ...(await findTsconfigFiles('libs')),
+      ...(await findTsconfigFiles('services'))
+    ]
+
+    for (const file of tsconfigFiles) {
+      const config = await readJson(file)
+      const paths = config.compilerOptions?.paths ?? {}
+      const wildcardAliases = Object.keys(paths).filter(alias => alias.startsWith('@libs/') && alias.includes('*'))
+      assert.deepEqual(wildcardAliases, [], file)
+    }
+
+    const rootPaths = (await readJson('tsconfig.base.json')).compilerOptions.paths
+    for (const [alias, targets] of Object.entries(publicSubpathAliases)) {
+      assert.deepEqual(rootPaths[alias], targets, alias)
+    }
+
+    const roots = ['apps', 'libs', 'services']
+    const sourceFiles = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
+    const violations = []
+
+    for (const file of sourceFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      const imports = source.match(/@libs\/[\w-]+\/[\w./-]+/g) ?? []
+
+      for (const specifier of imports) {
+        if (!(specifier in publicSubpathAliases)) {
+          violations.push(`${file}: ${specifier}`)
+        }
+      }
+    }
+
+    assert.deepEqual(violations, [])
   })
 
   it('exposes Auth cross-domain dependencies through the contract only', async () => {
@@ -423,7 +509,6 @@ describe('Nx boundary governance', () => {
 
     const tsconfig = await readJson('tsconfig.base.json')
     assert.deepEqual(tsconfig.compilerOptions.paths['@libs/ui-shared/mobile'], ['libs/ui-native/src/index.ts'])
-    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/ui-shared/mobile/*'], ['libs/ui-native/src/*'])
 
     const facadeFiles = await findSourceFiles('libs/ui-shared/src')
     for (const file of facadeFiles) {
