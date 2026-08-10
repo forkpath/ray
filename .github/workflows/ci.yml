@@ -28,7 +28,7 @@ jobs:
     env:
       CI_METRICS_DIR: artifacts/ci-metrics
       CI_METRICS_RUNNER_LABEL: ubuntu-latest
-      NX_CACHE_DIRECTORY: ${{ runner.temp }}/nx-cache
+      NX_CACHE_DIRECTORY: ${{ github.workspace }}/.nx/cache
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
