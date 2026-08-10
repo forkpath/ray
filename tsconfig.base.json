@@ -29,6 +29,9 @@
       "@libs/analytics": ["libs/analytics/src/index.ts"],
       "@libs/analytics/*": ["libs/analytics/src/*"],
       "@libs/billing": ["libs/billing/src/index.ts"],
+      "@libs/billing/mobile": ["libs/billing-native/src/index.ts"],
+      "@libs/billing/server": ["libs/billing-server/src/index.ts"],
+      "@libs/billing/web": ["libs/billing-server/src/index.ts"],
       "@libs/billing/*": ["libs/billing/src/*"],
       "@libs/monitoring": ["libs/monitoring/src/index.ts"],
       "@libs/monitoring/*": ["libs/monitoring/src/*"],
@@ -49,7 +52,8 @@
       "@libs/billing-contract": ["libs/billing-contract/src/index.ts"],
       "@libs/billing-native": ["libs/billing-native/src/index.ts"],
       "@libs/billing-config": ["libs/billing-config/src/index.ts"],
-      "@libs/billing-client": ["libs/billing-client/src/index.ts"]
+      "@libs/billing-client": ["libs/billing-client/src/index.ts"],
+      "@libs/billing-server": ["libs/billing-server/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp", "build", "dist", ".expo", ".wxt"]

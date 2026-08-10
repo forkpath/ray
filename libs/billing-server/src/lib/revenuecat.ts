@@ -1,13 +1,13 @@
-import { MobileStore } from '@libs/billing-contract'
-import { BillingOrderStatus, BillingProvider, BillingSubscriptionStatus } from '@libs/common'
+import { BillingOrderStatus, BillingProvider, BillingSubscriptionStatus, MobileStore } from '@libs/billing-contract'
 
+import { serverEnv } from './env'
 import {
   createWebhookEvent,
   findWebhookEvent,
   upsertBillingCustomer,
   upsertBillingOrder,
   upsertBillingSubscription
-} from './server'
+} from './persistence'
 
 const RELEVANT_EVENTS = new Set([
   'INITIAL_PURCHASE',
@@ -66,7 +66,7 @@ interface RevenueCatSubscriber {
 const isInPast = (value: string | null | undefined) => (value ? new Date(value).getTime() < Date.now() : false)
 const isInFuture = (value: string | null | undefined) => (value ? new Date(value).getTime() > Date.now() : false)
 
-const toSubscriptionStatus = (subscription: RevenueCatSubscription): BillingSubscriptionStatus => {
+export const toSubscriptionStatus = (subscription: RevenueCatSubscription): BillingSubscriptionStatus => {
   if (subscription.refunded_at) return BillingSubscriptionStatus.CANCELED
   if (subscription.auto_resume_date) return BillingSubscriptionStatus.PAUSED
   if (subscription.billing_issues_detected_at) {
@@ -79,13 +79,13 @@ const toSubscriptionStatus = (subscription: RevenueCatSubscription): BillingSubs
   return BillingSubscriptionStatus.ACTIVE
 }
 
-const toPaymentStatus = (purchase: RevenueCatPurchase): BillingOrderStatus => {
+export const toPaymentStatus = (purchase: RevenueCatPurchase): BillingOrderStatus => {
   if (purchase.refunded_at) return BillingOrderStatus.FAILED
   if (purchase.purchase_date) return BillingOrderStatus.SUCCEEDED
   return BillingOrderStatus.PENDING
 }
 
-const mapStore = (store?: string): string => {
+export const mapStore = (store?: string): string => {
   if (!store) return MobileStore.APP_STORE
   const normalized = store.toLowerCase()
   if (normalized.includes('play')) return MobileStore.PLAY_STORE
@@ -93,7 +93,7 @@ const mapStore = (store?: string): string => {
 }
 
 async function fetchSubscriber(appUserId: string): Promise<RevenueCatSubscriber> {
-  const apiKey = process.env['REVENUECAT_API_KEY']
+  const apiKey = serverEnv.REVENUECAT_API_KEY
   if (!apiKey) {
     return {}
   }
@@ -126,7 +126,7 @@ export interface RevenueCatWebhookInput {
 }
 
 export async function handleRevenueCatWebhook({ payload, authorization, callbacks }: RevenueCatWebhookInput) {
-  const secret = process.env['REVENUECAT_WEBHOOK_SECRET']
+  const secret = serverEnv.REVENUECAT_WEBHOOK_SECRET
   if (!secret || authorization !== secret) {
     throw new Error('Unauthorized RevenueCat webhook')
   }

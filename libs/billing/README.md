@@ -7,9 +7,8 @@
 - `billing-contract`：类型、状态常量和传输记录
 - `billing-config`：纯套餐目录、价格和权益计算
 - `billing-client`：owner-scoped HTTP query/mutation 与 payload 校验
-- `server`：Prisma 持久化 helper、billing customer / subscription / order /
-  webhook event 读写，以及 RevenueCat S2S webhook
-- `web`：Stripe Checkout / Billing Portal / Webhook
+- `billing-server`：Node-only Prisma 持久化、Stripe Checkout / Portal / Webhook，
+  以及 RevenueCat S2S webhook
 - `mobile`：RevenueCat Provider / `useCustomer` / `usePaywall`
 
 ## 导出入口
@@ -19,14 +18,16 @@
 | `@libs/billing-contract` | 运行时无关的计费类型、状态常量和传输记录 |
 | `@libs/billing-config` | 纯套餐目录构建器、价格与权益计算；不读取环境变量 |
 | `@libs/billing-client` | 通用 HTTP/query adapter；Query Key 包含 owner kind 和 user ID |
+| `@libs/billing-server` | Node-only Prisma persistence、Stripe 与 RevenueCat server provider |
 | `@libs/billing` | 兼容 facade：套餐配置、env preset、工具函数，并暂时转发 contract |
-| `@libs/billing/web` | Stripe checkout / portal / webhook 实现 |
-| `@libs/billing/server` | Prisma helper + `handleRevenueCatWebhook` |
+| `@libs/billing/web` | 已废弃的一周期 Stripe server 精确路径别名 |
+| `@libs/billing/server` | 已废弃的一周期 Node persistence/provider 精确路径别名 |
 | `@libs/billing-native` | `Provider`、`useCustomer`、`usePaywall`（基于 RevenueCat SDK） |
 
-新代码应从 `@libs/billing-contract` 导入类型和状态常量。旧
-`@libs/billing` 类型导出保留一个发布周期，只用于迁移回退；Stripe、
-RevenueCat、Prisma 和环境读取不会进入 contract 项目。
+新代码应从 `@libs/billing-contract` 导入类型和状态常量，Engine 从
+`@libs/billing-server` 导入 Node adapter。旧 `@libs/billing` 类型及 server
+导出保留一个发布周期，只用于迁移回退；Stripe、RevenueCat、Prisma 和
+环境读取不会进入 contract 项目。
 目录中的 Stripe Price ID 和 RevenueCat Product ID 由各运行时适配器注入，
 不会进入 `billing-config` 的默认 universal 配置。
 
@@ -63,7 +64,7 @@ import {
   createStripeBillingPortalSession,
   createStripeCheckoutSession,
   handleStripeWebhook
-} from '@libs/billing/web'
+} from '@libs/billing-server'
 
 const checkout = await createStripeCheckoutSession({
   referenceId: user.id,
@@ -90,7 +91,7 @@ await handleStripeWebhook({
 ## Mobile 使用方式
 
 `@libs/billing-native` 直接暴露 RevenueCat 实现，无运行时注册步骤。旧的
-`@libs/billing/mobile` 仅保留为一个发布周期的回退 facade。
+`@libs/billing/mobile` 仅保留为一个发布周期的精确路径回退别名。
 
 ```tsx
 import { Provider, useCustomer, usePaywall } from '@libs/billing-native'

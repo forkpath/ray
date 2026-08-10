@@ -52,12 +52,17 @@ pure catalog builder and entitlement/price calculations. Runtime adapters inject
 provider identifiers, so the universal project never reads environment values.
 `billing-client` owns the authenticated HTTP/query adapter and includes owner
 kind and user ID in cache keys without sending that ID as authorization data.
-Provider SDKs and persistence remain outside the universal projects.
+`billing-server` owns the Node-only Prisma persistence plus Stripe and RevenueCat
+server providers. Engine imports that explicit boundary directly; browser and
+native projects are guarded from it. The old `@libs/billing/server` and
+`@libs/billing/web` paths remain one-release exact-path aliases for rollback.
+They resolve directly to `billing-server` rather than creating a facade project
+edge, so PG changes do not invalidate browser or native projects.
 
 The RevenueCat client adapter now lives in `billing-native`, tagged
 `type:data-access`, `runtime:native`, and `domain:billing`. Mobile composition
 imports that project directly; `@libs/billing/mobile` remains only as a
-deprecated rollback bridge inside the facade.
+deprecated exact-path alias for rollback without adding a facade graph edge.
 
 ## Transitional facade debt
 
@@ -69,16 +74,16 @@ mixed project is split. The allowlist is guarded in CI and currently contains:
   `auth-native`, and `auth-server` now own the universal, browser, native, and
   Node contracts respectively. Runtime consumers no longer import the mixed
   facade; its deprecated exports remain only as a rollback bridge;
-- `billing`: remove after `billing-contract`, `billing-config`, the extracted
-  `billing-client`, `billing-native`, and the Node provider/persistence
-  project replace the mixed facade. The universal projects own Billing values,
-  catalog construction, entitlement calculations, and authenticated API access;
-  runtime consumers no longer use Billing exports from the shared API facade;
+- `billing`: remove after one compatibility release. `billing-contract`,
+  `billing-config`, `billing-client`, `billing-native`, and `billing-server` now
+  own the universal, native, and Node responsibilities. Engine no longer imports
+  the mixed facade; its deprecated server paths remain only as rollback bridges;
 - `ui-shared`: remove after universal core, web UI, and native UI projects are
   independent;
 - `api-client`: remove after one compatibility release of its frozen Billing
-  exports. New runtime consumers use `billing-client`, avoiding a shared-to-
-  business-domain dependency.
+  exports. It is explicitly tagged `domain:composition` while it aggregates
+  domain wrappers; new runtime consumers use `billing-client`, and the lower
+  shared transport remains isolated in `api-core`.
 
 Adding another facade requires changing the CI allowlist and documenting its
 removal condition. Wave 3 is complete only when this list is empty.

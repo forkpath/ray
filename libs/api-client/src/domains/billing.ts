@@ -7,7 +7,7 @@ import type {
   BillingOrderRecord,
   BillingSubscriptionRecord,
   BillingSummaryCustomer as SharedBillingSummaryCustomer
-} from '@libs/billing'
+} from '@libs/billing-contract'
 import type { BillingPortalReq, CheckoutReq } from '@libs/payload'
 
 import { createMutationFactory, createQueryOptionsFactory } from '../lib/queries/factory'

@@ -5,8 +5,8 @@ import Stripe from 'stripe'
 import { findBillingVariant, findBillingVariantByStripePriceId } from '@libs/billing-config'
 import { BillingModel, BillingOrderStatus, BillingProvider, BillingSubscriptionStatus } from '@libs/billing-contract'
 
-import { serverEnv } from '../env'
 import { billingConfig } from './config'
+import { serverEnv } from './env'
 import {
   createWebhookEvent,
   findWebhookEvent,
@@ -14,7 +14,7 @@ import {
   upsertBillingCustomer,
   upsertBillingOrder,
   upsertBillingSubscription
-} from './server'
+} from './persistence'
 
 let stripeClient: Stripe | null = null
 
@@ -30,7 +30,7 @@ function getStripeClient(): Stripe {
   return stripeClient
 }
 
-function mapStripeSubscriptionStatus(status: Stripe.Subscription.Status) {
+export function mapStripeSubscriptionStatus(status: Stripe.Subscription.Status) {
   switch (status) {
     case 'trialing':
       return BillingSubscriptionStatus.TRIALING
@@ -52,7 +52,7 @@ function mapStripeSubscriptionStatus(status: Stripe.Subscription.Status) {
   }
 }
 
-function mapStripePaymentStatus(status: Stripe.Checkout.Session.PaymentStatus) {
+export function mapStripePaymentStatus(status: Stripe.Checkout.Session.PaymentStatus) {
   switch (status) {
     case 'paid':
       return BillingOrderStatus.SUCCEEDED
