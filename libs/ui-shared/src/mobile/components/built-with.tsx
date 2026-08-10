@@ -5,8 +5,8 @@ import NativeSvg, { Path } from 'react-native-svg'
 import { withUniwind } from 'uniwind'
 
 import { useTranslation } from '@libs/i18n'
+import { cn } from '@libs/ui-core'
 
-import { cn } from '../../common'
 import { buttonVariants } from './button'
 import { Text } from './text'
 

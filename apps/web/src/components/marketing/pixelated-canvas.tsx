@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 interface PixelatedCanvasProps {
   isActive: boolean

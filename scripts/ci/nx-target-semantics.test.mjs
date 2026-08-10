@@ -25,7 +25,8 @@ const typecheckProjects = [
   ['libs/payload/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/pg-dao/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/srv-core/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
-  ['libs/srv-shared/project.json', 'tsc --noEmit -p tsconfig.lib.json']
+  ['libs/srv-shared/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
+  ['libs/ui-core/project.json', 'tsc --noEmit -p tsconfig.lib.json']
 ]
 
 const bundlerProjects = [

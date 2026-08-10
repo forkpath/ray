@@ -6,7 +6,7 @@ import { useCSSVariable } from 'uniwind'
 import { Pie, PolarChart } from 'victory-native'
 
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@libs/ui-shared/mobile/components/card'
 import { Icons } from '@libs/ui-shared/mobile/components/icons'

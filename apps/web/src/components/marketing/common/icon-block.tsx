@@ -1,4 +1,4 @@
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 图标容器块 */
 export const IconBlock = ({

@@ -37,6 +37,9 @@
       "path": "./libs/ui-shared"
     },
     {
+      "path": "./libs/ui-core"
+    },
+    {
       "path": "./libs/mongo-dao"
     },
     {

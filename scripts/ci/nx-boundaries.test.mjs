@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 36)
+    assert.equal(projects.length, 37)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -186,6 +186,41 @@ describe('Nx boundary governance', () => {
     assert.ok(billingServer)
     assert.ok(billingServer.tags.includes('type:platform'))
     assert.ok(billingServer.tags.includes('runtime:node'))
+  })
+
+  it('keeps shared UI primitives on a universal boundary', async () => {
+    const projects = await readProjects()
+    const uiCore = projects.find(project => project.name === 'ui-core')
+    assert.ok(uiCore)
+    assert.ok(uiCore.tags.includes('type:util'))
+    assert.ok(uiCore.tags.includes('runtime:universal'))
+    assert.ok(uiCore.tags.includes('domain:shared'))
+
+    const coreFiles = await findSourceFiles('libs/ui-core/src')
+    for (const file of coreFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.doesNotMatch(source, /from ['"](?:node:|react|react-native|@radix-ui|expo-)/, file)
+      assert.doesNotMatch(source, /\b(?:window|document|navigator)\b/, file)
+    }
+  })
+
+  it('routes shared theme consumers through ui-core', async () => {
+    const roots = ['apps', 'services', 'libs']
+    const files = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
+    const violations = []
+
+    for (const file of files) {
+      if (file.startsWith('libs/ui-shared/src/common/')) continue
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      if (source.includes('@libs/ui-shared/common')) {
+        violations.push(file)
+      }
+    }
+
+    assert.deepEqual(violations, [])
+
+    const compatibilityFacade = await readFile(join(workspaceRoot, 'libs/ui-shared/src/common/index.ts'), 'utf8')
+    assert.match(compatibilityFacade, /export \* from ['"]@libs\/ui-core['"]/)
   })
 
   it('keeps Engine on the explicit Node Billing boundary', async () => {

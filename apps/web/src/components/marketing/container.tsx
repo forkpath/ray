@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 营销页面通用容器 */
 export const Container = <T extends React.ElementType = 'div'>({

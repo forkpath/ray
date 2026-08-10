@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Avatar, AvatarFallback, AvatarImage, Button, buttonVariants, Icons, Skeleton } from '@libs/ui-shared/web'
 
 import { GoLink, pathsConfig } from '../../index'

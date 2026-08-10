@@ -1,6 +1,6 @@
 import * as LabelPrimitive from '@rn-primitives/label'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 function Label({
   className,

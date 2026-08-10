@@ -1,9 +1,9 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
-import type { ColorVariable, ThemeColorsVariables } from '../../types'
+import type { ColorVariable, ThemeColorsVariables } from '@libs/ui-core'
 
-import { themes } from './themes'
+import { themes } from '@libs/ui-core'
 
 const OUTPUT_PATH = 'variables.css'
 

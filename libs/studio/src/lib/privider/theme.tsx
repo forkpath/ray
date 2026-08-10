@@ -1,4 +1,4 @@
-import type { ThemeColor, ThemeMode } from '@libs/ui-shared/common'
+import type { ThemeColor, ThemeMode } from '@libs/ui-core'
 
 import { createContext, memo, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 

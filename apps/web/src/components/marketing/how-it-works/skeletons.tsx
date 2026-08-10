@@ -8,7 +8,7 @@ import { Scale } from '~/components/marketing/scale'
 import { Card } from '~/components/marketing/tech-card'
 import { motion, useMotionValue, useTransform } from 'motion/react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 工作原理骨架屏动画 */
 export const DesignYourWorkflowSkeleton = () => {

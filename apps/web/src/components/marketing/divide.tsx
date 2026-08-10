@@ -1,4 +1,4 @@
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 水平分割线 */
 export const DivideX = ({ className }: { className?: string }) => {

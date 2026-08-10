@@ -5,7 +5,7 @@ import { createContext, useContext, useMemo } from 'react'
 
 import { cva } from 'class-variance-authority'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@libs/ui-shared/web'
 
 const settingsCardVariant = cva('bg-background h-fit w-full overflow-hidden', {

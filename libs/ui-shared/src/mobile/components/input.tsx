@@ -3,7 +3,7 @@ import type { TextInputProps } from 'react-native'
 import { cva } from 'class-variance-authority'
 import { TextInput } from 'react-native'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 const inputVariants = cva(
   'border-input native:leading-[1.25] text-foreground bg-background dark:bg-input/30 flex h-10 w-full min-w-0 flex-row items-center rounded-md border px-3 py-1 font-sans text-base shadow-sm shadow-black/5'

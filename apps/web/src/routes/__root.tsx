@@ -16,7 +16,7 @@ import { seo } from '~/utils/seo'
 
 import { config, I18nProvider } from '@libs/i18n'
 import { ThemeProvider, ThemeScript, Toaster } from '@libs/studio'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 import appCss from '../styles/app.css?url' // 注意因为试用了?url，所以需要使用相对路径
 

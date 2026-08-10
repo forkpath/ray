@@ -1,4 +1,4 @@
-import type { ThemeConfig } from '../../common'
+import type { ThemeConfig } from '@libs/ui-core'
 
 import { memo } from 'react'
 
@@ -6,8 +6,8 @@ import { formatHex, oklch } from 'culori'
 import { FlatList, View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
+import { cn, ThemeColor, ThemeMode, themes } from '@libs/ui-core'
 
-import { cn, ThemeColor, ThemeMode, themes } from '../../common'
 import { Button } from './button'
 import { Icons } from './icons'
 import { Label } from './label'

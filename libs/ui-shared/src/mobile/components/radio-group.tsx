@@ -1,6 +1,6 @@
 import * as RadioGroupPrimitive from '@rn-primitives/radio-group'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 function RadioGroup({
   className,

@@ -18,6 +18,7 @@
       "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
       "@libs/auth-web": ["libs/auth-web/src/index.ts"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
+      "@libs/ui-core": ["libs/ui-core/src/index.ts"],
       "@libs/analytics": ["libs/analytics/src/index.ts"],
       "@libs/analytics/*": ["libs/analytics/src/*"],
       "@libs/monitoring": ["libs/monitoring/src/index.ts"],

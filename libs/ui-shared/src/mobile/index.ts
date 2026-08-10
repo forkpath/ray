@@ -1,4 +1,6 @@
-export * from '../common'
+/// <reference types="./typings/svg.d.ts" />
+
+export * from '@libs/ui-core'
 
 export * from './lib/cn'
 

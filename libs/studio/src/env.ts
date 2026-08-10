@@ -3,7 +3,7 @@ import * as z from 'zod'
 
 import { NodeEnv } from '@libs/common'
 import { preset as i18n } from '@libs/i18n'
-import { ThemeColor, ThemeMode } from '@libs/ui-shared/common'
+import { ThemeColor, ThemeMode } from '@libs/ui-core'
 
 const castStringToBool = z.preprocess(val => {
   if (typeof val === 'string') {

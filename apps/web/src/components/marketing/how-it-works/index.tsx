@@ -6,7 +6,7 @@ import { SectionHeading } from '~/components/marketing/section-heading'
 import { SubHeading } from '~/components/marketing/subheading'
 import { AnimatePresence, motion } from 'motion/react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 import { PixelatedCanvas } from '../pixelated-canvas'
 import { ConnectYourTooklsSkeleton, DeployAndScaleSkeleton, DesignYourWorkflowSkeleton } from './skeletons'

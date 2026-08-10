@@ -1,4 +1,4 @@
-import { ThemeColor, ThemeMode } from '@libs/ui-shared/common'
+import { ThemeColor, ThemeMode } from '@libs/ui-core'
 
 type ThemeModeValue = (typeof ThemeMode)[keyof typeof ThemeMode]
 type ThemeColorValue = (typeof ThemeColor)[keyof typeof ThemeColor]

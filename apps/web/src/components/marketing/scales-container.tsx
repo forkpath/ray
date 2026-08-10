@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 import { Scale } from './scale'
 

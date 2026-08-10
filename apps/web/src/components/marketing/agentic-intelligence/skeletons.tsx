@@ -23,7 +23,7 @@ import { LogoSVG } from '~/components/marketing/logo'
 import { useTypewriter } from '~/hooks/use-typewriter'
 import { motion } from 'motion/react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 核心功能骨架屏动画 */
 export const LLMModelSelectorSkeleton = () => {

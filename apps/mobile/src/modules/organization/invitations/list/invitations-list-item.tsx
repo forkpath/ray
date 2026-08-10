@@ -9,7 +9,7 @@ import { Alert, Pressable, View } from 'react-native'
 
 import { getAllRolesAtOrBelow, toMemberRole } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import {
   ContextMenu,

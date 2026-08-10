@@ -4,7 +4,7 @@ import { StrictMode } from 'react'
 
 import { createRoot } from 'react-dom/client'
 
-import { cn, ThemeMode } from '@libs/ui-shared/common'
+import { cn, ThemeMode } from '@libs/ui-core'
 
 import '~/assets/styles/globals.css'
 

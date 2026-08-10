@@ -1,6 +1,6 @@
 import { HTMLMotionProps, motion } from 'motion/react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 const GRADIENT_ANGLES = {
   top: 0,

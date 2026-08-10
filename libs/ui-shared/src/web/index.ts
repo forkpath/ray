@@ -1,4 +1,8 @@
-export * from '../common'
+/// <reference types="./typings/svg.d.ts" />
+
+export * from '@libs/ui-core'
+export * from '../common/hooks/use-media-query'
+export * from '../common/hooks/use-mobile'
 
 // web primitive components
 export * from './components/ui/alert-dialog'

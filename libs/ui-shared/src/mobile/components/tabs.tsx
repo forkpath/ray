@@ -2,7 +2,8 @@ import * as React from 'react'
 
 import * as TabsPrimitive from '@rn-primitives/tabs'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
+
 import { TextClassContext } from './text'
 
 function Tabs({ className, ...props }: TabsPrimitive.RootProps & React.RefAttributes<TabsPrimitive.RootRef>) {

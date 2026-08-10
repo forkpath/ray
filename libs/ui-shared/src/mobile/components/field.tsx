@@ -2,7 +2,8 @@ import * as React from 'react'
 
 import { View } from 'react-native'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
+
 import { Label } from './label'
 import { Text } from './text'
 

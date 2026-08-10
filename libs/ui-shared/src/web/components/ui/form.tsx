@@ -6,7 +6,8 @@ import * as React from 'react'
 import { Slot } from '@radix-ui/react-slot'
 import { Controller, FormProvider, useFormContext, useFormState } from 'react-hook-form'
 
-import { cn } from '../../../common/lib/utils'
+import { cn } from '@libs/ui-core'
+
 import { Label } from './label'
 
 const Form = FormProvider

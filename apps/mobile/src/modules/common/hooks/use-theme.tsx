@@ -1,4 +1,4 @@
-import type { ColorVariable, ThemeConfig } from '@libs/ui-shared/common'
+import type { ColorVariable, ThemeConfig } from '@libs/ui-core'
 
 import { useCallback, useEffect, useMemo } from 'react'
 
@@ -11,7 +11,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { logger } from '@libs/common'
 import { captureException } from '@libs/monitoring/mobile'
-import { ThemeMode, themes } from '@libs/ui-shared/common'
+import { ThemeMode, themes } from '@libs/ui-core'
 
 const useThemeConfig = create<{
   config: ThemeConfig

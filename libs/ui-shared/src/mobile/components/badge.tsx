@@ -5,7 +5,8 @@ import * as Slot from '@rn-primitives/slot'
 import { cva } from 'class-variance-authority'
 import { View } from 'react-native'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
+
 import { TextClassContext } from './text'
 
 const badgeVariants = cva(

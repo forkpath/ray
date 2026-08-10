@@ -8,7 +8,7 @@ import { Platform, View } from 'react-native'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Icons } from '@libs/ui-shared/mobile/components/icons'
 

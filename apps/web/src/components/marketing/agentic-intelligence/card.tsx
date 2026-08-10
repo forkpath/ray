@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 功能卡片组件 */
 export const Card = ({ children, className }: { children: React.ReactNode; className?: string }) => {

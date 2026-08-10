@@ -7,7 +7,8 @@ import * as React from 'react'
 import { cva } from 'class-variance-authority'
 import { View } from 'react-native'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
+
 import { Text, TextClassContext } from './text'
 
 const alertVariants = cva('bg-card border-border relative w-full rounded-lg border px-4 pt-3.5 pb-2', {

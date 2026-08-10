@@ -26,11 +26,12 @@
       "@libs/api-core": ["libs/api-core/src/index.ts"],
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
+      "@libs/ui-core": ["libs/ui-core/src/index.ts"],
       "@libs/payload": ["libs/payload/src/index.ts"],
       "@libs/email": ["libs/email/src/index.ts"],
       "@libs/email/*": ["libs/email/src/*"]
     }
   },
-  "include": ["../../libs/ui-shared/src/common/typings/*.d.ts", ".wxt/wxt.d.ts", "src/**/*", "*.ts", "*.js"],
+  "include": ["../../libs/ui-shared/src/web/typings/*.d.ts", ".wxt/wxt.d.ts", "src/**/*", "*.ts", "*.js"],
   "exclude": ["node_modules"]
 }

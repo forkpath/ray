@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { DEFAULT_BREAKPOINTS } from '../types'
+import { DEFAULT_BREAKPOINTS } from '@libs/ui-core'
 
 export const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState(false)

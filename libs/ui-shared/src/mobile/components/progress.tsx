@@ -8,7 +8,7 @@ import Animated, {
   withSpring
 } from 'react-native-reanimated'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 function Progress({
   className,

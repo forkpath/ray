@@ -13,7 +13,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { useCSSVariable } from 'uniwind'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 function InputOTPGroup({ className, ...props }: React.ComponentProps<typeof View>) {
   return (

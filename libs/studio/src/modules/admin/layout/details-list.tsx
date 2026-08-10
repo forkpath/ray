@@ -1,4 +1,4 @@
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 export const DetailsList = ({ className, ...props }: React.ComponentProps<'ul'>) => {
   return (

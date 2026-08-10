@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Button, Icons } from '@libs/ui-shared/web'
 
 import { authClient } from '../../../lib/auth/client'

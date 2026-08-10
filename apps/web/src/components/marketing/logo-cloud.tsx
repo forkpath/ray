@@ -4,7 +4,7 @@ import { logos } from '~/constants/marketing/logos'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 import { Container } from './container'
 

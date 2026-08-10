@@ -4,7 +4,7 @@ import { appConfig } from '~/config/app'
 import { StorageKey, useStorage } from '~/lib/storage'
 
 import { useTranslation } from '@libs/i18n'
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 import { Button, Icons, Popover, PopoverContent, PopoverTrigger } from '@libs/ui-shared/web'
 
 const Customizer = () => {

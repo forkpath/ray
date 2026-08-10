@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import * as AvatarPrimitive from '@rn-primitives/avatar'
 
-import { cn } from '../../common'
+import { cn } from '@libs/ui-core'
 
 function Avatar({ className, ...props }: AvatarPrimitive.RootProps & React.RefAttributes<AvatarPrimitive.RootRef>) {
   return (

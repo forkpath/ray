@@ -5,8 +5,8 @@ import type { Icon } from './icons'
 import { View } from 'react-native'
 
 import { config, Locale, LocaleLabel, useTranslation } from '@libs/i18n'
+import { cn } from '@libs/ui-core'
 
-import { cn } from '../../common'
 import { Button } from './button'
 import { Icons } from './icons'
 import { Text } from './text'

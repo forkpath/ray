@@ -23,6 +23,7 @@
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
       "@libs/pg-dao/*": ["libs/pg-dao/src/*"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
+      "@libs/ui-core": ["libs/ui-core/src/index.ts"],
       "@libs/studio": ["libs/studio/src/index.ts"],
       "@libs/studio/*": ["libs/studio/src/*"],
       "@libs/i18n": ["libs/i18n/src/index.ts"],

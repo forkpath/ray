@@ -12,7 +12,7 @@ import QRCode from 'react-qr-code'
 
 import { otpSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { ThemeMode } from '@libs/ui-shared/common'
+import { ThemeMode } from '@libs/ui-core'
 import {
   BottomSheet,
   BottomSheetContent,

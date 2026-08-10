@@ -6,7 +6,7 @@ import { isAndroid } from '~/utils/device'
 import * as NavigationBar from 'expo-navigation-bar'
 import { StatusBar, View } from 'react-native'
 
-import { ThemeMode } from '@libs/ui-shared/common'
+import { ThemeMode } from '@libs/ui-core'
 
 interface ThemeProviderProps {
   readonly children: React.ReactNode

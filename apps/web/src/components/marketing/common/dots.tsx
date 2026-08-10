@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { motion } from 'motion/react'
 
-import { cn } from '@libs/ui-shared/common'
+import { cn } from '@libs/ui-core'
 
 /* 角落装饰点（鼠标靠近时高亮） */
 export const Dot = ({
