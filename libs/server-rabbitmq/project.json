@@ -1,0 +1,18 @@
+{
+  "name": "server-rabbitmq",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/server-rabbitmq/src",
+  "projectType": "library",
+  "tags": ["type:platform", "runtime:node", "domain:platform"],
+  "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["^typecheck"],
+      "inputs": ["production", "^production"],
+      "options": {
+        "cwd": "libs/server-rabbitmq",
+        "command": "tsc --noEmit -p tsconfig.lib.json"
+      }
+    }
+  }
+}

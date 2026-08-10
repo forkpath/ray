@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 41)
+    assert.equal(projects.length, 42)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -212,7 +212,7 @@ describe('Nx boundary governance', () => {
       'libs/server-nest/src/config/index.ts',
       'libs/srv-shared/src/cache/cache.module.ts',
       'libs/srv-shared/src/logger/logger.module.ts',
-      'libs/srv-shared/src/rabbitmq/rabbitmq.module.ts',
+      'libs/server-rabbitmq/src/rabbitmq.module.ts',
       'libs/server-redis/src/redis.module.ts',
       'libs/srv-shared/src/storage/storage.module.ts'
     ]
@@ -291,6 +291,46 @@ describe('Nx boundary governance', () => {
 
     const redisModuleBridge = await readFile(join(workspaceRoot, 'libs/srv-shared/src/redis/redis.module.ts'), 'utf8')
     assert.equal(redisModuleBridge.trim(), "export { RedisModule } from '@libs/server-redis'")
+  })
+
+  it('keeps RabbitMQ infrastructure on an explicit Node adapter boundary', async () => {
+    const projects = await readProjects()
+    const serverRabbitmq = projects.find(project => project.name === 'server-rabbitmq')
+
+    assert.ok(serverRabbitmq)
+    assert.ok(serverRabbitmq.tags.includes('type:platform'))
+    assert.ok(serverRabbitmq.tags.includes('runtime:node'))
+    assert.ok(serverRabbitmq.tags.includes('domain:platform'))
+
+    const rabbitmqFiles = await findSourceFiles('libs/server-rabbitmq/src')
+    for (const file of rabbitmqFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.equal(source.includes('@libs/srv-shared'), false, file)
+      assert.equal(source.includes('@libs/srv-core'), false, file)
+      assert.equal(source.includes('@libs/server-nest'), false, file)
+      assert.equal(source.includes('@libs/server-redis'), false, file)
+    }
+
+    for (const file of ['services/engine/src/app.module.ts', 'services/worker/src/app/app.module.ts']) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.equal(source.includes("import { RabbitmqModule } from '@libs/server-rabbitmq'"), true, file)
+    }
+
+    const tsconfig = await readJson('tsconfig.base.json')
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/server-rabbitmq'], ['libs/server-rabbitmq/src/index.ts'])
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/srv-shared/rabbitmq'], ['libs/server-rabbitmq/src/index.ts'])
+
+    for (const file of ['services/engine/tsconfig.app.json', 'services/worker/tsconfig.app.json']) {
+      const config = await readJson(file)
+      assert.deepEqual(
+        config.compilerOptions.paths['@libs/server-rabbitmq'],
+        ['libs/server-rabbitmq/src/index.ts'],
+        file
+      )
+    }
+
+    const moduleBridge = await readFile(join(workspaceRoot, 'libs/srv-shared/src/rabbitmq/rabbitmq.module.ts'), 'utf8')
+    assert.equal(moduleBridge.trim(), "export { RabbitmqModule } from '@libs/server-rabbitmq'")
   })
 
   it('keeps shared UI primitives on a universal boundary', async () => {

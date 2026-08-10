@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 
 import { MongoDaoModule } from '@libs/mongo-dao'
 import { PgDaoModule } from '@libs/pg-dao'
-import { RabbitmqModule } from '@libs/srv-shared/rabbitmq'
+import { RabbitmqModule } from '@libs/server-rabbitmq'
 
 const workerConfig = () => ({
   mongo: {
