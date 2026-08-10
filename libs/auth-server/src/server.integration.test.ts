@@ -5,11 +5,11 @@ import { testUtils } from 'better-auth/plugins'
 import { getTestInstance } from 'better-auth/test'
 import { beforeAll, describe, expect, it } from 'vitest'
 
+import { UserRole } from '@libs/auth-contract'
 import { NodeEnv } from '@libs/common'
 import { EmailTemplate } from '@libs/email'
 
 import { createAuthBehaviorOptions } from './server-options'
-import { UserRole } from './types'
 
 interface CapturedEmail {
   to: string

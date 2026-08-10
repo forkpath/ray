@@ -1,7 +1,7 @@
-import type { AuthErrorCode } from '@libs/auth'
+import type { AuthErrorCode } from '@libs/auth-contract'
 import type { TFunction } from 'i18next'
 
-import { ERROR_MESSAGES } from '@libs/auth'
+import { ERROR_MESSAGES } from '@libs/auth-contract'
 
 /**
  * 从 Better Auth 抛出的错误中提取用户可读的、已翻译的错误消息。

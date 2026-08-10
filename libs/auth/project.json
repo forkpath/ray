@@ -55,14 +55,14 @@
       }
     },
     "integration-test": {
-      "executor": "nx:run-commands",
+      "executor": "nx:noop",
       "cache": true,
-      "inputs": ["default", "^production"],
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
-      "options": {
-        "command": "vitest --config vitest.config.mts --run",
-        "cwd": "libs/auth"
-      }
+      "dependsOn": [
+        {
+          "projects": "auth-server",
+          "target": "integration-test"
+        }
+      ]
     },
     "test": {
       "executor": "nx:noop",
@@ -70,19 +70,11 @@
       "dependsOn": ["contract-test", "integration-test"]
     },
     "seed": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "tsx ./src/scripts/seed.ts",
-        "cwd": "libs/auth",
-        "env": {
-          "NODE_OPTIONS": "-r tsconfig-paths/register",
-          "TS_NODE_PROJECT": "tsconfig.json"
-        }
-      },
+      "executor": "nx:noop",
       "dependsOn": [
         {
-          "projects": "pg-dao",
-          "target": "generate"
+          "projects": "auth-server",
+          "target": "seed"
         }
       ]
     }

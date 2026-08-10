@@ -1,4 +1,4 @@
-import type { OtpPayload, PasswordPayload } from '@libs/auth'
+import type { OtpPayload, PasswordPayload } from '@libs/auth-contract'
 import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
 
 import { useMemo, useState } from 'react'
@@ -10,7 +10,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
 import QRCode from 'react-qr-code'
 
-import { otpSchema } from '@libs/auth'
+import { otpSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { ThemeMode } from '@libs/ui-shared/common'
 import {

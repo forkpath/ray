@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { View } from 'react-native'
 import { create } from 'zustand'
 
-import { InvitationStatus, MemberRole } from '@libs/auth'
+import { InvitationStatus, MemberRole } from '@libs/auth-contract'
 import { useDebounceCallback } from '@libs/common/hooks'
 import { pickBy } from '@libs/common/utils'
 import { useTranslation } from '@libs/i18n'

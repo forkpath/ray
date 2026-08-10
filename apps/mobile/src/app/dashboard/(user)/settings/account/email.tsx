@@ -11,7 +11,7 @@ import { useFocusEffect } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
-import { emailSchema } from '@libs/auth'
+import { emailSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import { Button } from '@libs/ui-shared/mobile/components/button'

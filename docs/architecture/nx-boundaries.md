@@ -50,10 +50,10 @@ inaccessible even though they share the Auth domain.
 dimension. It allows existing consumers to keep their import paths while a
 mixed project is split. The allowlist is guarded in CI and currently contains:
 
-- `auth`: remove after the Node server project and remaining entity-type
-  consumers replace the mixed facade. `auth-contract`, `auth-web`, and
-  `auth-native` are already extracted; the Web, Extension, and Mobile client
-  factories now use the runtime-specific projects;
+- `auth`: remove after one compatibility release. `auth-contract`, `auth-web`,
+  `auth-native`, and `auth-server` now own the universal, browser, native, and
+  Node contracts respectively. Runtime consumers no longer import the mixed
+  facade; its deprecated exports remain only as a rollback bridge;
 - `billing`: remove after contract/config, web/native client, and Node provider
   projects replace the mixed facade;
 - `ui-shared`: remove after universal core, web UI, and native UI projects are

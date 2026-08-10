@@ -9,8 +9,6 @@
     "paths": {
       "@libs/common": ["libs/common/src/index.ts"],
       "@libs/payload": ["libs/payload/src/index.ts"],
-      "@libs/auth": ["libs/auth/src/index.ts"],
-      "@libs/auth/*": ["libs/auth/src/*"],
       "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
       "@libs/auth-web": ["libs/auth-web/src/index.ts"],
       "@libs/i18n": ["libs/i18n/src/index.ts"],

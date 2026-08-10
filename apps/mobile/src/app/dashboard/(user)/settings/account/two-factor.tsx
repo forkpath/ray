@@ -1,6 +1,6 @@
 'use client'
 
-import type { PasswordPayload } from '@libs/auth'
+import type { PasswordPayload } from '@libs/auth-contract'
 
 import { useCallback, useMemo } from 'react'
 

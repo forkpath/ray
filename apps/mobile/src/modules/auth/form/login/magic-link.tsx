@@ -8,7 +8,7 @@ import { pathsConfig } from '~/config/paths'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
-import { generateName, magicLinkLoginSchema } from '@libs/auth'
+import { generateName, magicLinkLoginSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Field, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'

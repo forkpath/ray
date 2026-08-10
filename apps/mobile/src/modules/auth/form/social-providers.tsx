@@ -14,7 +14,7 @@ import * as AppleAuthentication from 'expo-apple-authentication'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
-import { SocialProvider as SocialProviderType } from '@libs/auth'
+import { SocialProvider as SocialProviderType } from '@libs/auth-contract'
 import { Trans, useTranslation } from '@libs/i18n'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import { Button } from '@libs/ui-shared/mobile/components/button'

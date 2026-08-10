@@ -25,7 +25,7 @@ infrastructure-> 可依赖 domain、Prisma、better-auth、外部 SDK
 presentation  -> 可依赖 application DTO、Command/Query、NestJS 装饰器
 ```
 
-`domain` 是业务核心，不能导入 `@libs/payload`、`@nestjs/*`、`@libs/pg-dao`、`@libs/auth`。`repository.interface.ts` 只能使用 domain entity、VO、criteria/result 类型。
+`domain` 是业务核心，不能导入 `@libs/payload`、`@nestjs/*`、`@libs/pg-dao`、`@libs/auth-server`。`repository.interface.ts` 只能使用 domain entity、VO、criteria/result 类型。
 
 ## 一条接口的落地路径
 
@@ -437,7 +437,7 @@ presentation 创建 Query/Command 并交给 bus；application handler 执行流�
 
 ## Better Auth 边界
 
-`engine` 不实现登录、注册、session 管理、认证组织成员变更等认证业务。相关能力由 `@libs/auth` / Better Auth 负责。
+`engine` 不实现登录、注册、session 管理、认证组织成员变更等认证业务。相关能力由 `@libs/auth-server` / Better Auth 负责。
 
 `engine` 可以做的是：
 

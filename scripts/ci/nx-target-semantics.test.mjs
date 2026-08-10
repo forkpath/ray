@@ -12,6 +12,7 @@ const typecheckProjects = [
   ['libs/auth/project.json', 'tsc --noEmit -p tsconfig.typecheck.json'],
   ['libs/auth-contract/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/auth-native/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
+  ['libs/auth-server/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/auth-web/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/email/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/i18n/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
@@ -52,9 +53,11 @@ describe('Nx target semantics', () => {
   })
 
   it('keeps Better Auth typechecking independent from declaration emit', async () => {
-    const tsconfig = await readJson('libs/auth/tsconfig.typecheck.json')
+    const facadeTsconfig = await readJson('libs/auth/tsconfig.typecheck.json')
+    const serverTsconfig = await readJson('libs/auth-server/tsconfig.lib.json')
 
-    assert.equal(tsconfig.compilerOptions.declaration, false)
+    assert.equal(facadeTsconfig.compilerOptions.declaration, false)
+    assert.equal(serverTsconfig.compilerOptions.declaration, false)
   })
 
   it('registers IAM as a pnpm workspace with an Nx typecheck target', async () => {

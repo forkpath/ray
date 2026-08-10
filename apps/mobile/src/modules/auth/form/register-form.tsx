@@ -9,7 +9,7 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
-import { generateName, registerSchema } from '@libs/auth'
+import { generateName, registerSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Field, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'

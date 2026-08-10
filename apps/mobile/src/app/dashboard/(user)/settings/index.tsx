@@ -1,4 +1,4 @@
-import type { Session } from '@libs/auth'
+import type { Session } from '@libs/auth-native'
 
 import { appConfig } from '~/config/app'
 import { pathsConfig } from '~/config/paths'

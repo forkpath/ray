@@ -7,7 +7,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { useForm } from 'react-hook-form'
 
-import { otpVerificationSchema, SecondFactor } from '@libs/auth'
+import { otpVerificationSchema, SecondFactor } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   Button,

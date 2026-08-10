@@ -1,6 +1,5 @@
 import type { PermissionCheckParams, RoleName } from '@libs/auth-contract'
 import type { BetterAuthClientOptions } from 'better-auth'
-import type { Invitation, Member, Organization } from 'better-auth/client/plugins'
 
 import { passkeyClient } from '@better-auth/passkey/client'
 import {
@@ -38,6 +37,9 @@ type AuthClient = ReturnType<typeof createClient>
 type Session = AuthClient['$Infer']['Session']
 type User = Session['user']
 type ActiveOrganization = AuthClient['$Infer']['ActiveOrganization']
+type Organization = AuthClient['$Infer']['Organization']
+type Invitation = AuthClient['$Infer']['Invitation']
+type Member = ActiveOrganization['members'][number]
 
 export async function checkPermission(client: AuthClient, permissions: PermissionCheckParams): Promise<boolean> {
   try {

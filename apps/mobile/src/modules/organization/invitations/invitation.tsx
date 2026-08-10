@@ -1,6 +1,6 @@
 'use client'
 
-import type { Invitation as InvitationType } from '@libs/auth'
+import type { Invitation as InvitationType } from '@libs/auth-native'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 

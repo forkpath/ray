@@ -10,7 +10,7 @@ import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
 
-import { passwordLoginSchema } from '@libs/auth'
+import { passwordLoginSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Checkbox } from '@libs/ui-shared/mobile/components/checkbox'

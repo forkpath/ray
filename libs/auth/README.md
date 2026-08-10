@@ -115,7 +115,7 @@ const admin = ac.newRole({
 **Web 端：**
 
 ```typescript
-import { createClient } from '@libs/auth/client/web'
+import { createClient } from '@libs/auth-web'
 
 const authClient = createClient({
   baseURL: '/api/auth'
@@ -125,7 +125,7 @@ const authClient = createClient({
 **Mobile 端：**
 
 ```typescript
-import { createClient } from '@libs/auth/client/mobile'
+import { createClient } from '@libs/auth-native'
 
 const mobileAuthClient = createClient({
   baseURL: 'https://api.example.com/api/auth',
@@ -143,7 +143,7 @@ const mobileAuthClient = createClient({
 #### 异步检查（推荐，支持动态角色）
 
 ```typescript
-import { checkPermission } from '@libs/auth/client/web'
+import { checkPermission } from '@libs/auth-web'
 
 // 检查单个权限
 const canCreateProduct = await checkPermission(authClient, {
@@ -167,7 +167,7 @@ const { data } = await authClient.organization.hasPermission({
 #### 同步检查（仅支持预定义角色）
 
 ```typescript
-import { checkRolePermission } from '@libs/auth/client/web'
+import { checkRolePermission } from '@libs/auth-web'
 
 // 检查角色是否有权限（不发起网络请求）
 const canDelete = checkRolePermission(authClient, 'admin', {
@@ -178,7 +178,7 @@ const canDelete = checkRolePermission(authClient, 'admin', {
 ### React 组件中使用
 
 ```tsx
-import { checkPermission, createClient } from '@libs/auth/client/web'
+import { checkPermission, createClient } from '@libs/auth-web'
 
 const authClient = createClient({ baseURL: '/api/auth' })
 

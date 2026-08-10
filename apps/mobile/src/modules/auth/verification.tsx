@@ -9,7 +9,7 @@ import { Spinner } from '~/modules/common/spinner'
 import { user } from '~/modules/user/lib/api'
 import { router, useGlobalSearchParams } from 'expo-router'
 
-import { VerificationType } from '@libs/auth'
+import { VerificationType } from '@libs/auth-contract'
 
 import { auth } from './lib/api'
 

@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { AuthProvider } from '@libs/auth'
+import { AuthProvider } from '@libs/auth-contract'
 
 export const useAuthFormStore = create<{
   provider: AuthProvider

@@ -9,7 +9,7 @@ import { Link } from '~/modules/common/styled'
 import { useLocalSearchParams } from 'expo-router'
 import { View } from 'react-native'
 
-import { AuthProvider } from '@libs/auth'
+import { AuthProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@libs/ui-shared/mobile/components/tabs'

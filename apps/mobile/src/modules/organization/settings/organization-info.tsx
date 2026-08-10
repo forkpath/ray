@@ -10,7 +10,7 @@ import {
 import { organization } from '~/modules/organization/lib/api'
 import { View } from 'react-native'
 
-import { toMemberRole } from '@libs/auth'
+import { toMemberRole } from '@libs/auth-contract'
 import { isKey, useTranslation } from '@libs/i18n'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import { Skeleton } from '@libs/ui-shared/mobile/components/skeleton'

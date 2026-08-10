@@ -1,6 +1,6 @@
 import type { Route } from 'expo-router'
 
-import { SecondFactor } from '@libs/auth'
+import { SecondFactor } from '@libs/auth-contract'
 
 import { BackupCodeCta, BackupCodeForm } from './backup-code'
 import { TotpCta, TotpForm } from './totp'

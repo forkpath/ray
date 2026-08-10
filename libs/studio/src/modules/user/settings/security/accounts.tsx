@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { toast } from 'sonner'
 
-import { SocialProvider } from '@libs/auth'
+import { SocialProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   AlertDialog,

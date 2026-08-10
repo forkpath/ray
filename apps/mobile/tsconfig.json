@@ -11,8 +11,6 @@
     "types": ["node"],
     "paths": {
       "~/*": ["apps/mobile/src/*"],
-      "@libs/auth": ["libs/auth/src/index.ts"],
-      "@libs/auth/*": ["libs/auth/src/*"],
       "@libs/auth-contract": ["libs/auth-contract/src/index.ts"],
       "@libs/auth-native": ["libs/auth-native/src/index.ts"],
       "@libs/analytics": ["libs/analytics/src/index.ts"],

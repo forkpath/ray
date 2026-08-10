@@ -5,7 +5,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { AnimatePresence, motion } from 'motion/react'
 import { useForm } from 'react-hook-form'
 
-import { AuthProvider, generateName, registerSchema } from '@libs/auth'
+import { AuthProvider, generateName, registerSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   Button,

@@ -1,4 +1,4 @@
-import { SocialProvider } from '@libs/auth'
+import { SocialProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 
 import { AnonymousLogin } from './form/anonymous'

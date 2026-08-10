@@ -8,7 +8,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 import * as z from 'zod'
 
-import { inviteMemberSchema, MemberRole, toMemberRole } from '@libs/auth'
+import { inviteMemberSchema, MemberRole, toMemberRole } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   BottomSheet,

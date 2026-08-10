@@ -7,7 +7,7 @@ import * as Linking from 'expo-linking'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
-import { forgotPasswordSchema } from '@libs/auth'
+import { forgotPasswordSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button } from '@libs/ui-shared/mobile/components/button'
 import { Field, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'

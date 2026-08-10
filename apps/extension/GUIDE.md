@@ -172,7 +172,7 @@ apps/extension/
     │       └── globals.css   # Tailwind + 全局样式
     ├── lib/
     │   ├── api/          # API 客户端（@libs/api-client + @libs/api-core）
-    │   ├── auth/         # 认证客户端（@libs/auth/client/web）
+    │   ├── auth/         # 认证客户端（@libs/auth-web）
     │   ├── i18n/         # 国际化（@libs/i18n + browser.cookies）
     │   ├── messaging/    # 扩展消息传递（@webext-core/messaging）
     │   ├── query.tsx     # React Query 客户端配置
@@ -202,7 +202,7 @@ apps/extension/
 扩展作为 Nx monorepo 中的一个 `application` 项目，通过以下方式与共享库集成：
 
 - **@libs/api-client + @libs/api-core**: Axios + React Query 工厂模式调用后端 API
-- **@libs/auth/client/web**: Better Auth 客户端，提供 `useSession`, `useActiveOrganization` 等 hooks
+- **@libs/auth-web**: Better Auth 客户端，提供 `useSession`, `useActiveOrganization` 等 hooks
 - **@libs/i18n**: i18next 国际化，支持中英文
 - **@libs/billing**: 账单工具函数（`getActivePlan` 等）
 - **@libs/analytics**: 扩展分析适配器（`extension-adapter`，基于 PostHog）

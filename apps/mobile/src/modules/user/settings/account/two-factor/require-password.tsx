@@ -1,4 +1,4 @@
-import type { PasswordPayload } from '@libs/auth'
+import type { PasswordPayload } from '@libs/auth-contract'
 import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
 
 import { memo, useCallback } from 'react'
@@ -7,7 +7,7 @@ import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
 
-import { passwordSchema } from '@libs/auth'
+import { passwordSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import {
   BottomSheet,

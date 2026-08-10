@@ -9,7 +9,7 @@ import { I18nService } from 'nestjs-i18n'
 import { createZodValidationPipe } from 'nestjs-zod'
 import { ZodError } from 'zod'
 
-import { auth } from '@libs/auth/server'
+import { auth } from '@libs/auth-server'
 import { MongoDaoModule } from '@libs/mongo-dao'
 import { PgDaoModule } from '@libs/pg-dao'
 import { AllExceptionsFilter, AppConfig, WrapResInterceptor } from '@libs/srv-core'

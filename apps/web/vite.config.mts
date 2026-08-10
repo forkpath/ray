@@ -58,15 +58,7 @@ export default defineConfig(async ({ command }) => {
     },
     plugins,
     ssr: {
-      noExternal: [
-        '@libs/ui-shared',
-        '@libs/studio',
-        '@libs/auth',
-        '@libs/i18n',
-        '@libs/common',
-        '@libs/api-client',
-        /^@libs\/.*/
-      ]
+      noExternal: ['@libs/ui-shared', '@libs/studio', '@libs/i18n', '@libs/common', '@libs/api-client', /^@libs\/.*/]
     },
     build: {
       outDir: '../../dist/apps/web',
