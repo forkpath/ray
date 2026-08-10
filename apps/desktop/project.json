@@ -6,6 +6,13 @@
   "tags": ["scope:frontend", "type:app"],
   "// targets": "to see all targets run: nx show project desktop --web",
   "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tsconfig.json",
+        "cwd": "apps/desktop"
+      }
+    },
     "dev": {
       "executor": "nx:run-commands",
       "options": {
@@ -15,20 +22,26 @@
     },
     "package": {
       "executor": "nx:run-commands",
-      "options": {
-        "command": "electron-forge package",
-        "cwd": "apps/desktop"
-      }
-    },
-    "build": {
-      "executor": "nx:run-commands",
+      "cache": false,
       "options": {
         "command": "electron-forge make",
         "cwd": "apps/desktop"
       }
     },
-    "cloud-build": {
+    "build": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production", "viteBuildEnvironment"],
+      "outputs": ["{projectRoot}/.vite"],
+      "options": {
+        "command": "vite build --mode bundle --config vite.main.config.ts && vite build --mode bundle --config vite.preload.config.ts && vite build --mode bundle --config vite.renderer.config.ts",
+        "cwd": "apps/desktop"
+      }
+    },
+    "release": {
+      "executor": "nx:run-commands",
+      "cache": false,
       "options": {
         "command": "electron-forge publish",
         "cwd": "apps/desktop"

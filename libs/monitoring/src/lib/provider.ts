@@ -15,7 +15,7 @@ const serverNoop: MonitoringServerStrategy = {
 }
 
 export function normalizeMonitoringProvider(value: string | undefined): MonitoringProviderName {
-  return value === MonitoringProvider.POSTHOG ? MonitoringProvider.POSTHOG : MonitoringProvider.SENTRY
+  return value === MonitoringProvider.SENTRY ? MonitoringProvider.SENTRY : MonitoringProvider.POSTHOG
 }
 
 export function selectMonitoringClientStrategy(

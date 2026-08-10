@@ -39,7 +39,7 @@ export function DeleteAction({ id }: DeleteActionProps) {
           defaultValue: 'User deleted'
         })
       )
-      void router.navigate({ to: pathsConfig.admin.users.index })
+      void router.navigate({ to: pathsConfig.admin.users.index as never })
     }
   })
 

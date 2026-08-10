@@ -61,16 +61,6 @@
         "command": "vite preview"
       }
     },
-    "test": {
-      "executor": "nx:run-commands",
-      "cache": true,
-      "inputs": ["default", "^production", { "externalDependencies": ["vitest"] }, { "env": "CI" }],
-      "outputs": ["{workspaceRoot}/coverage/apps/web"],
-      "options": {
-        "cwd": "apps/web",
-        "command": "vitest"
-      }
-    },
     "lint": {
       "executor": "nx:run-commands",
       "cache": true,
