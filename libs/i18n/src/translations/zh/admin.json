@@ -106,6 +106,8 @@
     "cannotBanUsers": "无法封禁用户。",
     "cannotImpersonateUsers": "无法冒充用户。",
     "cannotRevokeUsersSessions": "无法撤销用户会话。",
-    "cannotSetUsersPassword": "无法设置用户密码。"
+    "cannotSetUsersPassword": "无法设置用户密码。",
+    "cannotSetUsersEmail": "无权设置用户的邮箱地址。",
+    "passwordCannotBeUpdatedViaUpdateUser": "不能通过通用用户更新操作修改密码，请使用专用的密码操作。"
   }
 }

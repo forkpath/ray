@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { assertVersionAlignment, evaluateContracts, toSnakeCase } from './schema-contract.mjs'
+import { assertVersionAlignment, evaluateContracts, safeEnvironment, toSnakeCase } from './schema-contract.mjs'
 
 const candidate = `
 model User {
@@ -104,14 +104,14 @@ test('detects logical drift and physical mapping drift independently', () => {
 test('requires exact and aligned Better Auth package versions', () => {
   const packageJson = {
     dependencies: {
-      'better-auth': '1.6.2',
-      '@better-auth/expo': '1.6.2',
-      '@better-auth/passkey': '1.6.2'
+      'better-auth': '1.6.26',
+      '@better-auth/expo': '1.6.26',
+      '@better-auth/passkey': '1.6.26'
     }
   }
-  const toolingPackageJson = { devDependencies: { auth: '1.6.2' } }
+  const toolingPackageJson = { devDependencies: { auth: '1.6.26' } }
 
-  assert.equal(assertVersionAlignment(packageJson, toolingPackageJson), '1.6.2')
+  assert.equal(assertVersionAlignment(packageJson, toolingPackageJson), '1.6.26')
   assert.throws(
     () =>
       assertVersionAlignment(
@@ -119,7 +119,7 @@ test('requires exact and aligned Better Auth package versions', () => {
           ...packageJson
         },
         {
-          devDependencies: { auth: '^1.6.2' }
+          devDependencies: { auth: '^1.6.26' }
         }
       ),
     /exact semantic version/
@@ -129,4 +129,15 @@ test('requires exact and aligned Better Auth package versions', () => {
 test('normalizes acronym suffixes for physical columns', () => {
   assert.equal(toSnakeCase('credentialID'), 'credential_id')
   assert.equal(toSnakeCase('activeOrganizationId'), 'active_organization_id')
+})
+
+test('uses a controlled config loader without inheriting arbitrary Node options', () => {
+  const environment = safeEnvironment({
+    PATH: '/usr/bin',
+    NODE_OPTIONS: '--inspect=0.0.0.0:9229'
+  })
+
+  assert.equal(environment.PATH, '/usr/bin')
+  assert.match(environment.NODE_OPTIONS, /^--require=.*tsconfig-paths/)
+  assert.doesNotMatch(environment.NODE_OPTIONS, /inspect/)
 })

@@ -1,7 +1,8 @@
-import type { PermissionCheckParams } from '../permissions'
+import type { PermissionCheckParams, RoleName } from '../permissions'
 import type { auth } from '../server'
 import type { AuthClientOptions, AuthMobileClientOptions } from '../types'
 import type { LastLoginMethodClientConfig } from '@better-auth/expo/plugins'
+import type { BetterAuthClientPlugin } from 'better-auth'
 
 import { expoClient } from '@better-auth/expo/client'
 import { lastLoginMethodClient } from '@better-auth/expo/plugins'
@@ -19,6 +20,19 @@ import { createAuthClient } from 'better-auth/react'
 import { ac } from '../permissions'
 import { resolvePermissionCheckSuccess } from './permission-result'
 
+const createExpoClientPlugin = (options: AuthMobileClientOptions) => {
+  const plugin = expoClient(options)
+  // Expo 1.6.26 narrows BetterFetch's generic defaults; adapt that boundary
+  // without widening the complete plugin tuple used for endpoint inference.
+  const getActions: NonNullable<BetterAuthClientPlugin['getActions']> = ($fetch, $store) =>
+    plugin.getActions($fetch as Parameters<typeof plugin.getActions>[0], $store)
+
+  return {
+    ...plugin,
+    getActions
+  }
+}
+
 export const createClient = ({
   mobile,
   lastLoginMethod,
@@ -30,7 +44,6 @@ export const createClient = ({
   const client = createAuthClient({
     ...options,
     plugins: [
-      ...(options.plugins ?? []),
       anonymousClient(),
       magicLinkClient(),
       emailOTPClient(),
@@ -41,7 +54,7 @@ export const createClient = ({
       }),
       lastLoginMethodClient(lastLoginMethod),
       inferAdditionalFields<typeof auth>(),
-      expoClient(mobile)
+      createExpoClientPlugin(mobile)
     ]
   })
 
@@ -87,15 +100,9 @@ export async function checkPermission(client: AuthClient, permissions: Permissio
  * const canDelete = checkRolePermission(client, 'admin', { product: ['delete'] })
  * ```
  */
-export function checkRolePermission<R extends string = string>(
-  client: AuthClient,
-  role: R,
-  permissions: PermissionCheckParams
-): boolean {
-  // 使用类型断言，因为 better-auth 的类型定义可能过于严格
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function checkRolePermission(client: AuthClient, role: RoleName, permissions: PermissionCheckParams): boolean {
   return client.organization.checkRolePermission({
-    role: role as any,
+    role,
     permissions
   })
 }

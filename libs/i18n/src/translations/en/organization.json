@@ -152,6 +152,7 @@
     "cannotAccess": "You cannot access this organization.",
     "slugNotAvailable": "The slug is not available.",
     "team": {
+      "invalidId": "The team identifier is invalid.",
       "cannotCreateNew": "You cannot create a new team.",
       "alreadyExists": "A team with this name already exists.",
       "notFound": "We couldn't find the team.",
