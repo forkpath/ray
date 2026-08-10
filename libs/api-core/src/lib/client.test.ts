@@ -1,4 +1,4 @@
-import type { AxiosAdapter, AxiosRequestConfig, AxiosResponse } from 'axios'
+import type { AxiosAdapter, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
 import { AxiosError } from 'axios'
 import { describe, expect, it } from 'vitest'
@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { createApiClient } from './client'
 import { ApiError, ApiNetworkError } from './errors'
 
-function makeResponse(config: AxiosRequestConfig, data: unknown, status = 200): AxiosResponse {
+function makeResponse(config: InternalAxiosRequestConfig, data: unknown, status = 200): AxiosResponse {
   return {
     data,
     status,
@@ -16,7 +16,9 @@ function makeResponse(config: AxiosRequestConfig, data: unknown, status = 200): 
   }
 }
 
-function createAdapter(handler: (config: AxiosRequestConfig) => AxiosResponse | Promise<AxiosResponse>): AxiosAdapter {
+function createAdapter(
+  handler: (config: InternalAxiosRequestConfig) => AxiosResponse | Promise<AxiosResponse>
+): AxiosAdapter {
   return async config => handler(config)
 }
 
@@ -80,8 +82,7 @@ describe('createApiClient', () => {
         getAccessToken: () => 'token'
       },
       adapter: createAdapter(config => {
-        const headers = config.headers as Record<string, string> | undefined
-        return makeResponse(config, { code: 0, msg: 'ok', data: headers?.Authorization })
+        return makeResponse(config, { code: 0, msg: 'ok', data: config.headers.get('Authorization') })
       })
     })
 

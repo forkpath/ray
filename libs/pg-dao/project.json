@@ -5,6 +5,13 @@
   "projectType": "library",
   "tags": ["scope:backend", "type:lib"],
   "targets": {
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit -p tsconfig.lib.json",
+        "cwd": "libs/pg-dao"
+      }
+    },
     "prisma": {
       "command": "prisma",
       "options": {
