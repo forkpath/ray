@@ -9,7 +9,7 @@ import { organization } from '~/modules/organization/lib/api'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
-import { getActivePlan } from '@libs/billing'
+import { getActivePlan } from '@libs/billing-config'
 import { useCustomer } from '@libs/billing-native'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-shared/common'

@@ -8,7 +8,7 @@ import { billingQueries } from '~/modules/billing/lib/api'
 
 import { useApiClient } from '@libs/api-client'
 import { hasAdminPermission } from '@libs/auth-contract'
-import { getActivePlan } from '@libs/billing'
+import { getActivePlan } from '@libs/billing-config'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-shared/common'
 import {

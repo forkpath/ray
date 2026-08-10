@@ -5,7 +5,7 @@ import { NativePortalLink } from '~/modules/billing/portal/native-portal-link'
 import { WebPortalLink } from '~/modules/billing/portal/web-portal-link'
 import { View } from 'react-native'
 
-import { findPlanByVariantId } from '@libs/billing'
+import { findPlanByVariantId } from '@libs/billing-config'
 import { ACTIVE_SUBSCRIPTION_STATUSES, MobileStore, SubscriptionStatus } from '@libs/billing-contract'
 import { isKey, useTranslation } from '@libs/i18n'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'

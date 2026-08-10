@@ -2,7 +2,7 @@ import type { BillingPlan } from '@libs/billing-contract'
 
 import { View } from 'react-native'
 
-import { findPlanById } from '@libs/billing'
+import { findPlanById } from '@libs/billing-config'
 import { isKey, useTranslation } from '@libs/i18n'
 import { Icons } from '@libs/ui-shared/mobile/components/icons'
 import { Text } from '@libs/ui-shared/mobile/components/text'

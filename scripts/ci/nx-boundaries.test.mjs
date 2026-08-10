@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 33)
+    assert.equal(projects.length, 34)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -156,12 +156,17 @@ describe('Nx boundary governance', () => {
   it('exposes Billing value contracts through a universal boundary', async () => {
     const projects = await readProjects()
     const billingContract = projects.find(project => project.name === 'billing-contract')
+    const billingConfig = projects.find(project => project.name === 'billing-config')
     const billingNative = projects.find(project => project.name === 'billing-native')
 
     assert.ok(billingContract)
     assert.ok(billingContract.tags.includes('type:contract'))
     assert.ok(billingContract.tags.includes('runtime:universal'))
     assert.ok(billingContract.tags.includes('boundary:billing-contract'))
+
+    assert.ok(billingConfig)
+    assert.ok(billingConfig.tags.includes('type:feature'))
+    assert.ok(billingConfig.tags.includes('runtime:universal'))
 
     assert.ok(billingNative)
     assert.ok(billingNative.tags.includes('type:data-access'))
@@ -175,6 +180,21 @@ describe('Nx boundary governance', () => {
     for (const file of files) {
       const source = await readFile(join(workspaceRoot, file), 'utf8')
       if (source.includes("'@libs/billing/mobile'") || source.includes('"@libs/billing/mobile"')) {
+        violations.push(file)
+      }
+    }
+
+    assert.deepEqual(violations, [])
+  })
+
+  it('keeps transport-neutral Billing consumers off the Node facade', async () => {
+    const roots = ['apps/mobile/src', 'apps/extension/src', 'libs/studio/src']
+    const files = (await Promise.all(roots.map(root => findSourceFiles(root)))).flat()
+    const violations = []
+
+    for (const file of files) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      if (/from ['"]@libs\/billing['"]/.test(source)) {
         violations.push(file)
       }
     }

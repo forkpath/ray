@@ -18,6 +18,7 @@
       "@libs/billing": ["libs/billing/src/index.ts"],
       "@libs/billing/*": ["libs/billing/src/*"],
       "@libs/billing-contract": ["libs/billing-contract/src/index.ts"],
+      "@libs/billing-config": ["libs/billing-config/src/index.ts"],
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
       "@libs/email": ["libs/email/src/index.ts"],
       "@libs/email/server": ["libs/email/src/server.ts"],

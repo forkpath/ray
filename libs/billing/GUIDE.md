@@ -21,12 +21,13 @@
 
 ## 一、架构概览
 
-Billing 正在按运行时拆分。通用值契约已经进入独立 Nx 项目，其余入口在
-兼容期内仍由旧 facade 提供：
+Billing 正在按运行时拆分。通用值契约与纯目录配置已经进入独立 Nx
+项目，其余入口在兼容期内仍由旧 facade 提供：
 
 ```
 @libs/billing-contract → 公共类型、状态常量、传输记录
-@libs/billing          → 兼容 facade、套餐配置、env preset、工具函数
+@libs/billing-config   → 纯目录构建器、价格与权益计算
+@libs/billing          → 兼容 facade、env preset、Node provider/persistence
 @libs/billing/server   → Prisma 持久化 helper（customer/subscription/order/webhook CRUD）+ RevenueCat webhook
 @libs/billing/web      → Stripe checkout/portal/webhook 实现
 @libs/billing-native   → RevenueCat Provider、useCustomer、usePaywall
@@ -37,14 +38,12 @@ Billing 正在按运行时拆分。通用值契约已经进入独立 Nx 项目�
 各端的依赖关系：
 
 ```
-                    ┌─────────────────────┐
-                    │   @libs/billing     │
-                    │  types / config /   │
-                    │  utils / env        │
-                    └──────────┬──────────┘
-                               │
-              ┌────────────────┼────────────────┐
-              ▼                ▼                 ▼
+       @libs/billing-contract    @libs/billing-config
+                 ▲                       ▲
+                 └──────────┬────────────┘
+                            │
+              ┌─────────────┼───────────────────┐
+              ▼             ▼                   ▼
    @libs/billing/web   @libs/billing/server  @libs/billing-native
    (Stripe SDK)        (Prisma ORM)          (RevenueCat SDK)
               │                │                 │
@@ -64,7 +63,7 @@ Billing 正在按运行时拆分。通用值契约已经进入独立 Nx 项目�
 
 | 维度 | postfly | ray |
 |---|---|---|
-| **分包粒度** | 3 个独立 npm 包（`shared` / `web` / `mobile`） | 1 个 Nx library，4 个子路径导出 |
+| **分包粒度** | 3 个独立 npm 包（`shared` / `web` / `mobile`） | Nx contract/config/native 项目 + 迁移期 facade |
 | **ORM** | Drizzle（schema 与 billing 同库 `packages/db`） | Prisma multi-schema（独立 `billing` schema） |
 | **API 框架** | Hono（路由文件 `router.ts`） | NestJS（Controller + Module） |
 | **Provider 策略** | 完整策略模式（`BillingProviderStrategy` 接口 + 多 provider 实现） | 直接导出 Stripe 函数，无策略抽象层 |
@@ -459,7 +458,7 @@ const app = await NestFactory.create(AppModule, {
 
 Web 端仅负责：
 
-1. **展示套餐选择 UI** — 从 `@libs/billing` 读取 `billingConfig` 渲染定价页面
+1. **展示套餐选择 UI** — 当前从兼容 facade 读取带 Stripe ID 的目录；后续由 `billing-web` 注入配置
 2. **发起计费请求** — 调用 Engine API 获取 Checkout/Portal URL
 3. **处理重定向** — 支付成功/取消后的页面路由
 4. **展示账单状态** — 调用 `GET /api/billing/me` 获取并展示订阅信息
@@ -468,7 +467,7 @@ Web 端仅负责：
 
 ```ts
 // 1. 获取套餐列表用于 UI 展示
-import { getBillingPlans, formatBillingPrice } from '@libs/billing'
+import { getBillingPlans, formatBillingPrice } from '@libs/billing-config'
 
 const plans = getBillingPlans() // 自动过滤 hidden 变体
 
@@ -495,9 +494,9 @@ const isActive = hasActiveSubscription(summary.subscriptions)
 import {
   hasActiveSubscription,
   getLatestSuccessfulOrder,
-  findBillingPlan,
-  BillingPlan
-} from '@libs/billing'
+  findBillingPlan
+} from '@libs/billing-config'
+import { BillingPlan } from '@libs/billing-contract'
 
 // 判断用户当前套餐等级
 function getUserPlanLevel(summary: BillingSummary): BillingPlan {

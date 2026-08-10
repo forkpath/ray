@@ -8,7 +8,7 @@ import { SubscriptionsList } from '~/modules/billing/subscriptions/list/subscrip
 import { ScrollView } from '~/modules/common/styled'
 import { View } from 'react-native'
 
-import { findPlanById } from '@libs/billing'
+import { findPlanById } from '@libs/billing-config'
 import { BillingPlan, SubscriptionStatus } from '@libs/billing-contract'
 import { usePaywall } from '@libs/billing-native'
 import { useTranslation } from '@libs/i18n'
