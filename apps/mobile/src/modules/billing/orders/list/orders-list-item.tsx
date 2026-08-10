@@ -1,11 +1,12 @@
-import type { Order } from '@libs/billing'
+import type { Order } from '@libs/billing-contract'
 
 import { FeaturesList } from '~/modules/billing/features-list'
 import { NativePortalLink } from '~/modules/billing/portal/native-portal-link'
 import { WebPortalLink } from '~/modules/billing/portal/web-portal-link'
 import { View } from 'react-native'
 
-import { findPlanByVariantId, MobileStore, PaymentStatus } from '@libs/billing'
+import { findPlanByVariantId } from '@libs/billing'
+import { MobileStore, PaymentStatus } from '@libs/billing-contract'
 import { isKey, useTranslation } from '@libs/i18n'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
 import {

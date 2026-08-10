@@ -22,6 +22,7 @@
       "@libs/pg-dao/*": ["libs/pg-dao/src/*"],
       "@libs/billing": ["libs/billing/src/index.ts"],
       "@libs/billing/*": ["libs/billing/src/*"],
+      "@libs/billing-contract": ["libs/billing-contract/src/index.ts"],
       "@libs/payload": ["libs/payload/src/index.ts"],
       "@libs/ui-shared/*": ["libs/ui-shared/src/*"],
       "@libs/auth-server": ["libs/auth-server/src/index.ts"],

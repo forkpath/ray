@@ -13,10 +13,15 @@
 
 | 入口 | 内容 |
 | --- | --- |
-| `@libs/billing` | 套餐配置、类型、env preset、工具函数（纯共享，不拉 RN/Stripe SDK） |
+| `@libs/billing-contract` | 运行时无关的计费类型、状态常量和传输记录 |
+| `@libs/billing` | 兼容 facade：套餐配置、env preset、工具函数，并暂时转发 contract |
 | `@libs/billing/web` | Stripe checkout / portal / webhook 实现 |
 | `@libs/billing/server` | Prisma helper + `handleRevenueCatWebhook` |
 | `@libs/billing/mobile` | `Provider`、`useCustomer`、`usePaywall`（基于 RevenueCat SDK） |
+
+新代码应从 `@libs/billing-contract` 导入类型和状态常量。旧
+`@libs/billing` 类型导出保留一个发布周期，只用于迁移回退；Stripe、
+RevenueCat、Prisma 和环境读取不会进入 contract 项目。
 
 ## 环境变量
 

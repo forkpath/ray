@@ -44,6 +44,13 @@ Cross-domain access to Auth is represented by the additive
 broader `domain:auth` tag, so future Auth server and client projects remain
 inaccessible even though they share the Auth domain.
 
+Billing values and transport-neutral records now live behind the additive
+`boundary:billing-contract` marker in `billing-contract`. The legacy Billing
+facade re-exports these contracts for rollback compatibility while frontend
+consumers migrate to the explicit universal boundary. Provider SDKs,
+persistence, and environment-specific configuration remain outside the
+contract.
+
 ## Transitional facade debt
 
 `boundary:facade` is a narrow migration exception, not a fourth architecture
@@ -54,8 +61,9 @@ mixed project is split. The allowlist is guarded in CI and currently contains:
   `auth-native`, and `auth-server` now own the universal, browser, native, and
   Node contracts respectively. Runtime consumers no longer import the mixed
   facade; its deprecated exports remain only as a rollback bridge;
-- `billing`: remove after contract/config, web/native client, and Node provider
-  projects replace the mixed facade;
+- `billing`: remove after `billing-contract`, web/native clients, and the Node
+  provider/persistence project replace the mixed facade. The contract boundary
+  now owns Billing value types and status constants;
 - `ui-shared`: remove after universal core, web UI, and native UI projects are
   independent;
 - `api-client`: remove after its billing dependency points only to the billing

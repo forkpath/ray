@@ -17,6 +17,7 @@
       "@libs/analytics/*": ["libs/analytics/src/*"],
       "@libs/billing": ["libs/billing/src/index.ts"],
       "@libs/billing/*": ["libs/billing/src/*"],
+      "@libs/billing-contract": ["libs/billing-contract/src/index.ts"],
       "@libs/monitoring": ["libs/monitoring/src/index.ts"],
       "@libs/monitoring/*": ["libs/monitoring/src/*"],
       "@libs/common": ["libs/common/src/index.ts"],

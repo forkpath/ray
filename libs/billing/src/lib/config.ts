@@ -1,7 +1,8 @@
-import type { BillingConfig } from './types'
+import type { BillingConfig } from '@libs/billing-contract'
+
+import { BillingInterval, BillingModel, BillingPlan } from '@libs/billing-contract'
 
 import { mobileEnv, webEnv } from '../env'
-import { BillingInterval, BillingModel, BillingPlan } from './types'
 
 const PREMIUM_LIFETIME_VARIANT_ID = 'premium-lifetime'
 const PREMIUM_MONTHLY_VARIANT_ID = 'premium-monthly'

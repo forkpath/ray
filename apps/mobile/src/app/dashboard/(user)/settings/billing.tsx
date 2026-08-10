@@ -8,7 +8,8 @@ import { SubscriptionsList } from '~/modules/billing/subscriptions/list/subscrip
 import { ScrollView } from '~/modules/common/styled'
 import { View } from 'react-native'
 
-import { BillingPlan, findPlanById, SubscriptionStatus } from '@libs/billing'
+import { findPlanById } from '@libs/billing'
+import { BillingPlan, SubscriptionStatus } from '@libs/billing-contract'
 import { usePaywall } from '@libs/billing/mobile'
 import { useTranslation } from '@libs/i18n'
 import { Badge } from '@libs/ui-shared/mobile/components/badge'
