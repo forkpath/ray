@@ -42,4 +42,16 @@ describe('migration safety guardrails', () => {
     assert.notEqual(result.status, 0)
     assert.match(result.stderr, /Automatic Better Auth schema generation is disabled/)
   })
+
+  it('uses the correctly spelled PostgreSQL URL in managed configuration', async () => {
+    const envExample = await readFile('.env.example', 'utf8')
+    const compose = await readFile('docker/docker-compose.yml', 'utf8')
+    const prismaConfig = await readFile('libs/pg-dao/prisma.config.ts', 'utf8')
+
+    assert.match(envExample, /^POSTGRES_DATABASE_URL=/m)
+    assert.doesNotMatch(envExample, /^POSGTRES_DATABASE_URL=/m)
+    assert.match(compose, /POSTGRES_DATABASE_URL:/)
+    assert.doesNotMatch(compose, /POSGTRES_DATABASE_URL:/)
+    assert.match(prismaConfig, /resolvePostgresDatabaseUrl\(process\.env\)/)
+  })
 })
