@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
 import { pathsConfig } from '~/config/paths'
 import { authClient } from '~/lib/auth'
-import { billing } from '~/modules/billing/lib/api'
+import { useBillingSummary } from '~/modules/billing/lib/api'
 import { Spinner } from '~/modules/common/spinner'
 import { organization } from '~/modules/organization/lib/api'
 import { router } from 'expo-router'
@@ -41,7 +41,7 @@ export const AccountSwitcher = () => {
   const activeMember = authClient.useActiveMember()
 
   const { entitlements } = useCustomer()
-  const summary = useQuery(billing.queries.summary.get)
+  const summary = useBillingSummary()
   const activePlan = getActivePlan(
     summary.data?.map(customer => ({
       ...customer,

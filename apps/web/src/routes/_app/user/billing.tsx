@@ -1,13 +1,14 @@
-import type { BillingPlanConfig, BillingSubscriptionRecord, BillingSummary } from '@libs/billing-contract'
+import type { BillingSubscriptionRecord, BillingSummary } from '@libs/billing-contract'
 
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { billingMutations, billingQueries, useApiClient } from '@libs/api-client'
+import { useApiClient } from '@libs/api-client'
 import { billingConfig } from '@libs/billing'
+import { billingMutations, billingQueries } from '@libs/billing-client'
 import { BillingPlan, BillingSubscriptionStatus } from '@libs/billing-contract'
 import { useTranslation } from '@libs/i18n'
-import { PageHeader, PageHeaderDescription, PageHeaderTitle } from '@libs/studio'
+import { authClient, PageHeader, PageHeaderDescription, PageHeaderTitle } from '@libs/studio'
 import {
   Badge,
   Button,
@@ -28,7 +29,12 @@ export const Route = createFileRoute('/_app/user/billing')({
 function BillingPage() {
   const { t } = useTranslation('billing')
   const api = useApiClient()
-  const summaryQuery = useQuery(billingQueries.summary(api))
+  const session = authClient.useSession()
+  const userId = session.data?.user.id ?? null
+  const summaryQuery = useQuery({
+    ...billingQueries.summary(api, { kind: 'user', userId }),
+    enabled: Boolean(userId)
+  })
   const summary = summaryQuery.data as BillingSummary | undefined
 
   const subscriptions = summary?.flatMap(c => c.subscriptions) ?? []

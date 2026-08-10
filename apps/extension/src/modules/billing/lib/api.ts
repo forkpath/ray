@@ -1,1 +1,1 @@
-export { billingQueries, billingKeys } from '@libs/api-client'
+export { billingKeys, billingQueries } from '@libs/billing-client'

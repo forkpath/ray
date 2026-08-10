@@ -5,7 +5,8 @@ import type { User } from '@libs/auth-web'
 import { memo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import { billingQueries, useApiClient } from '@libs/api-client'
+import { useApiClient } from '@libs/api-client'
+import { billingQueries } from '@libs/billing-client'
 import { getActivePlan } from '@libs/billing-config'
 import { useTranslation } from '@libs/i18n'
 import {
@@ -46,7 +47,7 @@ export const AccountSwitcher = memo<AccountSwitcherProps>(({ user }) => {
   const [createOpen, setCreateOpen] = useState(false)
 
   const api = useApiClient()
-  const summary = useQuery(billingQueries.summary(api))
+  const summary = useQuery(billingQueries.summary(api, { kind: 'user', userId: user.id }))
   const activePlan = getActivePlan(summary.data)
 
   const { data: organizations } = authClient.useListOrganizations()

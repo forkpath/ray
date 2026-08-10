@@ -16,6 +16,7 @@ const typecheckProjects = [
   ['libs/auth-web/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/billing-contract/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/billing-config/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
+  ['libs/billing-client/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/billing-native/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/email/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/i18n/project.json', 'tsc --noEmit -p tsconfig.lib.json'],

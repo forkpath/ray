@@ -1,6 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
-
-import { billing } from '~/modules/billing/lib/api'
+import { useBillingSummary } from '~/modules/billing/lib/api'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
@@ -11,7 +9,7 @@ import { SubscriptionsListItem } from './subscriptions-list-item'
 export const SubscriptionsList = () => {
   const { t } = useTranslation(['common', 'billing'])
 
-  const summary = useQuery(billing.queries.summary.get)
+  const summary = useBillingSummary()
 
   const subscriptions = summary.data?.flatMap(customer => customer.subscriptions) ?? []
 
