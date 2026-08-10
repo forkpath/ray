@@ -1,9 +1,10 @@
-import { Link, useLocation } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-shared/common'
 import { Icons } from '@libs/ui-shared/web'
 
+import { GoLink } from '../../../common/components/go-link'
 import { pathsConfig } from '../../../config/paths'
 
 /**
@@ -39,9 +40,9 @@ export function AdminSecondaryNav() {
 
       <nav className="flex flex-col gap-1">
         {menuItems.map(item => (
-          <Link
+          <GoLink
             key={item.href}
-            to={item.href}
+            href={item.href}
             className={cn(
               'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-colors',
               'hover:bg-accent hover:text-accent-foreground',
@@ -50,7 +51,7 @@ export function AdminSecondaryNav() {
           >
             {item.icon}
             <span>{item.label}</span>
-          </Link>
+          </GoLink>
         ))}
       </nav>
     </div>
