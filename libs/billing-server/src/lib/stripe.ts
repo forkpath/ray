@@ -1,4 +1,4 @@
-import type { BillingCheckoutInput, BillingPortalInput } from '@libs/billing-contract'
+import type { BillingCheckoutInput, BillingOwner, BillingPortalInput } from '@libs/billing-contract'
 
 import Stripe from 'stripe'
 
@@ -7,10 +7,12 @@ import { BillingModel, BillingOrderStatus, BillingProvider, BillingSubscriptionS
 
 import { billingConfig } from './config'
 import { serverEnv } from './env'
+import { getBillingOwnerId } from './owner-routing'
 import {
   createWebhookEvent,
   findWebhookEvent,
   getBillingCustomerByExternalId,
+  getBillingCustomersByOwner,
   upsertBillingCustomer,
   upsertBillingOrder,
   upsertBillingSubscription
@@ -65,24 +67,27 @@ export function mapStripePaymentStatus(status: Stripe.Checkout.Session.PaymentSt
   }
 }
 
-async function createOrRetrieveStripeCustomer(input: { referenceId: string; email: string }) {
+async function createOrRetrieveStripeCustomer(input: { owner: BillingOwner; email: string }) {
   const stripe = getStripeClient()
-  const existingCustomers = await stripe.customers.list({
-    email: input.email,
-    limit: 1
-  })
-
+  const [localCustomer] = await getBillingCustomersByOwner(input.owner, BillingProvider.STRIPE)
+  const existingStripeCustomer = localCustomer
+    ? await stripe.customers.retrieve(localCustomer.externalId)
+    : input.owner.kind === 'user'
+      ? (await stripe.customers.list({ email: input.email, limit: 1 })).data[0]
+      : undefined
   const stripeCustomer =
-    existingCustomers.data[0] ??
-    (await stripe.customers.create({
-      email: input.email,
-      metadata: {
-        referenceId: input.referenceId
-      }
-    }))
+    existingStripeCustomer && !existingStripeCustomer.deleted
+      ? existingStripeCustomer
+      : await stripe.customers.create({
+          email: input.email,
+          metadata: {
+            referenceId: getBillingOwnerId(input.owner),
+            ownerKind: input.owner.kind
+          }
+        })
 
   const customer = await upsertBillingCustomer({
-    referenceId: input.referenceId,
+    owner: input.owner,
     provider: BillingProvider.STRIPE,
     externalId: stripeCustomer.id
   })
@@ -106,7 +111,7 @@ export async function createStripeCheckoutSession(input: BillingCheckoutInput) {
   }
 
   const { stripeCustomer } = await createOrRetrieveStripeCustomer({
-    referenceId: input.referenceId,
+    owner: input.owner,
     email: input.email
   })
 
@@ -126,7 +131,8 @@ export async function createStripeCheckoutSession(input: BillingCheckoutInput) {
       address: 'auto'
     },
     metadata: {
-      referenceId: input.referenceId,
+      referenceId: getBillingOwnerId(input.owner),
+      ownerKind: input.owner.kind,
       variantId: variant.id
     },
     ...(variant.trialDays && variant.model === BillingModel.RECURRING
@@ -134,7 +140,8 @@ export async function createStripeCheckoutSession(input: BillingCheckoutInput) {
           subscription_data: {
             trial_period_days: variant.trialDays,
             metadata: {
-              referenceId: input.referenceId,
+              referenceId: getBillingOwnerId(input.owner),
+              ownerKind: input.owner.kind,
               variantId: variant.id
             }
           }
@@ -151,7 +158,7 @@ export async function createStripeCheckoutSession(input: BillingCheckoutInput) {
 export async function createStripeBillingPortalSession(input: BillingPortalInput) {
   const stripe = getStripeClient()
   const { stripeCustomer } = await createOrRetrieveStripeCustomer({
-    referenceId: input.referenceId,
+    owner: input.owner,
     email: input.email
   })
 

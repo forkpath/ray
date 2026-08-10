@@ -1,17 +1,12 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
+import type { BillingPortalInput } from '@libs/billing-contract'
 
 import { CommandHandler } from '@nestjs/cqrs'
 
 import { BillingService } from '../../services/billing.service'
 
 export class CreateBillingPortalCommand {
-  constructor(
-    public readonly input: {
-      referenceId: string
-      email: string
-      returnUrl: string
-    }
-  ) {}
+  constructor(public readonly input: BillingPortalInput) {}
 }
 
 @CommandHandler(CreateBillingPortalCommand)

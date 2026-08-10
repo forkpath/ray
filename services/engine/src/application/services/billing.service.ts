@@ -1,30 +1,26 @@
+import type { BillingCheckoutInput, BillingOwner, BillingPortalInput } from '@libs/billing-contract'
+
 import { Injectable } from '@nestjs/common'
 
 import {
   createStripeBillingPortalSession,
   createStripeCheckoutSession,
-  getBillingSummaryByReferenceId,
+  getBillingSummaryByOwner,
   handleRevenueCatWebhook,
   handleStripeWebhook
 } from '@libs/billing-server'
 
 @Injectable()
 export class BillingService {
-  getSummary(userId: string) {
-    return getBillingSummaryByReferenceId(userId)
+  getSummary(owner: BillingOwner) {
+    return getBillingSummaryByOwner(owner)
   }
 
-  createCheckoutSession(input: {
-    referenceId: string
-    email: string
-    variantId: string
-    successUrl: string
-    cancelUrl: string
-  }) {
+  createCheckoutSession(input: BillingCheckoutInput) {
     return createStripeCheckoutSession(input)
   }
 
-  createBillingPortal(input: { referenceId: string; email: string; returnUrl: string }) {
+  createBillingPortal(input: BillingPortalInput) {
     return createStripeBillingPortalSession(input)
   }
 

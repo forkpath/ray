@@ -1,19 +1,12 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
+import type { BillingCheckoutInput } from '@libs/billing-contract'
 
 import { CommandHandler } from '@nestjs/cqrs'
 
 import { BillingService } from '../../services/billing.service'
 
 export class CreateCheckoutSessionCommand {
-  constructor(
-    public readonly input: {
-      referenceId: string
-      email: string
-      variantId: string
-      successUrl: string
-      cancelUrl: string
-    }
-  ) {}
+  constructor(public readonly input: BillingCheckoutInput) {}
 }
 
 @CommandHandler(CreateCheckoutSessionCommand)
