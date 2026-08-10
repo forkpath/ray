@@ -68,17 +68,23 @@ Shared theme values, breakpoints, and the deterministic `cn()` helper now live
 in `ui-core`, tagged `type:util`, `runtime:universal`, and `domain:shared`. Runtime
 consumers import this boundary directly. DOM media hooks and platform-specific
 SVG loaders stay outside the universal project; the old
-`@libs/ui-shared/common` path is a temporary compatibility re-export while Web
-and Native component extraction proceeds in separate pull requests.
+`@libs/ui-shared/common` path is a temporary compatibility alias while the
+facade remains available for one release.
 
 React DOM components, browser media hooks, Web SVG React wrappers, and browser
 Tailwind styles live in `ui-web`, tagged `type:ui`, `runtime:web`, and
 `domain:shared`. Web, Desktop, Extension, and Studio import its public API.
 `@libs/ui-shared/web` and `@libs/ui-shared/common` are now one-release exact-path
 aliases that resolve directly to `ui-web`. They do not add a `ui-shared →
-ui-web` project edge. Native retains its own raw SVG and base-style copy until
-the independent `ui-native` extraction, so neither runtime depends on the
-other.
+ui-web` project edge.
+
+React Native components, native SVG loaders, Uniwind declarations, and Mobile
+styles live in `ui-native`, tagged `type:ui`, `runtime:native`, and
+`domain:shared`. Mobile imports its public API directly. The old
+`@libs/ui-shared/mobile` and deep `@libs/ui-shared/mobile/*` paths are
+one-release exact-path aliases resolving directly to `ui-native`; they do not
+add a `ui-shared → ui-native` graph edge. Web and Native own separate SVG and
+base-style copies, so neither runtime depends on the other.
 
 ## Transitional facade debt
 
@@ -94,8 +100,8 @@ mixed project is split. The allowlist is guarded in CI and currently contains:
   `billing-config`, `billing-client`, `billing-native`, and `billing-server` now
   own the universal, native, and Node responsibilities. Engine no longer imports
   the mixed facade; its deprecated server paths remain only as rollback bridges;
-- `ui-shared`: remove after universal core, web UI, and native UI projects are
-  independent;
+- `ui-shared`: remove after one compatibility release. Universal core, Web UI,
+  and Native UI are now independent and the facade owns no runtime source;
 - `api-client`: remove after one compatibility release of its frozen Billing
   exports. It is explicitly tagged `domain:composition` while it aggregates
   domain wrappers; new runtime consumers use `billing-client`, and the lower

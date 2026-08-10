@@ -10,7 +10,7 @@ import { InvitationStatus } from '@libs/auth-contract'
 import { pickBy } from '@libs/common/utils'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Text } from '@libs/ui-native'
 
 import { InvitationsListFilters } from './invitations-list-filters'
 import { InvitationListItem, InvitationListItemSkeleton } from './invitations-list-item'

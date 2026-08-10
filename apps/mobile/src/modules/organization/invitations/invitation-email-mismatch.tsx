@@ -5,8 +5,7 @@ import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { Trans, useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Text } from '@libs/ui-native'
 
 interface InvitationEmailMismatchProps {
   readonly invitationId: string

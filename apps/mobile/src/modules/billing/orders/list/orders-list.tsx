@@ -2,7 +2,7 @@ import { useBillingSummary } from '~/modules/billing/lib/api'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Text } from '@libs/ui-native'
 
 import { OrdersListItem } from './orders-list-item'
 

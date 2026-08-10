@@ -8,12 +8,7 @@ import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-shared/mobile/components/avatar'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Skeleton } from '@libs/ui-shared/mobile/components/skeleton'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Avatar, AvatarFallback, AvatarImage, Button, Icons, Skeleton, Spin, Text } from '@libs/ui-native'
 
 import { CreateOrganizationBottomSheet } from './create-organization'
 import { organization } from './lib/api'

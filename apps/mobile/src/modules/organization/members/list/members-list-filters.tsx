@@ -12,13 +12,13 @@ import {
   BottomSheetCloseTrigger,
   BottomSheetContent,
   BottomSheetOpenTrigger,
-  BottomSheetView
-} from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Checkbox } from '@libs/ui-shared/mobile/components/checkbox'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Input } from '@libs/ui-shared/mobile/components/input'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+  BottomSheetView,
+  Button,
+  Checkbox,
+  Icons,
+  Input,
+  Text
+} from '@libs/ui-native'
 
 interface FiltersState {
   filters: Record<string, string | string[] | null>

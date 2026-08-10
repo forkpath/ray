@@ -1,5 +1,3 @@
-import type { LucideIcon } from 'lucide-react-native'
-
 import {
   ArrowDown,
   ArrowLeft,
@@ -62,16 +60,16 @@ import {
 } from 'lucide-react-native'
 import { withUniwind } from 'uniwind'
 
-import AppleSvg from '../../common/assets/svg/brand/apple.svg'
-import GithubSvg from '../../common/assets/svg/brand/github.svg'
-import GoogleSvg from '../../common/assets/svg/brand/google.svg'
-import AndroidStrokeSvg from '../../common/assets/svg/brand/stroke/android.svg'
-import AppleStrokeSvg from '../../common/assets/svg/brand/stroke/apple.svg'
-import ChinaSvg from '../../common/assets/svg/flag/china.svg'
-import SpainSvg from '../../common/assets/svg/flag/spain.svg'
-import UnitedKingdomSvg from '../../common/assets/svg/flag/united-kingdom.svg'
-import LogoTextSvg from '../../common/assets/svg/logo-text.svg'
-import LogoSvg from '../../common/assets/svg/logo.svg'
+import AppleSvg from '../assets/svg/brand/apple.svg'
+import GithubSvg from '../assets/svg/brand/github.svg'
+import GoogleSvg from '../assets/svg/brand/google.svg'
+import AndroidStrokeSvg from '../assets/svg/brand/stroke/android.svg'
+import AppleStrokeSvg from '../assets/svg/brand/stroke/apple.svg'
+import ChinaSvg from '../assets/svg/flag/china.svg'
+import SpainSvg from '../assets/svg/flag/spain.svg'
+import UnitedKingdomSvg from '../assets/svg/flag/united-kingdom.svg'
+import LogoTextSvg from '../assets/svg/logo-text.svg'
+import LogoSvg from '../assets/svg/logo.svg'
 
 const icons = {
   Logo: LogoSvg,

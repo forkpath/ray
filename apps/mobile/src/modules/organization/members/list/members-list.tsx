@@ -9,7 +9,7 @@ import { FlatList, RefreshControl, View } from 'react-native'
 import { pickBy } from '@libs/common/utils'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Text } from '@libs/ui-native'
 
 import { MembersListFilters } from './members-list-filters'
 import { MembersListItem, MembersListItemSkeleton } from './members-list-item'

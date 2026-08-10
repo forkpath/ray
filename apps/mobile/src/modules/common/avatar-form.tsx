@@ -12,10 +12,7 @@ import * as z from 'zod'
 import { storageMutations } from '@libs/api-client'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-shared/mobile/components/avatar'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
+import { Avatar, AvatarFallback, AvatarImage, Button, Icons, Spin } from '@libs/ui-native'
 
 interface AvatarFormProps {
   readonly id: string

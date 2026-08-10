@@ -1,5 +1,5 @@
 import type { PasswordPayload } from '@libs/auth-contract'
-import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
+import type { BottomSheetContentRef } from '@libs/ui-native'
 
 import { useState } from 'react'
 
@@ -16,11 +16,11 @@ import {
   BottomSheetHeader,
   BottomSheetTitle,
   BottomSheetView,
+  Button,
+  Icons,
+  Text,
   useBottomSheet
-} from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+} from '@libs/ui-native'
 
 import { RequirePassword } from '../require-password'
 import { useTwoFactor } from '../use-two-factor'

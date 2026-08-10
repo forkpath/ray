@@ -13,9 +13,7 @@ import { useTwoFactor } from '~/modules/user/settings/account/two-factor/use-two
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { useBottomSheet } from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Switch } from '@libs/ui-shared/mobile/components/switch'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Switch, Text, useBottomSheet } from '@libs/ui-native'
 
 export default function TwoFactor() {
   const { t } = useTranslation(['common', 'auth'])

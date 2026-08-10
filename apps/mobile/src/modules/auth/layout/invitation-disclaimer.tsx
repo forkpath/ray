@@ -1,8 +1,7 @@
 'use client'
 
 import { useTranslation } from '@libs/i18n'
-import { Alert, AlertDescription, AlertTitle } from '@libs/ui-shared/mobile/components/alert'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
+import { Alert, AlertDescription, AlertTitle, Icons } from '@libs/ui-native'
 
 export const InvitationDisclaimer = () => {
   const { t } = useTranslation('organization')

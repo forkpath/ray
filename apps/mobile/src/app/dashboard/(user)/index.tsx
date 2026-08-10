@@ -3,7 +3,7 @@ import { UserOrganizationInvitationsBanner } from '~/modules/organization/invita
 import { OrganizationPicker } from '~/modules/organization/organization-picker'
 import { View } from 'react-native'
 
-import { BuiltWith } from '@libs/ui-shared/mobile/components/built-with'
+import { BuiltWith } from '@libs/ui-native'
 
 export default function Home() {
   return (

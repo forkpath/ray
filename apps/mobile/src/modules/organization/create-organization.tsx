@@ -1,5 +1,5 @@
 import type { CreateOrganizationPayload } from '@libs/auth-contract'
-import type { BottomSheetContentRef } from '@libs/ui-shared/mobile/components/bottom-sheet'
+import type { BottomSheetContentRef } from '@libs/ui-native'
 
 import { useMutation } from '@tanstack/react-query'
 
@@ -21,14 +21,17 @@ import {
   BottomSheetOpenTrigger,
   BottomSheetScrollView,
   BottomSheetTitle,
+  Button,
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  Icons,
+  Input,
+  Spin,
+  Text,
   useBottomSheet
-} from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Field, FieldDescription, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Input } from '@libs/ui-shared/mobile/components/input'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+} from '@libs/ui-native'
 
 import { organization } from './lib/api'
 

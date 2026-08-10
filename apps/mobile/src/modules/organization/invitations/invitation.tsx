@@ -17,10 +17,7 @@ import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { Trans, useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Icons, Spin, Text } from '@libs/ui-native'
 
 import { InvitationSummaryCard } from './invitation-summary-card'
 

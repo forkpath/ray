@@ -11,13 +11,19 @@ import { View } from 'react-native'
 
 import { otpVerificationSchema, SecondFactor } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Checkbox } from '@libs/ui-shared/mobile/components/checkbox'
-import { Field, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { InputOTP, InputOTPGroup, InputOTPSlot } from '@libs/ui-shared/mobile/components/input-otp'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import {
+  Button,
+  Checkbox,
+  Field,
+  FieldError,
+  FieldLabel,
+  Icons,
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  Spin,
+  Text
+} from '@libs/ui-native'
 
 import { auth } from '../../lib/api'
 

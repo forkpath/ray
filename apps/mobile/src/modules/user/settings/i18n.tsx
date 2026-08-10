@@ -11,12 +11,13 @@ import {
   BottomSheetOpenTrigger,
   BottomSheetTitle,
   BottomSheetView,
+  Button,
+  Icons,
+  LocaleCustomizer,
+  LocaleIcon,
+  Text,
   useBottomSheet
-} from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { LocaleCustomizer, LocaleIcon } from '@libs/ui-shared/mobile/components/i18n'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+} from '@libs/ui-native'
 
 export const I18nSettings = () => {
   const { t, i18n } = useTranslation('common')

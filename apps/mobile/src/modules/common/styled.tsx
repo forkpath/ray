@@ -8,7 +8,7 @@ import { SafeAreaView as NativeSafeAreaView } from 'react-native-safe-area-conte
 import { withUniwind } from 'uniwind'
 
 import { cn } from '@libs/ui-core'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Text } from '@libs/ui-native'
 
 export const KeyboardAvoidingView = withUniwind(NativeKeyboardAvoidingView)
 export const Link = withUniwind(NativeLink)

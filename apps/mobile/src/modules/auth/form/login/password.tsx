@@ -12,13 +12,7 @@ import { View } from 'react-native'
 
 import { passwordLoginSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Checkbox } from '@libs/ui-shared/mobile/components/checkbox'
-import { Field, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Input } from '@libs/ui-shared/mobile/components/input'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Checkbox, Field, FieldError, FieldLabel, Icons, Input, Spin, Text } from '@libs/ui-native'
 
 import { auth } from '../../lib/api'
 

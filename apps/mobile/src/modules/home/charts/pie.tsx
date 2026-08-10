@@ -7,11 +7,21 @@ import { Pie, PolarChart } from 'victory-native'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Badge } from '@libs/ui-shared/mobile/components/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@libs/ui-shared/mobile/components/card'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@libs/ui-shared/mobile/components/select'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Icons,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Text
+} from '@libs/ui-native'
 
 const customersValue = [186, 305, 237, 173, 209]
 

@@ -2,7 +2,7 @@ import * as Linking from 'expo-linking'
 import { Pressable, View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Text } from '@libs/ui-native'
 
 export default function Notifications() {
   const { t } = useTranslation(['common', 'marketing'])

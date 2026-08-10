@@ -9,8 +9,7 @@ import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Icons, Text } from '@libs/ui-native'
 
 const sections = [
   [

@@ -12,7 +12,7 @@ import { useGlobalSearchParams } from 'expo-router'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { FieldSeparator } from '@libs/ui-shared/mobile/components/field'
+import { FieldSeparator } from '@libs/ui-native'
 
 const RegisterPage = () => {
   const { t } = useTranslation('auth')

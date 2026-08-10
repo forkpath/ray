@@ -12,8 +12,7 @@ import { user } from '~/modules/user/lib/api'
 import { Redirect } from 'expo-router'
 import { View } from 'react-native'
 
-import { Skeleton } from '@libs/ui-shared/mobile/components/skeleton'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Skeleton, Text } from '@libs/ui-native'
 
 const AccountInfoSkeleton = () => {
   return (

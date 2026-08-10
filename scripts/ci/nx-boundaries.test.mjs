@@ -88,7 +88,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 38)
+    assert.equal(projects.length, 39)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -242,6 +242,48 @@ describe('Nx boundary governance', () => {
     for (const file of facadeFiles) {
       const source = await readFile(join(workspaceRoot, file), 'utf8')
       assert.equal(source.includes('@libs/ui-web'), false, file)
+    }
+  })
+
+  it('keeps native UI on an explicit Native boundary', async () => {
+    const projects = await readProjects()
+    const uiNative = projects.find(project => project.name === 'ui-native')
+
+    assert.ok(uiNative)
+    assert.ok(uiNative.tags.includes('type:ui'))
+    assert.ok(uiNative.tags.includes('runtime:native'))
+    assert.ok(uiNative.tags.includes('domain:shared'))
+
+    const nativeFiles = await findSourceFiles('libs/ui-native/src')
+    for (const file of nativeFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.doesNotMatch(source, /from ['"](?:node:|react-dom|@radix-ui)/, file)
+      assert.doesNotMatch(source, /\b(?:document|navigator)\b|globalThis\.window/, file)
+      assert.equal(source.includes('@libs/ui-shared/'), false, file)
+    }
+  })
+
+  it('routes native UI consumers through ui-native', async () => {
+    const files = await findSourceFiles('apps/mobile/src')
+    const violations = []
+
+    for (const file of files) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      if (source.includes('@libs/ui-shared/mobile')) {
+        violations.push(file)
+      }
+    }
+
+    assert.deepEqual(violations, [])
+
+    const tsconfig = await readJson('tsconfig.base.json')
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/ui-shared/mobile'], ['libs/ui-native/src/index.ts'])
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/ui-shared/mobile/*'], ['libs/ui-native/src/*'])
+
+    const facadeFiles = await findSourceFiles('libs/ui-shared/src')
+    for (const file of facadeFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.equal(source.includes('@libs/ui-native'), false, file)
     }
   })
 

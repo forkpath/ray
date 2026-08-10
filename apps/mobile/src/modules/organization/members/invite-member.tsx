@@ -19,15 +19,21 @@ import {
   BottomSheetOpenTrigger,
   BottomSheetScrollView,
   BottomSheetTitle,
+  Button,
+  Field,
+  FieldError,
+  FieldLabel,
+  Icons,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Spin,
+  Text,
   useBottomSheet
-} from '@libs/ui-shared/mobile/components/bottom-sheet'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Field, FieldError, FieldLabel } from '@libs/ui-shared/mobile/components/field'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Input } from '@libs/ui-shared/mobile/components/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@libs/ui-shared/mobile/components/select'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+} from '@libs/ui-native'
 
 export const InviteMemberBottomSheet = ({ children }: { children?: React.ReactNode }) => {
   const { t } = useTranslation(['common', 'organization'])

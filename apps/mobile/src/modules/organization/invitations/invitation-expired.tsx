@@ -4,8 +4,7 @@ import { AuthHeader } from '~/modules/auth/layout/header'
 import { router } from 'expo-router'
 
 import { useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Text } from '@libs/ui-native'
 
 export const InvitationExpired = () => {
   const { t } = useTranslation('organization')

@@ -9,12 +9,7 @@ import { Alert, FlatList, RefreshControl, View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Badge } from '@libs/ui-shared/mobile/components/badge'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
-import { Skeleton } from '@libs/ui-shared/mobile/components/skeleton'
-import { Spin } from '@libs/ui-shared/mobile/components/spin'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Badge, Button, Icons, Skeleton, Spin, Text } from '@libs/ui-native'
 
 export default function Sessions() {
   const { t } = useTranslation(['common', 'auth'])

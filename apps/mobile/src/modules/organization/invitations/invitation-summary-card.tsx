@@ -4,10 +4,7 @@ import dayjs from 'dayjs'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Avatar, AvatarFallback, AvatarImage } from '@libs/ui-shared/mobile/components/avatar'
-import { Badge } from '@libs/ui-shared/mobile/components/badge'
-import { Card } from '@libs/ui-shared/mobile/components/card'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Avatar, AvatarFallback, AvatarImage, Badge, Card, Text } from '@libs/ui-native'
 
 interface InvitationSummaryCardProps {
   readonly invitation: Invitation

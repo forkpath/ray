@@ -8,8 +8,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
-import { Button } from '@libs/ui-shared/mobile/components/button'
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Button, Text } from '@libs/ui-native'
 
 import '~/assets/styles/globals.css'
 

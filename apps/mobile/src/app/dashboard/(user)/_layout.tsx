@@ -5,7 +5,7 @@ import { Easing } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
-import { Icons } from '@libs/ui-shared/mobile/components/icons'
+import { Icons } from '@libs/ui-native'
 
 export default function UserLayout() {
   const { t } = useTranslation('common')

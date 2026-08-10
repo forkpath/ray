@@ -165,7 +165,7 @@ pnpm add -D @tailwindcss/postcss @tailwindcss/vite
 
 # 在package.json中绑定脚本，我这里的思路是将其分科，通过路径的方式来实现样式添加
 "add:web-ui": "pnpx shadcn@latest add -p libs/ui-web/src/components",
-"add:mobile-ui": "pnpx shadcn@latest add -p libs/ui-shared/src/mobile/components",
+"add:mobile-ui": "pnpx shadcn@latest add -p libs/ui-native/src/components",
 ```
 
 - 构建desktop应用

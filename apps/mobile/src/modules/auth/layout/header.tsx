@@ -2,7 +2,7 @@ import { memo } from 'react'
 
 import { View } from 'react-native'
 
-import { Text } from '@libs/ui-shared/mobile/components/text'
+import { Text } from '@libs/ui-native'
 
 interface AuthHeaderProps {
   readonly title: React.ReactNode

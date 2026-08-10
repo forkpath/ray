@@ -27,6 +27,7 @@ const typecheckProjects = [
   ['libs/srv-core/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/srv-shared/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/ui-core/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
+  ['libs/ui-native/project.json', 'tsc --noEmit -p tsconfig.lib.json'],
   ['libs/ui-web/project.json', 'tsc --noEmit -p tsconfig.lib.json']
 ]
 

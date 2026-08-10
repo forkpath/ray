@@ -19,7 +19,7 @@ Central orientation for contributors working inside the neo Nx monorepo. Follow 
 - `libs/i18n/src/translationns` - translation files for app and service
 - `libs/ui-core` - universal theme values, breakpoints, and class-name utilities
 - `libs/ui-web` - React DOM components and browser styles (Tailwind v4 and Shadcn)
-- `libs/ui-shared/src/mobile` - transitional React Native UI facade
+- `libs/ui-native` - React Native UI components and native styles
 - `libs/payload/src/schemas` - req & res payload validator for app and service (Zod)
 - `libs/api-client/src/domains` - Api request based on payload validator (React-query)
 - `libs/studio` - page components for desktop and web
