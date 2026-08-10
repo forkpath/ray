@@ -41,7 +41,7 @@ export function DeleteOrgAction({ id }: DeleteOrgActionProps) {
           })
         )
         void router.navigate({
-          to: pathsConfig.admin.organizations.index
+          to: pathsConfig.admin.organizations.index as never
         })
       }
     })

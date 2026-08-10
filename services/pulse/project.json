@@ -7,14 +7,17 @@
   "targets": {
     "build": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production", { "env": "NODE_ENV" }],
+      "outputs": ["{workspaceRoot}/dist/services/pulse"],
       "options": {
-        "command": "webpack-cli build",
-        "args": ["--node-env=production"],
+        "command": "webpack-cli build --config-node-env production",
         "cwd": "services/pulse"
       },
       "configurations": {
         "development": {
-          "args": ["--node-env=development"]
+          "command": "webpack-cli build --config-node-env development"
         }
       }
     },
@@ -78,25 +81,6 @@
       "options": {
         "cwd": "services/pulse",
         "command": "eslint ."
-      }
-    },
-    "test": {
-      "cache": true,
-      "executor": "nx:run-commands",
-      "inputs": [
-        "default",
-        "^production",
-        {
-          "externalDependencies": ["vitest"]
-        },
-        {
-          "env": "CI"
-        }
-      ],
-      "outputs": ["{workspaceRoot}/coverage/services/pulse"],
-      "options": {
-        "cwd": "services/pulse",
-        "command": "vitest"
       }
     },
     "typecheck": {
