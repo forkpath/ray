@@ -36,6 +36,9 @@ The workflow uploads `release-manifest-<git-sha>-<run-attempt>` with this shape:
 The real manifest contains exactly five entries. Assembly fails when a service
 is missing, duplicated, built from another Git SHA/ref, or lacks an OCI digest.
 
+The consumer implementation and rollback runbook are documented in
+`docs/deployment/quick-rollback.md`.
+
 ## Migrator
 
 The Migrator is independent from every application runtime. It contains the

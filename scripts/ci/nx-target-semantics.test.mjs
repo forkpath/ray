@@ -111,8 +111,8 @@ describe('Nx target semantics', () => {
       assert.deepEqual(project.targets.prune.dependsOn, ['package'], path)
     }
 
-    const deployScript = await readFile('scripts/deploy.sh', 'utf8')
-    assert.match(deployScript, /pnpm exec nx run engine:package/)
-    assert.doesNotMatch(deployScript, /node scripts\/create-engine-lockfile\.js/)
+    const releaseWorkflow = await readFile('.github/workflows/release-images.yml', 'utf8')
+    assert.match(releaseWorkflow, /nx run-many -t package -p engine,pulse,worker/)
+    assert.doesNotMatch(releaseWorkflow, /node scripts\/create-engine-lockfile\.js/)
   })
 })

@@ -91,13 +91,16 @@ describe('migration safety guardrails', () => {
 
   it('uses the correctly spelled PostgreSQL URL in managed configuration', async () => {
     const envExample = await readFile('.env.example', 'utf8')
-    const compose = await readFile('docker/docker-compose.yml', 'utf8')
+    const runtimeExample = await readFile('docs/deployment/examples/runtime.env.example', 'utf8')
+    const applicationCompose = await readFile('docker/compose.application.yml', 'utf8')
     const prismaConfig = await readFile('libs/pg-dao/prisma.config.ts', 'utf8')
 
     assert.match(envExample, /^POSTGRES_DATABASE_URL=/m)
     assert.doesNotMatch(envExample, /^POSGTRES_DATABASE_URL=/m)
-    assert.match(compose, /POSTGRES_DATABASE_URL:/)
-    assert.doesNotMatch(compose, /POSGTRES_DATABASE_URL:/)
+    assert.match(runtimeExample, /^POSTGRES_DATABASE_URL=/m)
+    assert.match(applicationCompose, /RAY_RUNTIME_ENV_FILE/)
+    assert.doesNotMatch(runtimeExample, /^POSGTRES_DATABASE_URL=/m)
+    assert.doesNotMatch(applicationCompose, /POSGTRES_DATABASE_URL/)
     assert.match(prismaConfig, /resolvePostgresDatabaseUrl\(process\.env\)/)
   })
 })

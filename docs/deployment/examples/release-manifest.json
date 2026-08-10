@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "gitSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "ref": "refs/heads/main",
+  "images": {
+    "engine": {
+      "image": "ghcr.io/forkpath/ray-engine",
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    "pulse": {
+      "image": "ghcr.io/forkpath/ray-pulse",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    "worker": {
+      "image": "ghcr.io/forkpath/ray-worker",
+      "digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    "web": {
+      "image": "ghcr.io/forkpath/ray-web",
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    "migrator": {
+      "image": "ghcr.io/forkpath/ray-migrator",
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "baseUrl": "https://ray.example.com",
+  "timeoutSeconds": 15,
+  "checks": [
+    {
+      "name": "engine-health",
+      "category": "health",
+      "path": "/api/v1/health",
+      "expectedStatus": 200
+    },
+    {
+      "name": "auth-session-boundary",
+      "category": "auth",
+      "path": "/api/auth/get-session",
+      "expectedStatus": 200
+    },
+    {
+      "name": "user-billing-boundary",
+      "category": "billing",
+      "path": "/api/v1/billing/me",
+      "expectedStatus": 401
+    },
+    {
+      "name": "organization-billing-boundary",
+      "category": "organization",
+      "path": "/api/v1/organizations/smoke/billing",
+      "expectedStatus": 401
+    }
+  ]
+}
