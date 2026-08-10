@@ -51,11 +51,12 @@ NestJS, database clients, caches, or message brokers. `server-nest` is the
 explicit Node adapter for environment loading, exception filters, response
 interceptors, throttling guards, decorators, and Nest i18n integration.
 `server-redis` is the explicit Node adapter for the ioredis client lifecycle and
-Redis helpers. `mongo-dao` and the remaining `srv-shared` infrastructure
-adapters consume the kernel contract. The old `@libs/srv-core` path resolves
-directly to `server-nest`; previous `srv-shared` i18n and Redis exports are
-type/module-only compatibility bridges for one release. The next Server Core
-subwave extracts the RabbitMQ adapter before retiring those bridges.
+Redis helpers. `server-rabbitmq` owns the Nest RabbitMQ connection, publisher,
+exchange registration, and bounded prefetch policy. Engine and Worker compose
+that adapter through its public API. `mongo-dao` and the remaining `srv-shared`
+infrastructure adapters consume the kernel contract. The old `@libs/srv-core`
+path resolves directly to `server-nest`; previous `srv-shared` i18n, Redis, and
+RabbitMQ exports are type/module-only compatibility bridges for one release.
 
 Billing values and transport-neutral records now live behind the additive
 `boundary:billing-contract` marker in `billing-contract`. The legacy Billing

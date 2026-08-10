@@ -1,1 +1,1 @@
-export type { RabbitmqConfig } from '@libs/server-kernel'
+export type { RabbitmqConfig } from '@libs/server-rabbitmq'

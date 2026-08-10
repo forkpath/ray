@@ -13,6 +13,7 @@
       "#/*": ["services/engine/src/*"],
       "@libs/server-kernel": ["libs/server-kernel/src/index.ts"],
       "@libs/server-nest": ["libs/server-nest/src/index.ts"],
+      "@libs/server-rabbitmq": ["libs/server-rabbitmq/src/index.ts"],
       "@libs/server-redis": ["libs/server-redis/src/index.ts"],
       "@libs/srv-core": ["libs/server-nest/src/index.ts"],
       "@libs/srv-shared": ["libs/srv-shared/src/index.ts"],
