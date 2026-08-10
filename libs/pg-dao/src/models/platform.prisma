@@ -39,3 +39,28 @@ model RayDataBackfillConflict {
   @@map("_ray_data_backfill_conflicts")
   @@schema("public")
 }
+
+model WorkerInbox {
+  id              String    @id @default(cuid())
+  consumer        String
+  messageId       String    @map("message_id")
+  eventType       String    @map("event_type")
+  envelopeVersion Int       @map("envelope_version")
+  envelope        Json
+  status          String    @default("received")
+  attemptCount    Int       @default(0) @map("attempt_count")
+  maxAttempts     Int       @default(5) @map("max_attempts")
+  receivedAt      DateTime  @default(now()) @map("received_at") @db.Timestamptz
+  lockedAt        DateTime? @map("locked_at") @db.Timestamptz
+  nextAttemptAt   DateTime? @map("next_attempt_at") @db.Timestamptz
+  processedAt     DateTime? @map("processed_at") @db.Timestamptz
+  failedAt        DateTime? @map("failed_at") @db.Timestamptz
+  lastError       String?   @map("last_error")
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@unique([consumer, messageId])
+  @@index([status, nextAttemptAt])
+  @@index([status, lockedAt])
+  @@map("worker_inbox")
+  @@schema("public")
+}

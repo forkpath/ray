@@ -70,6 +70,8 @@ const findSourceFiles = async directory => {
   const files = []
 
   for (const entry of entries) {
+    if (entry.name === 'node_modules' || entry.name.startsWith('.')) continue
+
     const child = join(absoluteDirectory, entry.name)
     if (entry.isDirectory()) {
       files.push(...(await findSourceFiles(relative(workspaceRoot, child))))
@@ -137,7 +139,7 @@ const readBoundaryConstraints = async () => {
 describe('Nx boundary governance', () => {
   it('requires one type, runtime and domain tag on every project', async () => {
     const projects = await readProjects()
-    assert.equal(projects.length, 43)
+    assert.equal(projects.length, 45)
 
     for (const project of projects) {
       assert.ok(project.name, `Expected a project name in ${project.path}`)
@@ -291,6 +293,32 @@ describe('Nx boundary governance', () => {
       assert.equal(source.includes('process.env'), false, file)
       assert.equal(source.includes('@libs/srv-'), false, file)
     }
+  })
+
+  it('keeps event envelopes universal and Worker execution on the Node platform boundary', async () => {
+    const projects = await readProjects()
+    const eventContract = projects.find(project => project.name === 'event-contract')
+    const workerKernel = projects.find(project => project.name === 'worker-kernel')
+
+    assert.ok(eventContract)
+    assert.ok(eventContract.tags.includes('type:contract'))
+    assert.ok(eventContract.tags.includes('runtime:universal'))
+    assert.ok(eventContract.tags.includes('domain:platform'))
+    assert.ok(workerKernel)
+    assert.ok(workerKernel.tags.includes('type:platform'))
+    assert.ok(workerKernel.tags.includes('runtime:node'))
+    assert.ok(workerKernel.tags.includes('domain:platform'))
+
+    const contractFiles = await findSourceFiles('libs/event-contract/src')
+    for (const file of contractFiles) {
+      const source = await readFile(join(workspaceRoot, file), 'utf8')
+      assert.doesNotMatch(source, /from ['"](?:node:|@nestjs|ioredis|mongoose|@golevelup|@libs\/pg-dao)/, file)
+      assert.equal(source.includes('process.env'), false, file)
+    }
+
+    const tsconfig = await readJson('tsconfig.base.json')
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/event-contract'], ['libs/event-contract/src/index.ts'])
+    assert.deepEqual(tsconfig.compilerOptions.paths['@libs/worker-kernel'], ['libs/worker-kernel/src/index.ts'])
   })
 
   it('routes server configuration owners through server-kernel', async () => {
