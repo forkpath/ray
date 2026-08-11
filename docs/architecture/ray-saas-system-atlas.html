@@ -1,0 +1,2245 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="Ray Nx SaaS monorepo architecture, PostgreSQL schema, Better Auth compatibility and CI/CD audit."
+    />
+    <title>Ray System Atlas · Architecture Audit</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: oklch(96% 0.018 84);
+        --paper-deep: oklch(91% 0.026 79);
+        --ink: oklch(20% 0.036 252);
+        --ink-soft: oklch(42% 0.035 248);
+        --line: oklch(72% 0.04 76);
+        --line-strong: oklch(49% 0.055 72);
+        --signal: oklch(58% 0.2 31);
+        --signal-dark: oklch(38% 0.16 31);
+        --olive: oklch(54% 0.11 132);
+        --blue: oklch(47% 0.13 249);
+        --gold: oklch(73% 0.14 84);
+        --danger: oklch(49% 0.18 26);
+        --success: oklch(48% 0.12 151);
+        --focus: oklch(48% 0.17 248);
+        --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+        --font-body: 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
+        --font-data: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+        --space-1: 0.25rem;
+        --space-2: 0.5rem;
+        --space-3: 0.75rem;
+        --space-4: 1rem;
+        --space-6: 1.5rem;
+        --space-8: 2rem;
+        --space-12: 3rem;
+        --space-16: 4rem;
+        --radius: 0.2rem;
+        --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 20rem;
+        color: var(--ink);
+        background:
+          linear-gradient(
+            90deg,
+            transparent 31px,
+            color-mix(in oklch, var(--line) 35%, transparent) 32px,
+            transparent 33px
+          ),
+          linear-gradient(transparent 31px, color-mix(in oklch, var(--line) 25%, transparent) 32px, transparent 33px),
+          var(--paper);
+        background-size: 32px 32px;
+        font-family: var(--font-body);
+        font-size: 1rem;
+        line-height: 1.55;
+        font-kerning: normal;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button,
+      a,
+      input {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button:focus-visible,
+      a:focus-visible,
+      input:focus-visible,
+      summary:focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 3px;
+      }
+
+      a {
+        color: var(--blue);
+        text-underline-offset: 0.2em;
+      }
+
+      .skip-link {
+        position: fixed;
+        z-index: 100;
+        top: var(--space-4);
+        left: var(--space-4);
+        padding: var(--space-3) var(--space-4);
+        color: var(--paper);
+        background: var(--ink);
+        transform: translateY(-200%);
+        transition: transform 180ms var(--ease-out);
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      .shell {
+        display: grid;
+        min-height: 100vh;
+        grid-template-columns: 18rem minmax(0, 1fr);
+      }
+
+      .rail {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        height: 100vh;
+        flex-direction: column;
+        border-right: 1px solid var(--ink);
+        background: color-mix(in oklch, var(--paper) 94%, transparent);
+        padding: clamp(1.25rem, 2.5vw, 2rem);
+        backdrop-filter: blur(8px);
+      }
+
+      .wordmark {
+        display: grid;
+        gap: var(--space-2);
+        margin-bottom: var(--space-8);
+      }
+
+      .wordmark strong {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 600;
+        letter-spacing: -0.04em;
+      }
+
+      .eyebrow,
+      .folio,
+      .kicker,
+      .label,
+      .rail-meta,
+      .project-path,
+      .table-schema,
+      .metric-label {
+        font-family: var(--font-data);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow,
+      .kicker {
+        color: var(--signal-dark);
+      }
+
+      .rail-search {
+        width: 100%;
+        min-height: 2.75rem;
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        color: var(--ink);
+        background: var(--paper);
+        padding: var(--space-2) var(--space-3);
+      }
+
+      .rail nav {
+        display: grid;
+        gap: var(--space-1);
+        margin: var(--space-8) 0;
+      }
+
+      .rail nav a {
+        display: grid;
+        min-height: 2.75rem;
+        grid-template-columns: 2rem 1fr;
+        align-items: center;
+        border-bottom: 1px solid color-mix(in oklch, var(--line) 70%, transparent);
+        color: var(--ink-soft);
+        text-decoration: none;
+        transition:
+          color 150ms var(--ease-out),
+          transform 150ms var(--ease-out);
+      }
+
+      .rail nav a:hover,
+      .rail nav a.active {
+        color: var(--signal-dark);
+        transform: translateX(0.25rem);
+      }
+
+      .rail-meta {
+        display: grid;
+        gap: var(--space-2);
+        margin-top: auto;
+        color: var(--ink-soft);
+        line-height: 1.45;
+      }
+
+      main {
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      section {
+        position: relative;
+        border-bottom: 1px solid var(--ink);
+        padding: clamp(4rem, 8vw, 8rem) clamp(1.5rem, 6vw, 7rem);
+      }
+
+      .section-head {
+        display: grid;
+        max-width: 76rem;
+        grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.45fr);
+        gap: var(--space-12);
+        align-items: end;
+        margin-bottom: clamp(3rem, 6vw, 6rem);
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        letter-spacing: -0.035em;
+      }
+
+      h1 {
+        max-width: 10ch;
+        margin-bottom: var(--space-6);
+        font-size: clamp(3.7rem, 9vw, 9.5rem);
+        line-height: 0.84;
+      }
+
+      h2 {
+        max-width: 12ch;
+        margin-bottom: 0;
+        font-size: clamp(2.6rem, 5vw, 5.8rem);
+        line-height: 0.93;
+      }
+
+      h3 {
+        font-size: clamp(1.35rem, 2.4vw, 2rem);
+        line-height: 1.05;
+      }
+
+      .lead {
+        max-width: 54ch;
+        color: var(--ink-soft);
+        font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+      }
+
+      .hero {
+        min-height: 92vh;
+        display: grid;
+        align-content: center;
+        background:
+          linear-gradient(115deg, color-mix(in oklch, var(--gold) 18%, transparent), transparent 42%), transparent;
+      }
+
+      .hero-grid {
+        display: grid;
+        max-width: 78rem;
+        grid-template-columns: minmax(0, 1.5fr) minmax(16rem, 0.65fr);
+        gap: clamp(2rem, 7vw, 8rem);
+        align-items: end;
+      }
+
+      .hero-mark {
+        position: absolute;
+        right: clamp(1rem, 4vw, 4rem);
+        top: clamp(1rem, 4vw, 3rem);
+        width: clamp(8rem, 18vw, 15rem);
+        border: 3px double var(--signal);
+        color: var(--signal-dark);
+        padding: var(--space-4);
+        font-family: var(--font-data);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-align: center;
+        text-transform: uppercase;
+        transform: rotate(3deg);
+      }
+
+      .hero-note {
+        border-top: 1px solid var(--ink);
+        padding-top: var(--space-4);
+      }
+
+      .status-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        margin-top: var(--space-8);
+      }
+
+      .pill,
+      .tag,
+      .filter-button {
+        display: inline-flex;
+        min-height: 2rem;
+        align-items: center;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        padding: 0.28rem 0.7rem;
+        color: var(--ink);
+        background: color-mix(in oklch, var(--paper) 88%, transparent);
+        font-family: var(--font-data);
+        font-size: 0.7rem;
+        line-height: 1;
+      }
+
+      .pill.good {
+        border-color: var(--success);
+        color: var(--success);
+      }
+
+      .pill.warn {
+        border-color: var(--signal);
+        color: var(--signal-dark);
+      }
+
+      .metrics {
+        display: grid;
+        max-width: 80rem;
+        grid-template-columns: repeat(5, minmax(8rem, 1fr));
+        border-top: 1px solid var(--ink);
+        border-left: 1px solid var(--ink);
+      }
+
+      .metric {
+        min-height: 9rem;
+        border-right: 1px solid var(--ink);
+        border-bottom: 1px solid var(--ink);
+        padding: var(--space-4);
+      }
+
+      .metric-value {
+        display: block;
+        margin-top: var(--space-3);
+        font-family: var(--font-display);
+        font-size: clamp(2.2rem, 4vw, 4.5rem);
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+
+      .verdict {
+        display: grid;
+        max-width: 80rem;
+        grid-template-columns: 0.35fr 1fr;
+        gap: var(--space-8);
+        margin-top: var(--space-16);
+        border-top: 4px solid var(--ink);
+        padding-top: var(--space-6);
+      }
+
+      .runtime-map {
+        width: 100%;
+        max-width: 80rem;
+        min-width: 0;
+        border: 1px solid var(--ink);
+        background: color-mix(in oklch, var(--paper) 92%, transparent);
+        padding: clamp(1rem, 4vw, 3rem);
+        overflow-x: auto;
+      }
+
+      .runtime-lanes {
+        display: grid;
+        min-width: 52rem;
+        gap: var(--space-6);
+      }
+
+      .lane {
+        display: grid;
+        grid-template-columns: 8rem repeat(5, minmax(8rem, 1fr));
+        gap: var(--space-2);
+        align-items: stretch;
+      }
+
+      .lane-label {
+        display: flex;
+        align-items: center;
+        color: var(--signal-dark);
+        font-family: var(--font-data);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .node {
+        position: relative;
+        display: grid;
+        min-height: 5.5rem;
+        place-content: center;
+        border: 1px solid var(--line-strong);
+        padding: var(--space-3);
+        text-align: center;
+      }
+
+      .node:not(:last-child)::after {
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        right: calc(-1 * var(--space-2) - 1px);
+        width: var(--space-2);
+        border-top: 1px solid var(--signal);
+        content: '';
+      }
+
+      .node strong {
+        font-size: 0.88rem;
+      }
+
+      .node small {
+        color: var(--ink-soft);
+      }
+
+      .filters {
+        display: flex;
+        max-width: 80rem;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+        margin-bottom: var(--space-8);
+      }
+
+      .filter-button {
+        min-height: 2.75rem;
+        cursor: pointer;
+        transition:
+          background 150ms var(--ease-out),
+          color 150ms var(--ease-out);
+      }
+
+      .filter-button[aria-pressed='true'] {
+        border-color: var(--ink);
+        color: var(--paper);
+        background: var(--ink);
+      }
+
+      .project-grid {
+        display: grid;
+        max-width: 80rem;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+        border-top: 1px solid var(--ink);
+        border-left: 1px solid var(--ink);
+      }
+
+      .project-card {
+        position: relative;
+        display: grid;
+        min-height: 17rem;
+        grid-template-rows: auto auto 1fr auto;
+        gap: var(--space-3);
+        border: 0;
+        border-right: 1px solid var(--ink);
+        border-bottom: 1px solid var(--ink);
+        color: var(--ink);
+        background: color-mix(in oklch, var(--paper) 94%, transparent);
+        padding: var(--space-6);
+        text-align: left;
+        cursor: pointer;
+        transition:
+          background 180ms var(--ease-out),
+          transform 180ms var(--ease-out);
+      }
+
+      .project-card:hover {
+        z-index: 2;
+        background: var(--paper-deep);
+        transform: translateY(-0.2rem);
+      }
+
+      .project-card h3 {
+        margin: 0;
+      }
+
+      .project-card p {
+        max-width: 42ch;
+        margin: 0;
+        color: var(--ink-soft);
+      }
+
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-1);
+      }
+
+      .tag {
+        min-height: 1.6rem;
+        border-color: var(--line);
+        padding-inline: 0.5rem;
+        font-size: 0.62rem;
+      }
+
+      .dependency-panel {
+        grid-template-rows: 0fr;
+        display: grid;
+        color: var(--ink-soft);
+        transition: grid-template-rows 260ms var(--ease-out);
+      }
+
+      .dependency-panel > div {
+        overflow: hidden;
+      }
+
+      .project-card[aria-expanded='true'] .dependency-panel {
+        grid-template-rows: 1fr;
+      }
+
+      .project-card[aria-expanded='true'] {
+        background: var(--gold);
+      }
+
+      .schema-tabs {
+        display: flex;
+        gap: var(--space-2);
+        margin-bottom: var(--space-8);
+      }
+
+      .database-layout {
+        display: grid;
+        max-width: 80rem;
+        grid-template-columns: minmax(18rem, 0.42fr) minmax(0, 1fr);
+        gap: var(--space-8);
+        align-items: start;
+      }
+
+      .db-summary {
+        position: sticky;
+        top: var(--space-8);
+        border-top: 4px solid var(--signal);
+        padding-top: var(--space-4);
+      }
+
+      .db-summary ul,
+      .finding ul {
+        padding-left: 1.2rem;
+      }
+
+      .table-list {
+        display: grid;
+        gap: 0;
+        border-top: 1px solid var(--ink);
+      }
+
+      .table-item {
+        border-bottom: 1px solid var(--ink);
+      }
+
+      .table-item summary {
+        display: grid;
+        min-height: 5.5rem;
+        grid-template-columns: 7rem minmax(10rem, 0.7fr) minmax(12rem, 1fr) 2rem;
+        gap: var(--space-4);
+        align-items: center;
+        padding: var(--space-3) 0;
+        cursor: pointer;
+        list-style: none;
+      }
+
+      .table-item summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .table-item summary::after {
+        content: '+';
+        color: var(--signal-dark);
+        font-family: var(--font-display);
+        font-size: 2rem;
+        text-align: center;
+      }
+
+      .table-item[open] summary::after {
+        content: '−';
+      }
+
+      .table-item h3 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      .table-body {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: var(--space-6);
+        padding: 0 0 var(--space-6) 7rem;
+      }
+
+      .table-body p {
+        margin-bottom: 0;
+      }
+
+      .compatibility {
+        max-width: 80rem;
+        margin-top: var(--space-16);
+        border: 3px double var(--ink);
+        padding: clamp(1.5rem, 4vw, 3rem);
+      }
+
+      .compatibility-grid {
+        display: grid;
+        grid-template-columns: 0.7fr 1fr 1fr;
+        gap: var(--space-8);
+      }
+
+      .score {
+        font-family: var(--font-display);
+        font-size: clamp(4rem, 9vw, 8rem);
+        line-height: 0.8;
+      }
+
+      .ci-board {
+        display: grid;
+        max-width: 80rem;
+        grid-template-columns: repeat(12, 1fr);
+        gap: var(--space-6);
+      }
+
+      .ci-board > article {
+        border-top: 3px solid var(--ink);
+        padding-top: var(--space-4);
+      }
+
+      .ci-board > article:nth-child(1) {
+        grid-column: span 7;
+      }
+
+      .ci-board > article:nth-child(2) {
+        grid-column: span 5;
+      }
+
+      .ci-board > article:nth-child(3),
+      .ci-board > article:nth-child(4) {
+        grid-column: span 6;
+      }
+
+      .bar-chart {
+        display: grid;
+        gap: var(--space-4);
+        margin-top: var(--space-6);
+      }
+
+      .bar-row {
+        display: grid;
+        grid-template-columns: 9rem 1fr 4rem;
+        gap: var(--space-3);
+        align-items: center;
+      }
+
+      .bar-track {
+        height: 1.1rem;
+        border: 1px solid var(--line-strong);
+        background: transparent;
+      }
+
+      .bar-fill {
+        height: 100%;
+        background: var(--signal);
+        transform-origin: left;
+        animation: grow 700ms var(--ease-out) both;
+      }
+
+      .bar-fill.good {
+        background: var(--olive);
+      }
+
+      @keyframes grow {
+        from {
+          transform: scaleX(0);
+        }
+      }
+
+      .target-matrix {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+
+      .target-matrix th,
+      .target-matrix td {
+        border-bottom: 1px solid var(--line);
+        padding: var(--space-3) var(--space-2);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .target-matrix th {
+        font-family: var(--font-data);
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .timeline {
+        display: grid;
+        max-width: 80rem;
+        gap: 0;
+        border-top: 1px solid var(--ink);
+      }
+
+      .wave {
+        display: grid;
+        grid-template-columns: 7rem minmax(12rem, 0.55fr) 1fr 8rem;
+        gap: var(--space-6);
+        align-items: start;
+        border-bottom: 1px solid var(--ink);
+        padding: var(--space-6) 0;
+      }
+
+      .wave-number {
+        font-family: var(--font-display);
+        font-size: 2.3rem;
+        line-height: 1;
+      }
+
+      .wave h3 {
+        margin-bottom: var(--space-2);
+        font-size: 1.3rem;
+      }
+
+      .findings {
+        display: grid;
+        max-width: 80rem;
+        gap: 0;
+        border-top: 1px solid var(--ink);
+      }
+
+      .finding {
+        display: grid;
+        grid-template-columns: 6rem minmax(13rem, 0.42fr) 1fr;
+        gap: var(--space-6);
+        border-bottom: 1px solid var(--ink);
+        padding: var(--space-6) 0;
+      }
+
+      .priority {
+        width: fit-content;
+        height: fit-content;
+        border: 1px solid currentColor;
+        padding: var(--space-2);
+        color: var(--signal-dark);
+        font-family: var(--font-data);
+        font-size: 0.72rem;
+        font-weight: 700;
+      }
+
+      .priority.high {
+        color: var(--danger);
+      }
+
+      .priority.low {
+        color: var(--olive);
+      }
+
+      .source-grid {
+        display: grid;
+        max-width: 80rem;
+        grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+        border-top: 1px solid var(--ink);
+        border-left: 1px solid var(--ink);
+      }
+
+      .source-grid a {
+        min-height: 8rem;
+        border-right: 1px solid var(--ink);
+        border-bottom: 1px solid var(--ink);
+        padding: var(--space-4);
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      .source-grid a:hover {
+        color: var(--signal-dark);
+        background: var(--paper-deep);
+      }
+
+      .empty-state {
+        grid-column: 1 / -1;
+        border-right: 1px solid var(--ink);
+        border-bottom: 1px solid var(--ink);
+        padding: var(--space-8);
+      }
+
+      .footnote {
+        max-width: 72ch;
+        color: var(--ink-soft);
+        font-size: 0.85rem;
+      }
+
+      @media (max-width: 68rem) {
+        .shell {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .rail {
+          position: sticky;
+          height: auto;
+          border-right: 0;
+          border-bottom: 1px solid var(--ink);
+          padding: var(--space-3) var(--space-4);
+        }
+
+        .wordmark {
+          display: flex;
+          align-items: baseline;
+          justify-content: space-between;
+          margin-bottom: var(--space-3);
+        }
+
+        .wordmark strong {
+          font-size: 1.45rem;
+        }
+
+        .rail nav {
+          display: flex;
+          gap: var(--space-4);
+          margin: var(--space-3) 0 0;
+          overflow-x: auto;
+        }
+
+        .rail nav a {
+          min-width: max-content;
+          grid-template-columns: auto 1fr;
+          gap: var(--space-2);
+          border-bottom: 0;
+        }
+
+        .rail-search,
+        .rail-meta {
+          display: none;
+        }
+      }
+
+      @media (max-width: 48rem) {
+        section {
+          padding-inline: var(--space-4);
+        }
+
+        .hero-grid,
+        .section-head,
+        .verdict,
+        .database-layout,
+        .compatibility-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-mark {
+          position: static;
+          margin-bottom: var(--space-8);
+        }
+
+        .metrics {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .metric:last-child {
+          grid-column: span 2;
+        }
+
+        .db-summary {
+          position: static;
+        }
+
+        .table-item summary {
+          grid-template-columns: 5rem 1fr 2rem;
+        }
+
+        .table-item summary > span:nth-child(3) {
+          display: none;
+        }
+
+        .table-body {
+          grid-template-columns: 1fr;
+          padding-left: 0;
+        }
+
+        .ci-board > article,
+        .ci-board > article:nth-child(n) {
+          grid-column: 1 / -1;
+        }
+
+        .wave,
+        .finding {
+          grid-template-columns: 1fr;
+          gap: var(--space-3);
+        }
+
+        .wave-number {
+          font-size: 1rem;
+          font-family: var(--font-data);
+        }
+
+        .bar-row {
+          grid-template-columns: 7rem 1fr 3rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @media print {
+        body {
+          background: var(--paper);
+        }
+
+        .shell {
+          display: block;
+        }
+
+        .rail,
+        .filters,
+        .schema-tabs {
+          display: none;
+        }
+
+        section {
+          break-inside: avoid;
+          padding: 2rem 0;
+        }
+
+        .project-card,
+        .table-item {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <div class="shell">
+      <aside class="rail" aria-label="报告导航">
+        <div class="wordmark">
+          <strong>Ray / Atlas</strong>
+          <span class="eyebrow">Architecture field report</span>
+        </div>
+        <label class="label" for="global-search">检索项目与数据表</label>
+        <input id="global-search" class="rail-search" type="search" placeholder="例如 billing / worker" />
+        <nav>
+          <a href="#overview"><span>01</span><span>总览</span></a>
+          <a href="#runtime"><span>02</span><span>运行时</span></a>
+          <a href="#projects"><span>03</span><span>项目图谱</span></a>
+          <a href="#database"><span>04</span><span>PostgreSQL</span></a>
+          <a href="#nx"><span>05</span><span>Nx / CI</span></a>
+          <a href="#migration"><span>06</span><span>迁移状态</span></a>
+          <a href="#findings"><span>07</span><span>后续事项</span></a>
+          <a href="#evidence"><span>08</span><span>证据</span></a>
+        </nav>
+        <div class="rail-meta">
+          <span>审计快照 / 2026-08-11</span>
+          <span>DEV / c88eb518</span>
+          <span>NX / 23.0.1</span>
+          <span>BETTER AUTH / 1.6.26</span>
+        </div>
+      </aside>
+
+      <main id="main">
+        <section id="overview" class="hero">
+          <div class="hero-mark">Verified in CI<br />Not production deployed</div>
+          <div class="hero-grid">
+            <div>
+              <span class="kicker">System anatomy / migration evidence / operating risks</span>
+              <h1>Ray<br />System<br />Atlas</h1>
+              <p class="lead">
+                一份面向架构、平台与交付负责人的可交互系统剖面：覆盖全部 Nx 项目、PostgreSQL 物理模型、Better Auth
+                契约、缓存策略、发布控制面，以及尚未关闭的生产门禁。
+              </p>
+              <div class="status-strip" aria-label="关键状态">
+                <span class="pill good">45 projects governed</span>
+                <span class="pill good">18 PostgreSQL models</span>
+                <span class="pill good">124/124 remote cache</span>
+                <span class="pill warn">Contract migration pending</span>
+              </div>
+            </div>
+            <aside class="hero-note">
+              <span class="folio">Executive reading</span>
+              <p>
+                当前架构已经从“混合共享库 + 现场构建”迁移为具有显式运行时边界、受控 Auth
+                schema、双归属计费、幂等事件处理、不可变镜像和蓝绿切流能力的平台。
+              </p>
+              <p>
+                但系统尚未部署，因此报告中的零停机、RTO
+                与生产观测结论仅代表<strong>实现和演练能力</strong>，不能替代真实环境验证。
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <section aria-labelledby="overview-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">01 / audited state</span>
+              <h2 id="overview-title">当前结论</h2>
+            </div>
+            <p class="lead">
+              三个核心问题的答案已经从“需要整改”转为“结构合理、证据可重复；生产 Contract 与真实流量证明仍待完成”。
+            </p>
+          </div>
+          <div class="metrics" aria-label="架构指标">
+            <article class="metric"
+              ><span class="metric-label">Nx projects</span><strong class="metric-value">45</strong></article
+            >
+            <article class="metric"
+              ><span class="metric-label">Internal edges</span><strong class="metric-value">122</strong></article
+            >
+            <article class="metric"
+              ><span class="metric-label">PG models</span><strong class="metric-value">18</strong></article
+            >
+            <article class="metric"
+              ><span class="metric-label">CI tasks</span><strong class="metric-value">133</strong></article
+            >
+            <article class="metric"
+              ><span class="metric-label">Cached</span><strong class="metric-value">100%</strong></article
+            >
+          </div>
+          <div class="verdict">
+            <div>
+              <span class="folio">Architecture verdict</span>
+              <h3>可扩展，且已具备治理闭环</h3>
+            </div>
+            <div>
+              <p>
+                App 作为 composition root；contract、data-access、UI 和 platform adapter 通过 type/runtime/domain
+                三维标签约束。Auth、Billing、UI、Server platform 已拆出明确边界；Web/Native 不再直接依赖 Prisma、NestJS
+                或 Node-only Auth/Billing 实现。
+              </p>
+              <p>
+                数据库当前实现身份、组织、计费、Webhook 幂等、在线迁移台账、可恢复回填与 Worker Inbox。 Better Auth
+                1.6.26 的 10 个模型通过固定 CLI 的逻辑/物理双契约校验；本地扩展只有显式白名单。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="runtime" aria-labelledby="runtime-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">02 / runtime anatomy</span>
+              <h2 id="runtime-title">请求、事件与发布路径</h2>
+            </div>
+            <p class="lead">
+              同一个仓库承载同步
+              API、浏览器/原生客户端、WebSocket、异步消息与发布控制面；边界由公共契约而不是源码深层导入连接。
+            </p>
+          </div>
+          <div class="runtime-map" role="img" aria-label="Ray 系统运行时关系图">
+            <div class="runtime-lanes">
+              <div class="lane">
+                <span class="lane-label">Interactive</span>
+                <div class="node"><strong>Web / Desktop / Extension</strong><small>runtime:web</small></div>
+                <div class="node"><strong>payload + api-client</strong><small>Zod / Query</small></div>
+                <div class="node"><strong>Engine</strong><small>NestJS / CQRS</small></div>
+                <div class="node"><strong>Domain + repositories</strong><small>use cases</small></div>
+                <div class="node"><strong>PostgreSQL / Mongo</strong><small>durable state</small></div>
+              </div>
+              <div class="lane">
+                <span class="lane-label">Native</span>
+                <div class="node"><strong>Mobile</strong><small>Expo</small></div>
+                <div class="node"><strong>auth-native / billing-native</strong><small>runtime adapters</small></div>
+                <div class="node"><strong>Engine</strong><small>session ownership</small></div>
+                <div class="node"><strong>Stripe / RevenueCat</strong><small>org / user split</small></div>
+                <div class="node"><strong>Customer owner columns</strong><small>dual compatible</small></div>
+              </div>
+              <div class="lane">
+                <span class="lane-label">Realtime</span>
+                <div class="node"><strong>Authenticated client</strong><small>Better Auth session</small></div>
+                <div class="node"><strong>Pulse</strong><small>membership revalidation</small></div>
+                <div class="node"><strong>Redis adapter</strong><small>multi-instance rooms</small></div>
+                <div class="node"><strong>EventEnvelopeV1</strong><small>versioned contract</small></div>
+                <div class="node"><strong>Organization room</strong><small>server-authorized</small></div>
+              </div>
+              <div class="lane">
+                <span class="lane-label">Async</span>
+                <div class="node"><strong>Publisher</strong><small>platform smoke only</small></div>
+                <div class="node"><strong>RabbitMQ</strong><small>durable / manual ack</small></div>
+                <div class="node"><strong>Worker</strong><small>prefetch / handler registry</small></div>
+                <div class="node"><strong>WorkerInbox</strong><small>consumer + message ID</small></div>
+                <div class="node"><strong>Retry / DLQ</strong><small>5 attempts + jitter</small></div>
+              </div>
+              <div class="lane">
+                <span class="lane-label">Release</span>
+                <div class="node"><strong>main / v*</strong><small>trusted source</small></div>
+                <div class="node"><strong>OCI digest</strong><small>5 application images</small></div>
+                <div class="node"><strong>Migrator</strong><small>Expand only</small></div>
+                <div class="node"><strong>Blue / Green</strong><small>readiness + smoke</small></div>
+                <div class="node"><strong>Kong switch</strong><small>observe / app rollback</small></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="projects" aria-labelledby="projects-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">03 / project atlas</span>
+              <h2 id="projects-title">全部 Service / Lib / App</h2>
+            </div>
+            <p class="lead">
+              点击项目可展开直接依赖。筛选器基于真实 Nx tags；输入左侧检索框可同时筛选项目名称、路径、职责与数据表。
+            </p>
+          </div>
+          <div id="project-filters" class="filters" aria-label="项目筛选"></div>
+          <div id="project-grid" class="project-grid" aria-live="polite"></div>
+        </section>
+
+        <section id="database" aria-labelledby="database-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">04 / PostgreSQL contract</span>
+              <h2 id="database-title">18 张表，四类职责</h2>
+            </div>
+            <p class="lead">
+              public schema 承载 Auth、组织与平台控制记录；billing schema 隔离计费状态。所有表均由受版本控制的 Prisma
+              物理契约描述。
+            </p>
+          </div>
+          <div class="schema-tabs" id="schema-filters" aria-label="数据库筛选"></div>
+          <div class="database-layout">
+            <aside class="db-summary">
+              <span class="folio">What the database does</span>
+              <h3>身份与租户不是附属能力，而是数据主轴</h3>
+              <ul>
+                <li>用户、会话、OAuth/密码、验证、Passkey、2FA</li>
+                <li>组织、成员、邀请、自定义角色与权限</li>
+                <li>用户/组织双计费归属、订阅、订单与 Webhook 状态机</li>
+                <li>在线迁移、可恢复回填、冲突隔离与消息 Inbox</li>
+              </ul>
+              <p class="footnote">
+                暂未实现完整会计账本：Order 没有 amount、currency、tax、refund 或 invoice 明细；这是已明确排除的独立
+                Ledger 项目。
+              </p>
+            </aside>
+            <div id="table-list" class="table-list"></div>
+          </div>
+
+          <article class="compatibility">
+            <div class="compatibility-grid">
+              <div>
+                <span class="folio">Better Auth fit</span>
+                <div class="score">10/10</div>
+                <p>受治理模型全部吻合</p>
+              </div>
+              <div>
+                <h3>对当前 stable：吻合</h3>
+                <p>
+                  运行时、Expo、Passkey 与固定 CLI 全部锁定 <strong>1.6.26</strong>；截至审计日 npm `latest` 也是
+                  1.6.26。CI 从临时目录生成候选 schema，并比较字段、类型、可空性、默认值、索引、表名、列名与 schema。
+                </p>
+                <p>
+                  User/Organization 的 billing relation，以及 Member、Invitation、OrganizationRole
+                  的业务索引/唯一约束通过最小白名单管理；陈旧白名单本身会令检查失败。
+                </p>
+              </div>
+              <div>
+                <h3>对 1.7 RC：刻意不吻合</h3>
+                <p>
+                  1.7.0-rc.4 仍是候选版本，Account 身份模型引入 issuer/providerAccountId
+                  迁移与冲突处理。本轮遵循稳定补丁策略，不提前采用 RC。
+                </p>
+                <p>
+                  升级 1.7 必须独立执行：冻结认证写入、审计 provider/account 冲突、Expand 新列、回填、双读验证，再切换和
+                  Contract。
+                </p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section id="nx" aria-labelledby="nx-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">05 / Nx and delivery control plane</span>
+              <h2 id="nx-title">边界合理，缓存已证实</h2>
+            </div>
+            <p class="lead">
+              当前 Nx 版本 23.0.1；npm 最新为 23.1.1。版本只落后一个小版本，当前优先级低于 Nx 24 插件弃用清理。
+            </p>
+          </div>
+          <div class="ci-board">
+            <article>
+              <span class="folio">Measured CI</span>
+              <h3>任务翻倍，热路径仍明显缩短</h3>
+              <div class="bar-chart" aria-label="CI 耗时对比">
+                <div class="bar-row"
+                  ><span>原始无缓存中位数</span
+                  ><div class="bar-track"><div class="bar-fill" style="width: 100%"></div></div
+                  ><strong>410s</strong></div
+                >
+                <div class="bar-row"
+                  ><span>最新全量 PR</span
+                  ><div class="bar-track"><div class="bar-fill good" style="width: 43.6%"></div></div
+                  ><strong>179s</strong></div
+                >
+                <div class="bar-row"
+                  ><span>最新 dev 热缓存</span
+                  ><div class="bar-track"><div class="bar-fill good" style="width: 24.6%"></div></div
+                  ><strong>101s</strong></div
+                >
+              </div>
+              <p class="footnote">
+                基线：同 SHA、全量、禁缓存 5 次，中位数 410.294 秒、55 tasks。当前：133 tasks；PR 样本较基线快
+                56.4%，dev 热缓存快 75.4%。滚动两周 PR P50/P95 仍应持续采集，单次样本不等同于长期中位数。
+              </p>
+            </article>
+            <article>
+              <span class="folio">Tag taxonomy</span>
+              <h3>三个正交维度</h3>
+              <table class="target-matrix">
+                <thead
+                  ><tr><th>维度</th><th>分布</th></tr></thead
+                >
+                <tbody>
+                  <tr
+                    ><td>type</td
+                    ><td>app 8 · contract 5 · data-access 7 · feature 3 · platform 15 · ui 3 · util 4</td></tr
+                  >
+                  <tr><td>runtime</td><td>node 20 · universal 14 · web 7 · native 4</td></tr>
+                  <tr><td>domain</td><td>platform 15 · composition 10 · shared 8 · auth 6 · billing 6</td></tr>
+                </tbody>
+              </table>
+              <p>
+                所有 45 个项目均恰好拥有一个 type/runtime/domain 标签；边界测试拒绝 wildcard
+                constraints、深层源码导入、App→App 和 universal→runtime-specific 依赖。
+              </p>
+            </article>
+            <article>
+              <span class="folio">Target semantics</span>
+              <h3>可缓存与副作用明确分离</h3>
+              <table class="target-matrix">
+                <thead
+                  ><tr><th>Target</th><th>Cache</th><th>语义</th></tr></thead
+                >
+                <tbody>
+                  <tr><td>lint</td><td>是</td><td>静态规则与模块边界</td></tr>
+                  <tr><td>typecheck</td><td>是</td><td>noEmit，依赖上游 production</td></tr>
+                  <tr><td>test</td><td>是</td><td>确定性单元/集成/E2E</td></tr>
+                  <tr><td>build/export</td><td>是</td><td>本地可重复产物</td></tr>
+                  <tr><td>package/release</td><td>否</td><td>安装包、签名、EAS、上传</td></tr>
+                  <tr><td>deploy/migrate</td><td>否</td><td>外部状态与数据库副作用</td></tr>
+                </tbody>
+              </table>
+            </article>
+            <article>
+              <span class="folio">Affected CI</span>
+              <h3>`nx-set-shas` 仍在正确使用</h3>
+              <p>
+                Action 没有被弃用：仓库固定使用 v5.0.1 的完整 commit SHA；npm/GitHub 最新仍为 v5.0.1。它负责寻找 dev
+                最近成功 CI；resolver 再校验 SHA ancestry 与 Nx Cloud，并在失败时安全降级全量。
+              </p>
+              <p>
+                PR/dev 使用 affected；main、Tag、schedule、manual 与 CI/部署控制面变更强制 full。Fork PR 不获得 Nx Cloud
+                secret。确定性任务最新 dev 复验为 124/124 remote hit。
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="migration" aria-labelledby="migration-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">06 / implemented migration waves</span>
+              <h2 id="migration-title">迁移已落地，Contract 等待真实窗口</h2>
+            </div>
+            <p class="lead">
+              每个波次均以独立 PR 合并并通过 dev 推送复验。由于尚未部署，所有生产时间型门禁仍保持关闭。
+            </p>
+          </div>
+          <div class="timeline">
+            <article class="wave"
+              ><span class="wave-number">W0–1</span
+              ><div><h3>控制面与 CI 真实性</h3><span class="pill good">完成</span></div
+              ><p>Node/pnpm 统一、target 语义、affected fallback、基线、metrics artifact、远程缓存与控制面强制 full。</p
+              ><span class="folio">Verified</span></article
+            >
+            <article class="wave"
+              ><span class="wave-number">W2</span><div><h3>Better Auth 治理</h3><span class="pill good">完成</span></div
+              ><p>物理 schema 受控、临时候选比较、1.6.26 稳定补丁、2FA Expand 与认证回归矩阵。</p
+              ><span class="folio">10 models clean</span></article
+            >
+            <article class="wave"
+              ><span class="wave-number">W3</span><div><h3>Nx 边界重构</h3><span class="pill good">完成</span></div
+              ><p>Auth/Billing/UI/Server platform 拆分，三维标签、公共 API、兼容 facade 与边界自动化。</p
+              ><span class="folio">45 governed</span></article
+            >
+            <article class="wave"
+              ><span class="wave-number">W4</span
+              ><div><h3>PostgreSQL Expand</h3><span class="pill good">代码完成</span></div
+              ><p>双 owner、NOT VALID FK、并发索引、回填台账、冲突隔离、Webhook claim/process/complete/fail。</p
+              ><span class="folio">Not deployed</span></article
+            >
+            <article class="wave"
+              ><span class="wave-number">W5</span
+              ><div><h3>不可变发布与蓝绿</h3><span class="pill good">平台完成</span></div
+              ><p>OCI digest、独立 migrator、backup receipt、readiness/smoke/observation、Kong 原子切换与应用回退。</p
+              ><span class="folio">No target mutated</span></article
+            >
+            <article class="wave"
+              ><span class="wave-number">W6</span
+              ><div><h3>Pulse / Worker / E2E</h3><span class="pill good">完成</span></div
+              ><p>版本化事件信封、Redis rooms、RabbitMQ/DLQ/Inbox、真实 Web production build + Chromium 关键旅程。</p
+              ><span class="folio">4/4 E2E</span></article
+            >
+            <article class="wave"
+              ><span class="wave-number">Contract</span
+              ><div><h3>删除 legacy owner</h3><span class="pill warn">门禁关闭</span></div
+              ><p
+                >必须先真实运行 V2 ≥14 天、两个成功发布、空 owner/冲突/mismatch 为零，才验证 FK、添加 XOR CHECK 并删除
+                referenceId。</p
+              ><span class="folio">Forward only</span></article
+            >
+          </div>
+        </section>
+
+        <section id="findings" aria-labelledby="findings-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">07 / remaining engineering work</span>
+              <h2 id="findings-title">不要把“代码完成”误读为“生产完成”</h2>
+            </div>
+            <p class="lead"> 以下不是迁移失败，而是必须明确保留的风险与后续工作；优先级基于进入生产前的影响面。 </p>
+          </div>
+          <div class="findings">
+            <article class="finding"
+              ><span class="priority high">P0</span
+              ><div><h3>首次部署与真实恢复演练</h3><span class="pill warn">未证明</span></div
+              ><div
+                ><p
+                  >当前没有生产部署。上线前必须在隔离环境执行备份恢复、Expand、旧/新应用兼容、digest
+                  回退、蓝绿切流、WebSocket drain 与队列积压阈值验证。</p
+                ></div
+              ></article
+            >
+            <article class="finding"
+              ><span class="priority high">P0</span
+              ><div><h3>Billing Contract 门禁</h3><span class="pill warn">不得提前</span></div
+              ><div
+                ><p
+                  >`referenceId`、可空 owner 与 legacy 写入仍是正确的回退保险。只有 shadow mismatch 连续为零且 14
+                  天/两次发布门禁满足后，才能验证 FK、加 XOR CHECK、删除 legacy。</p
+                ></div
+              ></article
+            >
+            <article class="finding"
+              ><span class="priority high">P1</span><div><h3>敏感认证材料保护</h3></div
+              ><div
+                ><p
+                  >Account 存储 access/refresh/id token，TwoFactor 存储 secret/backup codes。schema
+                  无法证明应用层加密；上线前应核验字段级加密、密钥轮换、最小 DB 权限、日志脱敏与备份访问控制。</p
+                ></div
+              ></article
+            >
+            <article class="finding"
+              ><span class="priority">P1</span><div><h3>Nx 24 前置清理</h3></div
+              ><div
+                ><p
+                  >34 个配置文件仍引用已提示将在 Nx 24 移除的 `nxViteTsPaths` / `nxCopyAssetsPlugin`。先迁移至
+                  `vite-tsconfig-paths` 与 Vite `publicDir`/static-copy，再升级 Nx；当前 23.0.1 → 23.1.1 可由 Renovate
+                  小步处理。</p
+                ></div
+              ></article
+            >
+            <article class="finding"
+              ><span class="priority">P1</span><div><h3>物理默认值收紧</h3></div
+              ><div
+                ><p
+                  >`WebhookEvent.processedAt` 已可空且应用 claim 时显式写 null，但旧数据库 default `CURRENT_TIMESTAMP`
+                  仍保留。应在后续安全迁移中 DROP DEFAULT，避免非标准写入产生“未处理但有处理时间”的歧义。</p
+                ></div
+              ></article
+            >
+            <article class="finding"
+              ><span class="priority">P2</span><div><h3>移除四个兼容 facade</h3></div
+              ><div
+                ><p
+                  >`auth`、`billing`、`api-client`、`ui-shared` 仍标记
+                  `boundary:facade`。在所有内部消费者稳定一个发布周期后，按依赖图逐个删除，避免新代码继续依赖混合入口。</p
+                ></div
+              ></article
+            >
+            <article class="finding"
+              ><span class="priority">P2</span><div><h3>持续指标与 Sandbox nightly</h3></div
+              ><div
+                ><p
+                  >最新 full PR 样本已较基线下降 56.4%，但仍需两周滚动 P50/P95；Stripe/RevenueCat sandbox 仅应在有隔离
+                  tenant、密钥与清理策略的受控 nightly 启用。</p
+                ></div
+              ></article
+            >
+            <article class="finding"
+              ><span class="priority low">P3</span><div><h3>质量与体积债务</h3></div
+              ><div
+                ><p
+                  >Studio lint 仍有 13 个 warning；Web 构建主 chunk 约 1.61 MB（gzip 482 KB）并触发 Vite 500 KB
+                  警告。可在功能稳定后拆 route/provider chunk，并把关键 lint warning 逐步升级为 error。</p
+                ></div
+              ></article
+            >
+          </div>
+        </section>
+
+        <section id="evidence" aria-labelledby="evidence-title">
+          <div class="section-head">
+            <div>
+              <span class="kicker">08 / evidence ledger</span>
+              <h2 id="evidence-title">可重复检查，而不是口头结论</h2>
+            </div>
+            <p class="lead">
+              版本结论以审计日的 npm dist-tag 和仓库锁定为准；CI 结论来自精确 SHA、GitHub run、独立 Nx CIPE 与 metrics
+              artifact 四方交叉。
+            </p>
+          </div>
+          <div class="source-grid">
+            <a href="https://github.com/forkpath/ray/actions/runs/31360959812" target="_blank" rel="noreferrer"
+              ><span class="folio">Baseline</span><h3>5× no-cache full CI</h3><p>410.294 秒中位数，固定 SHA。</p></a
+            >
+            <a href="https://github.com/forkpath/ray/actions/runs/31447090467" target="_blank" rel="noreferrer"
+              ><span class="folio">Current dev</span><h3>133/133</h3><p>124/124 deterministic remote cache。</p></a
+            >
+            <a href="https://cloud.nx.app/cipes/6a7a70ca8fe37cd57fd08596" target="_blank" rel="noreferrer"
+              ><span class="folio">Nx CIPE</span><h3>Independent run record</h3
+              ><p>SUCCEEDED，精确 dev branch 交叉确认。</p></a
+            >
+            <a href="https://www.npmjs.com/package/better-auth" target="_blank" rel="noreferrer"
+              ><span class="folio">Registry</span><h3>Better Auth 1.6.26</h3><p>审计日 stable/latest。</p></a
+            >
+            <a href="https://www.better-auth.com/docs/beta/guides/1-7-upgrade-guide" target="_blank" rel="noreferrer"
+              ><span class="folio">Official guide</span><h3>Better Auth 1.7</h3><p>Account 模型与迁移边界。</p></a
+            >
+            <a href="https://nx.dev/docs/guides/nx-cloud/setup-ci" target="_blank" rel="noreferrer"
+              ><span class="folio">Official docs</span><h3>Nx affected CI</h3><p>最近成功 SHA 与远程缓存语义。</p></a
+            >
+            <a href="https://github.com/nrwl/nx-set-shas/releases/tag/v5.0.1" target="_blank" rel="noreferrer"
+              ><span class="folio">Pinned action</span><h3>nx-set-shas v5.0.1</h3
+              ><p>完整 commit SHA 固定，未弃用。</p></a
+            >
+            <a href="./nx-boundaries.md"
+              ><span class="folio">Repository</span><h3>Nx boundary policy</h3><p>三维标签与 public API 约束。</p></a
+            >
+          </div>
+          <p class="footnote" style="margin-top: 3rem">
+            Snapshot basis: `dev@c88eb5182decfc2e4183ee55ecac82380a5af7b3` plus this report-only document. No production
+            database, deployment target, external provider account or release state was modified while producing this
+            report.
+          </p>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const projects = [
+        {
+          name: '@ray/auth-schema-tooling',
+          path: 'tools/auth-schema-tooling',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'auth',
+          role: '固定 Better Auth CLI、Prisma AST 与 TS 路径加载器的隔离工具包；为 schema 候选生成提供可复现执行环境。',
+          deps: []
+        },
+        {
+          name: '@ray/database-migrator',
+          path: 'docker/migrator',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'platform',
+          role: '独立 migrator 镜像上下文；携带固定 Prisma CLI、schema、历史 migration 与在线 migration，和应用 runtime 解耦。',
+          deps: []
+        },
+        {
+          name: '@ray/iam',
+          path: 'iam',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'platform',
+          role: 'IAM bootstrap、租户 provisioner、授权共享组件与 Kong routing 管理；作为外部身份基础设施的控制面。',
+          deps: []
+        },
+        {
+          name: 'analytics',
+          path: 'libs/analytics',
+          type: 'platform',
+          runtime: 'universal',
+          domain: 'platform',
+          role: '跨 Web、Desktop、Extension、Mobile、Server 的分析 provider 抽象与运行时适配入口。',
+          deps: []
+        },
+        {
+          name: 'api-client',
+          path: 'libs/api-client',
+          type: 'data-access',
+          runtime: 'universal',
+          domain: 'composition',
+          role: '基于 payload contract 的 API domain wrappers、query key 与 React Query 组合 facade；不持有服务端业务规则。',
+          deps: ['api-core', 'billing-contract', 'common', 'payload']
+        },
+        {
+          name: 'api-core',
+          path: 'libs/api-core',
+          type: 'platform',
+          runtime: 'universal',
+          domain: 'platform',
+          role: '传输无关的 HTTP client 内核、请求结果与基础错误处理，为上层 API client 提供最小平台能力。',
+          deps: []
+        },
+        {
+          name: 'auth',
+          path: 'libs/auth',
+          type: 'feature',
+          runtime: 'node',
+          domain: 'auth',
+          role: '过渡 Auth facade 与 schema 治理入口；聚合 contract/server 测试并保留旧 import path，一个发布周期后应移除。',
+          deps: ['auth-contract', 'auth-server']
+        },
+        {
+          name: 'auth-contract',
+          path: 'libs/auth-contract',
+          type: 'contract',
+          runtime: 'universal',
+          domain: 'auth',
+          role: '跨运行时身份、Session、组织 actor 与权限结果契约；禁止依赖 Better Auth server 或 Prisma。',
+          deps: ['common']
+        },
+        {
+          name: 'auth-native',
+          path: 'libs/auth-native',
+          type: 'data-access',
+          runtime: 'native',
+          domain: 'auth',
+          role: 'Expo/React Native 的 Better Auth client adapter，隔离 native storage、URL 与插件差异。',
+          deps: ['auth-contract']
+        },
+        {
+          name: 'auth-server',
+          path: 'libs/auth-server',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'auth',
+          role: 'Better Auth server options、插件、邮件/OTP/OAuth/组织认证与 Prisma adapter；提供完整认证集成测试。',
+          deps: ['auth-contract', 'common', 'email', 'i18n', 'pg-dao']
+        },
+        {
+          name: 'auth-web',
+          path: 'libs/auth-web',
+          type: 'data-access',
+          runtime: 'web',
+          domain: 'auth',
+          role: '浏览器 Better Auth client adapter，向 Web/Desktop/Extension 暴露稳定 Session 与组织操作边界。',
+          deps: ['auth-contract']
+        },
+        {
+          name: 'billing',
+          path: 'libs/billing',
+          type: 'feature',
+          runtime: 'node',
+          domain: 'billing',
+          role: '旧 Billing facade；当前只组合稳定配置与契约，作为有限兼容层等待消费者迁移。',
+          deps: ['billing-config', 'billing-contract']
+        },
+        {
+          name: 'billing-client',
+          path: 'libs/billing-client',
+          type: 'data-access',
+          runtime: 'universal',
+          domain: 'billing',
+          role: '用户/组织 owner-aware 查询与 checkout/portal API wrapper；query key 包含 owner kind 和 ID。',
+          deps: ['api-client', 'billing-contract', 'payload']
+        },
+        {
+          name: 'billing-config',
+          path: 'libs/billing-config',
+          type: 'util',
+          runtime: 'universal',
+          domain: 'billing',
+          role: '产品 catalog、provider/variant 映射与跨运行时安全配置，不包含密钥或数据库访问。',
+          deps: ['billing-contract']
+        },
+        {
+          name: 'billing-contract',
+          path: 'libs/billing-contract',
+          type: 'contract',
+          runtime: 'universal',
+          domain: 'billing',
+          role: 'BillingOwner discriminated union、账单响应与 provider-neutral 值契约；允许 Auth actor 合法进入 Billing。',
+          deps: ['common']
+        },
+        {
+          name: 'billing-native',
+          path: 'libs/billing-native',
+          type: 'data-access',
+          runtime: 'native',
+          domain: 'billing',
+          role: 'RevenueCat paywall/portal 的 native adapter；限定用户归属，不用于首期组织计费。',
+          deps: ['billing-contract']
+        },
+        {
+          name: 'billing-server',
+          path: 'libs/billing-server',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'billing',
+          role: 'Stripe/RevenueCat provider、owner routing、Prisma persistence 与 Webhook 原子状态机；组织首期仅 Stripe。',
+          deps: ['billing-config', 'billing-contract', 'pg-dao']
+        },
+        {
+          name: 'common',
+          path: 'libs/common',
+          type: 'util',
+          runtime: 'universal',
+          domain: 'shared',
+          role: '跨域稳定类型、常量、纯函数与 hooks；必须保持对业务域和专属运行时零反向依赖。',
+          deps: []
+        },
+        {
+          name: 'desktop',
+          path: 'apps/desktop',
+          type: 'app',
+          runtime: 'web',
+          domain: 'composition',
+          role: 'Electron composition root；renderer 复用 Web Studio/UI，main 进程处理桌面能力；build 与 make/signing 分离。',
+          deps: ['analytics', 'i18n', 'monitoring', 'studio', 'ui-core', 'ui-web']
+        },
+        {
+          name: 'email',
+          path: 'libs/email',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'shared',
+          role: 'Resend、AWS SES、Aliyun DM provider 与 Auth 邮件模板；将邮件副作用隔离在 Node 平台。',
+          deps: ['common', 'i18n', 'ui-core']
+        },
+        {
+          name: 'engine',
+          path: 'services/engine',
+          type: 'app',
+          runtime: 'node',
+          domain: 'composition',
+          role: '主 HTTP API 服务；NestJS presentation、CQRS/application、domain、repository infrastructure 按 Clean Architecture 组合。',
+          deps: [
+            'auth-server',
+            'billing-contract',
+            'billing-server',
+            'common',
+            'mongo-dao',
+            'monitoring',
+            'payload',
+            'pg-dao',
+            'server-kernel',
+            'server-nest',
+            'server-rabbitmq',
+            'server-redis',
+            'srv-shared'
+          ]
+        },
+        {
+          name: 'event-contract',
+          path: 'libs/event-contract',
+          type: 'contract',
+          runtime: 'universal',
+          domain: 'platform',
+          role: 'EventEnvelopeV1 与版本验证；当前只定义平台 smoke envelope，不虚构产品业务事件。',
+          deps: []
+        },
+        {
+          name: 'extension',
+          path: 'apps/extension',
+          type: 'app',
+          runtime: 'web',
+          domain: 'composition',
+          role: 'WXT 浏览器扩展 composition root；覆盖 background、content、popup、sidepanel、options 与 Chrome/Firefox 双构建。',
+          deps: [
+            'analytics',
+            'api-client',
+            'auth-contract',
+            'auth-web',
+            'billing-client',
+            'billing-config',
+            'common',
+            'i18n',
+            'monitoring',
+            'ui-core',
+            'ui-web'
+          ]
+        },
+        {
+          name: 'i18n',
+          path: 'libs/i18n',
+          type: 'util',
+          runtime: 'universal',
+          domain: 'shared',
+          role: '中英文资源、类型增强、client/server 初始化与 locale utilities；为 UI、邮件和服务共享。',
+          deps: []
+        },
+        {
+          name: 'mobile',
+          path: 'apps/mobile',
+          type: 'app',
+          runtime: 'native',
+          domain: 'composition',
+          role: 'Expo Router 原生应用；组合 native Auth/Billing/UI，build 为本地 export，EAS/submit 归入不可缓存 release。',
+          deps: [
+            'analytics',
+            'api-client',
+            'auth-contract',
+            'auth-native',
+            'billing-client',
+            'billing-config',
+            'billing-contract',
+            'billing-native',
+            'common',
+            'i18n',
+            'monitoring',
+            'ui-core',
+            'ui-native'
+          ]
+        },
+        {
+          name: 'mongo-dao',
+          path: 'libs/mongo-dao',
+          type: 'data-access',
+          runtime: 'node',
+          domain: 'platform',
+          role: 'Mongoose schemas 与 DAO；为非关系型扩展数据提供 Node persistence adapter。',
+          deps: ['server-kernel']
+        },
+        {
+          name: 'monitoring',
+          path: 'libs/monitoring',
+          type: 'platform',
+          runtime: 'universal',
+          domain: 'platform',
+          role: 'Sentry 等监控 provider 的跨平台抽象与运行时入口。',
+          deps: []
+        },
+        {
+          name: 'payload',
+          path: 'libs/payload',
+          type: 'contract',
+          runtime: 'universal',
+          domain: 'shared',
+          role: 'Zod 请求/响应 schemas 与接口，是 API client 和 Engine presentation 层之间的传输契约。',
+          deps: ['common']
+        },
+        {
+          name: 'pg-dao',
+          path: 'libs/pg-dao',
+          type: 'data-access',
+          runtime: 'node',
+          domain: 'platform',
+          role: 'Prisma PostgreSQL 物理模型、生成 client、历史/在线 migration、回填与 readiness 工具；数据库唯一契约所有者。',
+          deps: ['common']
+        },
+        {
+          name: 'pulse',
+          path: 'services/pulse',
+          type: 'app',
+          runtime: 'node',
+          domain: 'composition',
+          role: 'WebSocket 服务；Better Auth 握手、成员校验、Redis adapter、heartbeat/限流/慢消费者保护与 readiness。',
+          deps: ['auth-server', 'event-contract', 'pg-dao', 'server-redis']
+        },
+        {
+          name: 'ray',
+          path: '.',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'platform',
+          role: '根治理项目；执行 CI 模式、边界、迁移、发布、架构验收等 Node test，防止控制面静默回退。',
+          deps: []
+        },
+        {
+          name: 'server-kernel',
+          path: 'libs/server-kernel',
+          type: 'contract',
+          runtime: 'universal',
+          domain: 'platform',
+          role: '框架无关的 runtime config、健康与平台端口契约；不依赖 Nest、Redis、Mongo 或 RabbitMQ。',
+          deps: []
+        },
+        {
+          name: 'server-nest',
+          path: 'libs/server-nest',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'platform',
+          role: 'Nest filters、interceptors、decorators、i18n/config glue；将框架横切能力隔离为显式 adapter。',
+          deps: ['common', 'monitoring', 'payload', 'server-kernel']
+        },
+        {
+          name: 'server-rabbitmq',
+          path: 'libs/server-rabbitmq',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'platform',
+          role: 'RabbitMQ module、publisher 与连接边界；提供 durable topology 和消息发布平台能力。',
+          deps: ['server-kernel']
+        },
+        {
+          name: 'server-redis',
+          path: 'libs/server-redis',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'platform',
+          role: 'Redis client、readiness 与 runtime config adapter；供 Engine/Pulse 复用。',
+          deps: ['server-kernel']
+        },
+        {
+          name: 'srv-shared',
+          path: 'libs/srv-shared',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'platform',
+          role: '旧服务共享 facade，聚合 logger/cache/throttler/sms/storage/auth 与平台 adapters；应随迁移逐步瘦身。',
+          deps: ['email', 'server-kernel', 'server-nest', 'server-rabbitmq', 'server-redis']
+        },
+        {
+          name: 'studio',
+          path: 'libs/studio',
+          type: 'feature',
+          runtime: 'web',
+          domain: 'composition',
+          role: 'Web/Desktop 的 SaaS 页面与业务模块组合层；管理、用户设置、组织、Billing 和导航均通过公共 clients/contracts。',
+          deps: [
+            'api-client',
+            'auth-contract',
+            'auth-web',
+            'billing-client',
+            'billing-config',
+            'common',
+            'i18n',
+            'payload',
+            'ui-core',
+            'ui-web'
+          ]
+        },
+        {
+          name: 'ui-core',
+          path: 'libs/ui-core',
+          type: 'util',
+          runtime: 'universal',
+          domain: 'shared',
+          role: '主题 token、纯样式与跨平台 UI utilities；不得依赖 React Web 或 Native 专属实现。',
+          deps: []
+        },
+        {
+          name: 'ui-native',
+          path: 'libs/ui-native',
+          type: 'ui',
+          runtime: 'native',
+          domain: 'shared',
+          role: 'React Native 组件、样式与 assets；只组合 universal UI core 与 i18n。',
+          deps: ['i18n', 'ui-core']
+        },
+        {
+          name: 'ui-shared',
+          path: 'libs/ui-shared',
+          type: 'ui',
+          runtime: 'web',
+          domain: 'shared',
+          role: '旧 Web UI import path 的兼容 facade，不再是跨运行时混合实现。',
+          deps: []
+        },
+        {
+          name: 'ui-web',
+          path: 'libs/ui-web',
+          type: 'ui',
+          runtime: 'web',
+          domain: 'shared',
+          role: 'Web UI primitives、Tailwind v4/Shadcn 组件、hooks 与兼容导出；不依赖业务域或 Node 实现。',
+          deps: ['i18n', 'ui-core']
+        },
+        {
+          name: 'web',
+          path: 'apps/web',
+          type: 'app',
+          runtime: 'web',
+          domain: 'composition',
+          role: 'TanStack React Start 营销站与 SaaS Web app；SSR/Nitro production build，组合 Studio、Auth/Billing clients 与 UI。',
+          deps: [
+            'analytics',
+            'api-client',
+            'auth-contract',
+            'auth-web',
+            'billing-client',
+            'billing-config',
+            'billing-contract',
+            'i18n',
+            'monitoring',
+            'studio',
+            'ui-core',
+            'ui-web'
+          ]
+        },
+        {
+          name: 'web-e2e',
+          path: 'apps/web-e2e',
+          type: 'app',
+          runtime: 'node',
+          domain: 'composition',
+          role: 'Playwright 平台关键旅程；启动真实 Web production Nitro 产物，使用确定性 provider mock，无外部副作用。',
+          deps: ['web']
+        },
+        {
+          name: 'worker',
+          path: 'services/worker',
+          type: 'app',
+          runtime: 'node',
+          domain: 'composition',
+          role: 'RabbitMQ 消费 runtime；durable queue、manual ack、prefetch、handler registry、retry/DLQ 与 dependency readiness。',
+          deps: ['event-contract', 'pg-dao', 'server-rabbitmq', 'worker-kernel']
+        },
+        {
+          name: 'worker-kernel',
+          path: 'libs/worker-kernel',
+          type: 'platform',
+          runtime: 'node',
+          domain: 'platform',
+          role: 'Worker 执行策略与 Prisma Inbox repository；以 consumer + messageId 保证幂等并计算指数退避。',
+          deps: ['event-contract', 'pg-dao']
+        }
+      ]
+
+      const tables = [
+        {
+          name: 'User',
+          schema: 'public',
+          group: 'auth',
+          purpose: '身份主体、登录邮箱、头像与管理员/匿名/封禁/2FA 标志。',
+          key: 'PK id；UNIQUE email',
+          relations: 'Session / Account / Passkey / TwoFactor / Member / Invitation / Customer',
+          state: 'Better Auth 1.6.26 governed'
+        },
+        {
+          name: 'Session',
+          schema: 'public',
+          group: 'auth',
+          purpose: 'Session token、过期时间、客户端信息、impersonation 与 active organization。',
+          key: 'PK id；UNIQUE token；INDEX userId',
+          relations: 'N:1 User',
+          state: 'Better Auth 1.6.26 governed'
+        },
+        {
+          name: 'Account',
+          schema: 'public',
+          group: 'auth',
+          purpose: '密码或 OAuth/provider 账号与 access/refresh/id token 元数据。',
+          key: 'PK id；INDEX userId',
+          relations: 'N:1 User',
+          state: '1.6 accountId/providerId；敏感字段需运行时保护'
+        },
+        {
+          name: 'Verification',
+          schema: 'public',
+          group: 'auth',
+          purpose: 'Magic link、OTP、邮箱验证和密码重置的短期 token/value。',
+          key: 'PK id；INDEX identifier',
+          relations: '逻辑关联 identifier',
+          state: 'Better Auth 1.6.26 governed'
+        },
+        {
+          name: 'Passkey',
+          schema: 'public',
+          group: 'auth',
+          purpose: 'WebAuthn credential、公钥、counter、设备类型、备份与 transport。',
+          key: 'PK id；INDEX credentialID / userId',
+          relations: 'N:1 User',
+          state: 'Passkey plugin governed'
+        },
+        {
+          name: 'TwoFactor',
+          schema: 'public',
+          group: 'auth',
+          purpose: 'TOTP secret、备份码、verified、失败次数与锁定时间。',
+          key: 'PK id；INDEX secret / userId',
+          relations: 'N:1 User',
+          state: '1.6.26 lockout fields governed'
+        },
+        {
+          name: 'Organization',
+          schema: 'public',
+          group: 'organization',
+          purpose: 'SaaS 租户主体；名称、唯一 slug、logo、metadata。',
+          key: 'PK id；UNIQUE slug',
+          relations: 'Member / Invitation / OrganizationRole / Customer',
+          state: 'Better Auth organization plugin governed'
+        },
+        {
+          name: 'Member',
+          schema: 'public',
+          group: 'organization',
+          purpose: '用户与组织的成员关系及 role。',
+          key: 'PK id；UNIQUE organizationId + userId',
+          relations: 'N:1 User / Organization',
+          state: '重复成员由物理唯一约束阻止'
+        },
+        {
+          name: 'Invitation',
+          schema: 'public',
+          group: 'organization',
+          purpose: '组织邀请、角色、状态、过期时间与 inviter。',
+          key: 'PK id；复合索引 org/status、email/status',
+          relations: 'N:1 Organization / inviter User',
+          state: '待处理邀请查询已优化'
+        },
+        {
+          name: 'OrganizationRole',
+          schema: 'public',
+          group: 'organization',
+          purpose: '组织内自定义 role 到序列化 permission 的映射。',
+          key: 'PK id；UNIQUE organizationId + role',
+          relations: 'N:1 Organization',
+          state: '权限冲突迁移必须人工处置'
+        },
+        {
+          name: 'Customer',
+          schema: 'billing',
+          group: 'billing',
+          purpose: 'Provider customer；兼容 legacy referenceId 与明确 user/org owner。',
+          key: 'UNIQUE externalId/provider、referenceId/provider、partial owner/provider',
+          relations: 'User XOR Organization（Contract 后强制）；Subscription / Order',
+          state: 'Expand：dual-compatible，Contract 未执行'
+        },
+        {
+          name: 'Subscription',
+          schema: 'billing',
+          group: 'billing',
+          purpose: 'Provider subscription、variant、状态、store、账期与 trial。',
+          key: 'UNIQUE externalId/store；INDEX customer/status/createdAt',
+          relations: 'N:1 Customer',
+          state: '支持 Stripe / RevenueCat 映射'
+        },
+        {
+          name: 'Order',
+          schema: 'billing',
+          group: 'billing',
+          purpose: '一次性订单/支付状态与 variant/store。',
+          key: 'UNIQUE externalId/store；INDEX customer/status/createdAt',
+          relations: 'N:1 Customer',
+          state: '不是完整会计账本'
+        },
+        {
+          name: 'WebhookEvent',
+          schema: 'billing',
+          group: 'billing',
+          purpose: 'Provider 事件幂等、claim 状态、attempt、失败与处理时间。',
+          key: 'UNIQUE eventId/provider；INDEX provider/type、processedAt',
+          relations: '状态机独立，不绑定 Customer',
+          state: 'received → processing → processed/failed/skipped'
+        },
+        {
+          name: 'RayOnlineMigration',
+          schema: 'public',
+          group: 'operations',
+          purpose: '记录不可事务化在线 migration 的 ID、checksum 与应用时间。',
+          key: 'PK id',
+          relations: '无业务外键',
+          state: 'CREATE INDEX CONCURRENTLY 可重入台账'
+        },
+        {
+          name: 'RayDataBackfill',
+          schema: 'public',
+          group: 'operations',
+          purpose: '可恢复批量回填的 cursor、计数、状态、metadata 与完成时间。',
+          key: 'PK id',
+          relations: '1:N RayDataBackfillConflict',
+          state: '中断可继续；归属不明时 fail closed'
+        },
+        {
+          name: 'RayDataBackfillConflict',
+          schema: 'public',
+          group: 'operations',
+          purpose: '隔离每条无法自动决策的 owner/重复/权限冲突及人工 resolution。',
+          key: 'PK backfillId + recordId；INDEX unresolved',
+          relations: 'N:1 RayDataBackfill',
+          state: '禁止自动猜测数据归属'
+        },
+        {
+          name: 'WorkerInbox',
+          schema: 'public',
+          group: 'operations',
+          purpose: '消费者 Inbox、原始 envelope、锁、retry schedule、失败/完成状态。',
+          key: 'UNIQUE consumer + messageId；INDEX status/nextAttemptAt、status/lockedAt',
+          relations: 'EventEnvelopeV1 payload',
+          state: '幂等、5 次 retry、DLQ 前持久化'
+        }
+      ]
+
+      const filterState = { project: 'all', schema: 'all', query: '' }
+      const projectFilterValues = ['all', 'app', 'contract', 'data-access', 'feature', 'platform', 'ui', 'util']
+      const schemaFilterValues = ['all', 'auth', 'organization', 'billing', 'operations']
+      const projectGrid = document.querySelector('#project-grid')
+      const tableList = document.querySelector('#table-list')
+
+      const searchable = value => value.toLocaleLowerCase('zh-CN')
+
+      function renderProjectFilters() {
+        const host = document.querySelector('#project-filters')
+        host.innerHTML = projectFilterValues
+          .map(value => {
+            const count = value === 'all' ? projects.length : projects.filter(project => project.type === value).length
+            const label = value === 'all' ? '全部项目' : `type:${value}`
+            return `<button class="filter-button" type="button" data-project-filter="${value}" aria-pressed="${filterState.project === value}">${label} · ${count}</button>`
+          })
+          .join('')
+      }
+
+      function renderProjects() {
+        const query = searchable(filterState.query)
+        const visible = projects.filter(project => {
+          const matchesType = filterState.project === 'all' || project.type === filterState.project
+          const haystack = searchable(
+            [
+              project.name,
+              project.path,
+              project.type,
+              project.runtime,
+              project.domain,
+              project.role,
+              ...project.deps
+            ].join(' ')
+          )
+          return matchesType && (!query || haystack.includes(query))
+        })
+
+        projectGrid.innerHTML = visible.length
+          ? visible
+              .map(
+                (
+                  project,
+                  index
+                ) => `<button class="project-card" type="button" aria-expanded="false" style="--i:${Math.min(index, 8)}">
+                  <span class="project-path">${project.path}</span>
+                  <h3>${project.name}</h3>
+                  <p>${project.role}</p>
+                  <div class="tag-row"><span class="tag">type:${project.type}</span><span class="tag">runtime:${project.runtime}</span><span class="tag">domain:${project.domain}</span></div>
+                  <div class="dependency-panel"><div><hr /><span class="folio">Direct dependencies</span><p>${project.deps.length ? project.deps.join(' · ') : '无内部直接依赖'}</p></div></div>
+                </button>`
+              )
+              .join('')
+          : `<div class="empty-state"><h3>没有匹配项目</h3><p>调整检索词或选择“全部项目”。</p></div>`
+      }
+
+      function renderSchemaFilters() {
+        const host = document.querySelector('#schema-filters')
+        host.innerHTML = schemaFilterValues
+          .map(value => {
+            const count = value === 'all' ? tables.length : tables.filter(table => table.group === value).length
+            const label = value === 'all' ? '全部表' : value
+            return `<button class="filter-button" type="button" data-schema-filter="${value}" aria-pressed="${filterState.schema === value}">${label} · ${count}</button>`
+          })
+          .join('')
+      }
+
+      function renderTables() {
+        const query = searchable(filterState.query)
+        const visible = tables.filter(table => {
+          const matchesGroup = filterState.schema === 'all' || table.group === filterState.schema
+          const haystack = searchable(Object.values(table).join(' '))
+          return matchesGroup && (!query || haystack.includes(query))
+        })
+
+        tableList.innerHTML = visible.length
+          ? visible
+              .map(
+                table => `<details class="table-item">
+                  <summary><span class="table-schema">${table.schema}.${table.group}</span><h3>${table.name}</h3><span>${table.purpose}</span></summary>
+                  <div class="table-body"><div><span class="folio">Purpose</span><p>${table.purpose}</p></div><div><span class="folio">Keys / indexes</span><p>${table.key}</p></div><div><span class="folio">Relations / state</span><p>${table.relations}</p><p><strong>${table.state}</strong></p></div></div>
+                </details>`
+              )
+              .join('')
+          : `<div class="empty-state"><h3>没有匹配数据表</h3><p>调整检索词或选择“全部表”。</p></div>`
+      }
+
+      document.addEventListener('click', event => {
+        const projectFilter = event.target.closest('[data-project-filter]')
+        if (projectFilter) {
+          filterState.project = projectFilter.dataset.projectFilter
+          renderProjectFilters()
+          renderProjects()
+          return
+        }
+
+        const schemaFilter = event.target.closest('[data-schema-filter]')
+        if (schemaFilter) {
+          filterState.schema = schemaFilter.dataset.schemaFilter
+          renderSchemaFilters()
+          renderTables()
+          return
+        }
+
+        const card = event.target.closest('.project-card')
+        if (card) {
+          card.setAttribute('aria-expanded', card.getAttribute('aria-expanded') !== 'true')
+        }
+      })
+
+      document.querySelector('#global-search').addEventListener('input', event => {
+        filterState.query = event.target.value.trim()
+        renderProjects()
+        renderTables()
+      })
+
+      const navLinks = [...document.querySelectorAll('.rail nav a')]
+      const sections = navLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean)
+      const observer = new IntersectionObserver(
+        entries => {
+          const visible = entries
+            .filter(entry => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+          if (!visible) return
+          navLinks.forEach(link =>
+            link.classList.toggle('active', link.getAttribute('href') === `#${visible.target.id}`)
+          )
+        },
+        { rootMargin: '-20% 0px -65%', threshold: [0, 0.2, 0.5] }
+      )
+      sections.forEach(section => observer.observe(section))
+
+      renderProjectFilters()
+      renderProjects()
+      renderSchemaFilters()
+      renderTables()
+    </script>
+  </body>
+</html>
