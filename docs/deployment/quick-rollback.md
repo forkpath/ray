@@ -12,19 +12,23 @@ or cloud environment is a separate reviewed operation.
 
 - `docker/compose.infrastructure.yml` owns PostgreSQL, Redis, MongoDB, and
   RabbitMQ plus their persistent volumes.
-- `docker/compose.application.yml` owns Engine, Pulse, Worker, Web, and Kong.
-- Both stacks use one explicitly named Docker network. The application stack
-  treats that network as external, so an application rollback cannot recreate
-  infrastructure or data volumes.
+- `docker/compose.application.yml` owns one color of Engine, Pulse, Worker, and
+  Web. Blue and green are separate Compose projects and can run concurrently.
+- `docker/compose.gateway.yml` owns the single stable Kong gateway. Kong routes
+  only to the color-qualified aliases (`engine-blue`, `web-green`, and so on),
+  validates a candidate declarative config, and reloads it atomically.
+- All three stacks use one explicitly named Docker network. Application and
+  gateway stacks treat it as external, so an application rollback cannot
+  recreate infrastructure or data volumes.
 - Application images come only from the CI release manifest and are rendered
   as `image@sha256:<digest>`. Compose contains no `build` instruction.
 - Infrastructure and Kong images are also supplied as reviewed digest
   references in the protected runtime environment file. They do not change as
   a side effect of an application release.
 
-Kong's Admin API is disabled in the production Compose file. The old Konga UI,
-host-side Nx build, `git pull`, and in-container `npx prisma` deployment path
-have been removed.
+Kong's Admin API is disabled. Its stable container is not restarted during a
+normal color switch. The old Konga UI, host-side Nx build, `git pull`, and
+in-container `npx prisma` deployment path have been removed.
 
 ## One-time infrastructure initialization
 
@@ -61,6 +65,14 @@ values in `examples/runtime.env.example` into a real environment.
    `headersFromEnvironment`, mapping a header name to a protected environment
    variable; secret values are never stored in the spec or release ledger.
 4. The protected runtime environment file with mode `0600`.
+5. An observation specification matching `examples/observation.json`. The URL
+   must return one JSON sample with `errorRate`, `p95LatencyMs`,
+   `authFailureRate`, `databaseConnections`, and `queueDepth` on every request.
+   The controller fails closed on an unavailable, malformed, or over-threshold
+   sample. Authentication headers are resolved only from protected environment
+   variables.
+6. An explicit migration mode: `expand` for a reviewed additive migration, or
+   `none` when the release has no database migration. `contract` is rejected.
 
 The files under `docs/deployment/examples` are schema examples only. Their
 syntactically valid hashes and placeholder secrets do not identify real images,
@@ -77,6 +89,8 @@ node scripts/deploy/release-controller.mjs plan \
   --manifest /secure/ray/release-manifest.json \
   --backup-receipt /secure/ray/backup-receipt.json \
   --smoke-spec /secure/ray/smoke.json \
+  --observation-spec /secure/ray/observation.json \
+  --migration-mode expand \
   --runtime-env /secure/ray/production.env \
   --state-dir /var/lib/ray/releases/production
 ```
@@ -94,6 +108,8 @@ node scripts/deploy/release-controller.mjs apply \
   --manifest /secure/ray/release-manifest.json \
   --backup-receipt /secure/ray/backup-receipt.json \
   --smoke-spec /secure/ray/smoke.json \
+  --observation-spec /secure/ray/observation.json \
+  --migration-mode expand \
   --runtime-env /secure/ray/production.env \
   --state-dir /var/lib/ray/releases/production \
   --apply
@@ -105,20 +121,39 @@ The controller performs these operations under an exclusive deployment lock:
    protected runtime environment is also pulled before Compose is allowed to
    use `--pull never`.
 2. Revalidate the fresh backup receipt.
-3. Run `migrate`, then `online-migrate`, using the exact Migrator digest.
-4. Start the application Compose stack with `--no-build --pull never`.
-5. Wait for every service health check.
-6. Run the health/auth/billing/organization smoke matrix.
-7. Atomically write `current.json`, an immutable release record, and append the
-   same record to `history.jsonl`.
+3. For `expand`, run `migrate`, then `online-migrate`, using the exact Migrator
+   digest. For `none`, skip both. In either mode, run the read-only
+   `compatibility-check` before starting the candidate.
+4. Select the inactive color and start its isolated Compose project with
+   `--no-build --pull never --wait`.
+5. Probe Engine, Pulse, Worker, and Web directly inside the candidate project.
+6. Ensure the stable gateway is healthy, validate the candidate Kong config,
+   and atomically reload Kong to the candidate color.
+7. Run the health/auth/billing/organization smoke matrix through the stable
+   public gateway.
+8. Observe error rate, P95 latency, auth failures, database connections, and
+   queue depth for the configured window. Any failed sample atomically routes
+   Kong back to the prior color and reruns smoke.
+9. Persist the candidate as the active release before draining the old color.
+   Pulse emits `platform:draining` so WebSocket clients reconnect; Compose then
+   gives all services the configured graceful-stop window. The final drain
+   result is recorded separately and a cleanup requirement does not falsify
+   the active release identity.
 
 The generated Compose environment contains only image identities and release
 metadata. Runtime secrets remain in the protected environment file and are not
 copied into the ledger.
 
-If readiness or smoke fails after the application switch begins, the controller
-automatically restores the previous application digests and reruns smoke. Any
-additive database changes remain in place.
+If readiness, smoke, or observation fails after the switch begins, the
+controller atomically restores the previous gateway color, reruns smoke, and
+drains the failed candidate. Any additive database changes remain in place.
+On a first-ever deployment failure, both the candidate and newly created
+gateway are removed so no partial installation is recorded.
+
+Contract Migration is deliberately outside this command. It must never run in
+the same release as a blue/green traffic switch. Execute Contract only after
+the documented compatibility window has closed and all pre-contract images
+have been marked ineligible for rollback.
 
 ## Manual rollback
 
@@ -133,10 +168,12 @@ node scripts/deploy/release-controller.mjs rollback \
   --apply
 ```
 
-By default, the newest prior successful release is selected. An operator may
-select an older installed SHA with `--to-git-sha <40-character-sha>`. The
-controller measures the rollback and fails the RTO gate when it exceeds 300
-seconds, while retaining the truthful installed-state record.
+By default, the newest prior successful release is selected. The controller
+starts it in the inactive color, probes it, atomically switches Kong, reruns
+smoke, and drains the superseded color. An operator may select an older
+installed SHA with `--to-git-sha <40-character-sha>`. The controller measures
+the rollback and fails the RTO gate when it exceeds 300 seconds, while
+retaining the truthful installed-state record.
 
 After a Contract Migration, mark pre-contract releases ineligible for rollback
 through the release governance process before executing the Contract DDL. Do

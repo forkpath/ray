@@ -13,6 +13,9 @@ case "$command_name" in
   online-migrate)
     exec node ./scripts/run-online-migrations.mjs "$@"
     ;;
+  compatibility-check)
+    exec /app/node_modules/.bin/prisma migrate status --config ./prisma.config.ts --schema ./src
+    ;;
   billing-owner-backfill)
     exec node ./scripts/backfill-billing-owners.mjs "$@"
     ;;

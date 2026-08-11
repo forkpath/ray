@@ -4,7 +4,7 @@ _transform: true
 services:
   # ─── Engine (NestJS API) ──────────────────────────────────────
   - name: engine-api
-    url: http://engine:8000
+    url: http://engine-${RAY_ACTIVE_COLOR}:8000
     routes:
       - name: engine-api-route
         paths:
@@ -36,7 +36,7 @@ services:
 
   # ─── Auth (Better Auth via Engine) ────────────────────────────
   - name: engine-auth
-    url: http://engine:8000
+    url: http://engine-${RAY_ACTIVE_COLOR}:8000
     routes:
       - name: engine-auth-route
         paths:
@@ -49,7 +49,7 @@ services:
 
   # ─── Pulse (authenticated Socket.IO transport) ───────────────
   - name: pulse-websocket
-    url: http://pulse:3001
+    url: http://pulse-${RAY_ACTIVE_COLOR}:3001
     routes:
       - name: pulse-websocket-route
         paths:
@@ -62,7 +62,7 @@ services:
 
   # ─── Web (TanStack Start SSR + SPA) ──────────────────────────
   - name: web-ssr
-    url: http://web:3000
+    url: http://web-${RAY_ACTIVE_COLOR}:3000
     routes:
       - name: web-catch-all
         paths:
