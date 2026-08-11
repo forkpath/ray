@@ -1,0 +1,43 @@
+networks:
+  platform:
+    external: true
+    name: ${RAY_NETWORK_NAME:?RAY_NETWORK_NAME is required}
+
+services:
+  kong:
+    image: ${KONG_IMAGE:?KONG_IMAGE must be an immutable digest}
+    pull_policy: never
+    networks: [platform]
+    ports:
+      - ${RAY_HTTP_PORT:-80}:8000
+      - ${RAY_HTTPS_PORT:-443}:8443
+    entrypoint: ['/entrypoint.sh']
+    env_file:
+      - ${RAY_RUNTIME_ENV_FILE:?RAY_RUNTIME_ENV_FILE is required}
+    environment:
+      RAY_ACTIVE_COLOR: ${RAY_ACTIVE_COLOR:?RAY_ACTIVE_COLOR is required}
+      KONG_DATABASE: 'off'
+      KONG_DECLARATIVE_CONFIG: /etc/kong/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 'off'
+      KONG_PROXY_LISTEN: 0.0.0.0:8000, 0.0.0.0:8443 ssl
+      KONG_TRUSTED_IPS: 0.0.0.0/0
+      KONG_REAL_IP_HEADER: X-Forwarded-For
+      KONG_REAL_IP_RECURSIVE: 'on'
+      KONG_LUA_SSL_TRUSTED_CERTIFICATE: system
+    volumes:
+      - ./kong/kong.yml:/etc/kong/kong.yml.template:ro
+      - ./kong/entrypoint.sh:/entrypoint.sh:ro
+      - ./kong/reload-color.sh:/reload-color.sh:ro
+    restart: unless-stopped
+    labels:
+      io.ray.gateway.environment: ${RAY_ENVIRONMENT:?RAY_ENVIRONMENT is required}
+    healthcheck:
+      test: ['CMD', 'kong', 'health']
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s

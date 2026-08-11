@@ -9,6 +9,8 @@ export const releaseServices = ['engine', 'pulse', 'worker', 'web', 'migrator']
 
 export const applicationServices = ['engine', 'pulse', 'worker', 'web']
 
+export const releaseColors = ['blue', 'green']
+
 const shaPattern = /^[0-9a-f]{40}$/
 const digestPattern = /^sha256:[0-9a-f]{64}$/
 const imagePattern = /^ghcr\.io\/forkpath\/ray-([a-z0-9-]+)$/
@@ -16,10 +18,12 @@ const safeEnvironmentPattern = /^[a-z][a-z0-9-]{1,31}$/
 const allowedSmokeMethods = new Set(['GET', 'HEAD'])
 const runtimeImageVariables = ['REDIS_IMAGE', 'POSTGRES_IMAGE', 'MONGO_IMAGE', 'RABBITMQ_IMAGE', 'KONG_IMAGE']
 const requiredSmokeCategories = new Set(['health', 'auth', 'billing', 'organization'])
+const allowedMigrationModes = new Set(['expand', 'none'])
 
 const scriptDirectory = resolve(fileURLToPath(new URL('.', import.meta.url)))
 const workspaceRoot = resolve(scriptDirectory, '../..')
 const applicationComposeFile = join(workspaceRoot, 'docker/compose.application.yml')
+const gatewayComposeFile = join(workspaceRoot, 'docker/compose.gateway.yml')
 
 function isObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -231,13 +235,130 @@ export async function runSmokeChecks(smokeSpec, { fetchImplementation = fetch, e
   return results
 }
 
-export function createDeploymentEnvironment({ manifest, runtimeEnvFile, networkName, releaseId }) {
+export function validateObservationSpec(input) {
+  assert(isObject(input), 'observation spec must be a JSON object')
+  assert(input.schemaVersion === 1, 'observation spec schemaVersion must be 1')
+  const url = new URL(input.url)
+  assert(
+    url.protocol === 'https:' || (url.protocol === 'http:' && ['127.0.0.1', 'localhost'].includes(url.hostname)),
+    'observation URL must use HTTPS except for localhost'
+  )
+  const durationSeconds = input.durationSeconds ?? 300
+  const intervalSeconds = input.intervalSeconds ?? 15
+  assert(
+    Number.isInteger(durationSeconds) && durationSeconds >= 1 && durationSeconds <= 1_800,
+    'observation durationSeconds must be between 1 and 1800'
+  )
+  assert(
+    Number.isInteger(intervalSeconds) && intervalSeconds >= 1 && intervalSeconds <= 60,
+    'observation intervalSeconds must be between 1 and 60'
+  )
+  assert(intervalSeconds <= durationSeconds, 'observation intervalSeconds cannot exceed durationSeconds')
+  assert(isObject(input.thresholds), 'observation thresholds are required')
+
+  const thresholds = {
+    errorRate: Number(input.thresholds.errorRate),
+    p95LatencyMs: Number(input.thresholds.p95LatencyMs),
+    authFailureRate: Number(input.thresholds.authFailureRate),
+    databaseConnections: Number(input.thresholds.databaseConnections),
+    queueDepth: Number(input.thresholds.queueDepth)
+  }
+  assert(thresholds.errorRate >= 0 && thresholds.errorRate <= 1, 'errorRate threshold must be between 0 and 1')
+  assert(thresholds.authFailureRate >= 0 && thresholds.authFailureRate <= 1, 'authFailureRate threshold is invalid')
+  for (const field of ['p95LatencyMs', 'databaseConnections', 'queueDepth']) {
+    assert(Number.isFinite(thresholds[field]) && thresholds[field] >= 0, `${field} threshold is invalid`)
+  }
+
+  const headersFromEnvironment = input.headersFromEnvironment ?? {}
+  assert(isObject(headersFromEnvironment), 'observation headersFromEnvironment must be an object')
+  for (const [header, variable] of Object.entries(headersFromEnvironment)) {
+    assert(/^[A-Za-z0-9-]+$/.test(header), `invalid observation header: ${header}`)
+    assert(typeof variable === 'string' && /^[A-Z][A-Z0-9_]+$/.test(variable), `invalid observation variable`)
+  }
+
+  return {
+    schemaVersion: 1,
+    url: url.toString(),
+    durationSeconds,
+    intervalSeconds,
+    thresholds,
+    headersFromEnvironment
+  }
+}
+
+function validateObservationSample(input, thresholds) {
+  assert(isObject(input), 'observation endpoint must return a JSON object')
+  const sample = {
+    errorRate: Number(input.errorRate),
+    p95LatencyMs: Number(input.p95LatencyMs),
+    authFailureRate: Number(input.authFailureRate),
+    databaseConnections: Number(input.databaseConnections),
+    queueDepth: Number(input.queueDepth)
+  }
+  for (const [field, value] of Object.entries(sample)) {
+    assert(Number.isFinite(value) && value >= 0, `observation sample ${field} is invalid`)
+    assert(value <= thresholds[field], `observation threshold exceeded: ${field}=${value}`)
+  }
+  return sample
+}
+
+export async function runObservationWindow(
+  observationSpec,
+  {
+    fetchImplementation = fetch,
+    environment = process.env,
+    now = () => Date.now(),
+    sleep = milliseconds => new Promise(resolvePromise => setTimeout(resolvePromise, milliseconds))
+  } = {}
+) {
+  const spec = validateObservationSpec(observationSpec)
+  const headers = {}
+  for (const [header, variable] of Object.entries(spec.headersFromEnvironment)) {
+    const value = environment[variable]
+    assert(value, `observation requires ${variable}`)
+    headers[header] = value
+  }
+
+  const deadline = now() + spec.durationSeconds * 1_000
+  const samples = []
+  while (true) {
+    const response = await fetchImplementation(spec.url, {
+      headers,
+      redirect: 'manual',
+      signal: AbortSignal.timeout(15_000)
+    })
+    assert(response.status === 200, `observation endpoint returned ${response.status}`)
+    samples.push({
+      observedAt: new Date(now()).toISOString(),
+      ...validateObservationSample(await response.json(), spec.thresholds)
+    })
+    const remainingMilliseconds = deadline - now()
+    if (remainingMilliseconds <= 0) break
+    await sleep(Math.min(spec.intervalSeconds * 1_000, remainingMilliseconds))
+  }
+  return samples
+}
+
+export function selectCandidateColor(currentRelease) {
+  if (!currentRelease) return 'blue'
+  assert(releaseColors.includes(currentRelease.color), 'installed release color must be blue or green')
+  return currentRelease.color === 'blue' ? 'green' : 'blue'
+}
+
+export function validateMigrationMode(value) {
+  assert(typeof value === 'string' && allowedMigrationModes.has(value), 'migration mode must be expand or none')
+  return value
+}
+
+export function createDeploymentEnvironment({ manifest, runtimeEnvFile, networkName, releaseId, color }) {
   const normalized = validateReleaseManifest(manifest)
+  assert(releaseColors.includes(color), 'deployment color must be blue or green')
   const lines = [
     `RAY_RELEASE_SHA=${normalized.gitSha}`,
     `RAY_RELEASE_ID=${releaseId}`,
     `RAY_RUNTIME_ENV_FILE=${resolve(runtimeEnvFile)}`,
-    `RAY_NETWORK_NAME=${networkName}`
+    `RAY_NETWORK_NAME=${networkName}`,
+    `RAY_COLOR=${color}`
   ]
 
   for (const service of releaseServices) {
@@ -247,8 +368,9 @@ export function createDeploymentEnvironment({ manifest, runtimeEnvFile, networkN
   return `${lines.join('\n')}\n`
 }
 
-export function buildReleasePlan({ manifest, environment, currentRelease, runtimeImages }) {
+export function buildReleasePlan({ manifest, environment, currentRelease, runtimeImages, migrationMode }) {
   const normalized = validateReleaseManifest(manifest)
+  const normalizedMigrationMode = validateMigrationMode(migrationMode)
   assert(
     typeof runtimeImages?.KONG_IMAGE === 'string' && /@sha256:[0-9a-f]{64}$/.test(runtimeImages.KONG_IMAGE),
     'release plan requires a validated Kong digest'
@@ -257,7 +379,9 @@ export function buildReleasePlan({ manifest, environment, currentRelease, runtim
     environment,
     gitSha: normalized.gitSha,
     ref: normalized.ref,
+    migrationMode: normalizedMigrationMode,
     previousReleaseId: currentRelease?.releaseId ?? null,
+    candidateColor: selectCandidateColor(currentRelease),
     operations: [
       { operation: 'verify-runtime-digests' },
       ...releaseServices.map(service => ({
@@ -271,12 +395,21 @@ export function buildReleasePlan({ manifest, environment, currentRelease, runtim
         image: runtimeImages.KONG_IMAGE
       },
       { operation: 'verify-backup' },
-      { operation: 'migrate-forward', command: 'migrate' },
-      { operation: 'migrate-forward', command: 'online-migrate' },
-      { operation: 'switch-application-digests' },
-      { operation: 'wait-readiness' },
+      ...(normalizedMigrationMode === 'expand'
+        ? [
+            { operation: 'migrate-forward', command: 'migrate' },
+            { operation: 'migrate-forward', command: 'online-migrate' }
+          ]
+        : []),
+      { operation: 'verify-migration-compatibility' },
+      { operation: 'start-candidate-color' },
+      { operation: 'probe-candidate' },
+      { operation: 'atomic-gateway-switch' },
       { operation: 'smoke', categories: [...requiredSmokeCategories] },
-      { operation: 'record-installed-release' }
+      { operation: 'observe-and-auto-revert' },
+      { operation: 'record-active-release' },
+      { operation: 'drain-previous-color' },
+      { operation: 'record-drain-outcome' }
     ]
   }
 }
@@ -353,17 +486,32 @@ async function runCommand(command, args) {
   })
 }
 
-function composeArguments(context, environmentFile) {
+function composeArguments(context, environmentFile, color) {
+  assert(releaseColors.includes(color), 'compose color must be blue or green')
   return [
     'compose',
     '--project-name',
-    `ray-${context.environment}`,
+    `ray-${context.environment}-${color}`,
     '--env-file',
     context.runtimeEnvFile,
     '--env-file',
     environmentFile,
     '-f',
     applicationComposeFile
+  ]
+}
+
+function gatewayComposeArguments(context, gatewayEnvironmentFile) {
+  return [
+    'compose',
+    '--project-name',
+    `ray-${context.environment}-gateway`,
+    '--env-file',
+    context.runtimeEnvFile,
+    '--env-file',
+    gatewayEnvironmentFile,
+    '-f',
+    gatewayComposeFile
   ]
 }
 
@@ -387,9 +535,9 @@ async function runMigrator(context, command) {
   ])
 }
 
-async function switchApplication(context, environmentFile) {
+async function startApplicationColor(context, environmentFile, color) {
   await runCommand('docker', [
-    ...composeArguments(context, environmentFile),
+    ...composeArguments(context, environmentFile, color),
     'up',
     '-d',
     '--no-build',
@@ -400,6 +548,67 @@ async function switchApplication(context, environmentFile) {
     '--wait-timeout',
     String(context.readinessTimeoutSeconds)
   ])
+}
+
+async function probeApplicationColor(context, environmentFile, color) {
+  const probes = [
+    ['engine', 'http://127.0.0.1:8000/api/v1/health'],
+    ['pulse', 'http://127.0.0.1:3001/health/ready'],
+    ['worker', 'http://127.0.0.1:3002/health/ready'],
+    ['web', 'http://127.0.0.1:3000/']
+  ]
+  for (const [service, url] of probes) {
+    await runCommand('docker', [
+      ...composeArguments(context, environmentFile, color),
+      'exec',
+      '-T',
+      service,
+      'wget',
+      '-qO-',
+      url
+    ])
+  }
+}
+
+async function ensureGateway(context, gatewayEnvironmentFile) {
+  await runCommand('docker', [
+    ...gatewayComposeArguments(context, gatewayEnvironmentFile),
+    'up',
+    '-d',
+    '--no-build',
+    '--pull',
+    'never',
+    '--wait',
+    '--wait-timeout',
+    String(context.readinessTimeoutSeconds)
+  ])
+}
+
+async function switchGatewayColor(context, gatewayEnvironmentFile, color) {
+  assert(releaseColors.includes(color), 'gateway color must be blue or green')
+  await runCommand('docker', [
+    ...gatewayComposeArguments(context, gatewayEnvironmentFile),
+    'exec',
+    '-T',
+    'kong',
+    '/reload-color.sh',
+    color
+  ])
+  await writeGatewayEnvironmentFile(context, color)
+}
+
+async function stopGateway(context, gatewayEnvironmentFile) {
+  await runCommand('docker', [...gatewayComposeArguments(context, gatewayEnvironmentFile), 'down', '--remove-orphans'])
+}
+
+async function drainApplicationColor(context, environmentFile, color) {
+  await runCommand('docker', [
+    ...composeArguments(context, environmentFile, color),
+    'stop',
+    '--timeout',
+    String(context.drainTimeoutSeconds)
+  ])
+  await runCommand('docker', [...composeArguments(context, environmentFile, color), 'down', '--remove-orphans'])
 }
 
 async function listInstalledReleases(stateDirectory) {
@@ -444,7 +653,7 @@ async function recordFailedAttempt(stateDirectory, attempt) {
   await appendHistory(stateDirectory, attempt)
 }
 
-async function writeEnvironmentFile(context, manifest, releaseId) {
+async function writeEnvironmentFile(context, manifest, releaseId, color) {
   const environmentDirectory = join(context.stateDirectory, 'environments')
   await mkdir(environmentDirectory, { recursive: true, mode: 0o700 })
   const path = join(environmentDirectory, `${releaseId}.env`)
@@ -454,8 +663,29 @@ async function writeEnvironmentFile(context, manifest, releaseId) {
       manifest,
       runtimeEnvFile: context.runtimeEnvFile,
       networkName: context.networkName,
-      releaseId
+      releaseId,
+      color
     }),
+    { mode: 0o600 }
+  )
+  await chmod(path, 0o600)
+  return path
+}
+
+async function writeGatewayEnvironmentFile(context, color) {
+  assert(releaseColors.includes(color), 'gateway color must be blue or green')
+  const environmentDirectory = join(context.stateDirectory, 'environments')
+  await mkdir(environmentDirectory, { recursive: true, mode: 0o700 })
+  const path = join(environmentDirectory, 'gateway.env')
+  await writeFile(
+    path,
+    [
+      `RAY_RUNTIME_ENV_FILE=${context.runtimeEnvFile}`,
+      `RAY_NETWORK_NAME=${context.networkName}`,
+      `RAY_ENVIRONMENT=${context.environment}`,
+      `RAY_ACTIVE_COLOR=${color}`,
+      `KONG_IMAGE=${context.runtimeImages.KONG_IMAGE}`
+    ].join('\n') + '\n',
     { mode: 0o600 }
   )
   await chmod(path, 0o600)
@@ -482,68 +712,232 @@ async function acquireLock(stateDirectory, operationId) {
   return async () => rm(lockPath, { force: true })
 }
 
+function environmentFileForRelease(context, release) {
+  return join(context.stateDirectory, 'environments', `${release.applicationReleaseId ?? release.releaseId}.env`)
+}
+
+async function restorePreviousColor(
+  context,
+  previous,
+  candidateColor,
+  candidateEnvironmentFile,
+  gatewayFile,
+  smokeSpec,
+  reason
+) {
+  const startedAt = Date.now()
+  await switchGatewayColor(context, gatewayFile, previous.color)
+  const smokeResults = await runSmokeChecks(smokeSpec)
+  const rollbackReleaseId = `${previous.manifest.gitSha}-${randomUUID()}`
+  const release = {
+    schemaVersion: 1,
+    releaseId: rollbackReleaseId,
+    operation: 'rollback',
+    environment: context.environment,
+    color: previous.color,
+    status: 'installed',
+    manifest: previous.manifest,
+    applicationReleaseId: previous.applicationReleaseId ?? previous.releaseId,
+    deployedAt: new Date().toISOString(),
+    previousReleaseId: previous.releaseId,
+    rolledBackFrom: context.manifest.gitSha,
+    reason,
+    smokeResults,
+    candidateDrainCompleted: false,
+    drainStatus: 'pending',
+    durationSeconds: Math.ceil((Date.now() - startedAt) / 1000),
+    databaseRollbackPerformed: false
+  }
+  await recordRelease(context.stateDirectory, release)
+  try {
+    await drainApplicationColor(context, candidateEnvironmentFile, candidateColor)
+    release.candidateDrainCompleted = true
+    release.drainStatus = 'completed'
+  } catch (error) {
+    release.drainStatus = 'cleanup-required'
+    process.stderr.write(
+      `[release-controller] previous color restored but candidate drain needs cleanup: ${error.message}\n`
+    )
+  }
+  release.durationSeconds = Math.ceil((Date.now() - startedAt) / 1000)
+  try {
+    await recordRelease(context.stateDirectory, release)
+  } catch (error) {
+    release.drainRecordPersisted = false
+    process.stderr.write(
+      `[release-controller] rollback is active but candidate drain outcome could not be persisted: ${error.message}\n`
+    )
+  }
+  return release
+}
+
 async function rollbackApplication(context, target, smokeSpec, reason, rolledBackFrom) {
   const operationId = randomUUID()
   const startedAt = Date.now()
   const releaseId = `${target.manifest.gitSha}-${operationId}`
-  const environmentFile = await writeEnvironmentFile(context, target.manifest, releaseId)
-  await switchApplication(context, environmentFile)
-  const smokeResults = await runSmokeChecks(smokeSpec)
   const current = await readOptionalJson(join(context.stateDirectory, 'current.json'))
+  assert(current?.status === 'installed', 'rollback requires an installed current release')
+  const color = selectCandidateColor(current)
+  const environmentFile = await writeEnvironmentFile(context, target.manifest, releaseId, color)
+  const gatewayFile = await writeGatewayEnvironmentFile(context, current.color)
+  let candidateProvisioningStarted = false
+  let gatewaySwitchAttempted = false
+  let smokeResults
+  try {
+    candidateProvisioningStarted = true
+    await startApplicationColor(context, environmentFile, color)
+    await probeApplicationColor(context, environmentFile, color)
+    await ensureGateway(context, gatewayFile)
+    gatewaySwitchAttempted = true
+    await switchGatewayColor(context, gatewayFile, color)
+    smokeResults = await runSmokeChecks(smokeSpec)
+  } catch (error) {
+    const failures = [error]
+    if (gatewaySwitchAttempted) {
+      try {
+        await switchGatewayColor(context, gatewayFile, current.color)
+      } catch (restoreError) {
+        failures.push(restoreError)
+      }
+    }
+    if (candidateProvisioningStarted) {
+      try {
+        await drainApplicationColor(context, environmentFile, color)
+      } catch (cleanupError) {
+        failures.push(cleanupError)
+      }
+    }
+    if (failures.length > 1) {
+      throw new AggregateError(failures, 'rollback failed and cleanup requires operator attention')
+    }
+    throw error
+  }
   const release = {
     schemaVersion: 1,
     releaseId,
     operation: 'rollback',
     environment: context.environment,
+    color,
     status: 'installed',
     manifest: target.manifest,
+    applicationReleaseId: releaseId,
     deployedAt: new Date().toISOString(),
     previousReleaseId: current?.releaseId ?? null,
     rolledBackFrom: rolledBackFrom ?? current?.manifest?.gitSha ?? null,
     reason,
     smokeResults,
+    previousDrainCompleted: false,
+    drainStatus: 'pending',
     durationSeconds: Math.ceil((Date.now() - startedAt) / 1000),
     databaseRollbackPerformed: false
   }
   await recordRelease(context.stateDirectory, release)
+  try {
+    await drainApplicationColor(context, environmentFileForRelease(context, current), current.color)
+    release.previousDrainCompleted = true
+    release.drainStatus = 'completed'
+  } catch (error) {
+    release.drainStatus = 'cleanup-required'
+    process.stderr.write(
+      `[release-controller] rollback installed but prior color drain needs cleanup: ${error.message}\n`
+    )
+  }
+  release.durationSeconds = Math.ceil((Date.now() - startedAt) / 1000)
+  try {
+    await recordRelease(context.stateDirectory, release)
+  } catch (error) {
+    release.drainRecordPersisted = false
+    process.stderr.write(
+      `[release-controller] rollback is active but prior drain outcome could not be persisted: ${error.message}\n`
+    )
+  }
   return release
 }
 
 async function applyRelease(context, backupReceipt, smokeSpec) {
   const operationId = randomUUID()
   const releaseId = `${context.manifest.gitSha}-${operationId}`
-  const releaseEnvironmentFile = await writeEnvironmentFile(context, context.manifest, releaseId)
   const previous = await readOptionalJson(join(context.stateDirectory, 'current.json'))
-  let applicationSwitchStarted = false
+  const candidateColor = selectCandidateColor(previous)
+  const releaseEnvironmentFile = await writeEnvironmentFile(context, context.manifest, releaseId, candidateColor)
+  const gatewayEnvironmentFile = await writeGatewayEnvironmentFile(context, previous?.color ?? candidateColor)
+  let gatewaySwitchStarted = false
+  let gatewayProvisioningStarted = false
+  let candidateProvisioningStarted = false
+  let releaseRecorded = false
   let stage = 'pull-images'
 
   try {
     await pullReleaseImages(context)
     process.stdout.write(`[release-controller] backup ${backupReceipt.backupId} verified\n`)
-    stage = 'migrate'
-    await runMigrator(context, 'migrate')
-    stage = 'online-migrate'
-    await runMigrator(context, 'online-migrate')
-    applicationSwitchStarted = true
-    stage = 'switch-application'
-    await switchApplication(context, releaseEnvironmentFile)
+    if (context.migrationMode === 'expand') {
+      stage = 'migrate'
+      await runMigrator(context, 'migrate')
+      stage = 'online-migrate'
+      await runMigrator(context, 'online-migrate')
+    }
+    stage = 'migration-compatibility'
+    await runMigrator(context, 'compatibility-check')
+    stage = 'start-candidate'
+    candidateProvisioningStarted = true
+    await startApplicationColor(context, releaseEnvironmentFile, candidateColor)
+    stage = 'candidate-probes'
+    await probeApplicationColor(context, releaseEnvironmentFile, candidateColor)
+    stage = 'ensure-gateway'
+    gatewayProvisioningStarted = true
+    await ensureGateway(context, gatewayEnvironmentFile)
+    stage = 'switch-gateway'
+    gatewaySwitchStarted = true
+    if (previous) await switchGatewayColor(context, gatewayEnvironmentFile, candidateColor)
     stage = 'smoke'
     const smokeResults = await runSmokeChecks(smokeSpec)
+    stage = 'observation'
+    const observationSamples = await runObservationWindow(context.observationSpec)
     const release = {
       schemaVersion: 1,
       releaseId,
       operation: 'deploy',
       environment: context.environment,
+      color: candidateColor,
       status: 'installed',
       manifest: context.manifest,
+      applicationReleaseId: releaseId,
       deployedAt: new Date().toISOString(),
       previousReleaseId: previous?.releaseId ?? null,
       backup: backupReceipt,
+      migrationMode: context.migrationMode,
       smokeResults,
+      observationSamples,
+      previousDrainCompleted: previous === null,
+      drainStatus: previous ? 'pending' : 'not-required',
       databaseRollbackPerformed: false
     }
-    stage = 'record-release'
+    stage = 'record-active-release'
     await recordRelease(context.stateDirectory, release)
+    releaseRecorded = true
+    if (previous) {
+      stage = 'drain-previous'
+      try {
+        await drainApplicationColor(context, environmentFileForRelease(context, previous), previous.color)
+        release.previousDrainCompleted = true
+        release.drainStatus = 'completed'
+      } catch (error) {
+        release.previousDrainCompleted = false
+        release.drainStatus = 'cleanup-required'
+        process.stderr.write(
+          `[release-controller] release installed but prior color drain needs cleanup: ${error.message}\n`
+        )
+      }
+      stage = 'record-drain-outcome'
+      try {
+        await recordRelease(context.stateDirectory, release)
+      } catch (error) {
+        release.drainRecordPersisted = false
+        process.stderr.write(
+          `[release-controller] release is active but drain outcome could not be persisted: ${error.message}\n`
+        )
+      }
+    }
     return release
   } catch (error) {
     try {
@@ -557,6 +951,8 @@ async function applyRelease(context, backupReceipt, smokeSpec) {
         failedAt: new Date().toISOString(),
         failedStage: stage,
         previousReleaseId: previous?.releaseId ?? null,
+        candidateColor,
+        migrationMode: context.migrationMode,
         backup: backupReceipt,
         error: error instanceof Error ? error.message : String(error),
         databaseRollbackPerformed: false
@@ -568,14 +964,16 @@ async function applyRelease(context, backupReceipt, smokeSpec) {
         }\n`
       )
     }
-    if (applicationSwitchStarted && previous?.status === 'installed') {
+    if (!releaseRecorded && gatewaySwitchStarted && previous?.status === 'installed') {
       try {
-        await rollbackApplication(
+        await restorePreviousColor(
           context,
           previous,
+          candidateColor,
+          releaseEnvironmentFile,
+          gatewayEnvironmentFile,
           smokeSpec,
-          `automatic rollback after failed deploy ${context.manifest.gitSha}`,
-          context.manifest.gitSha
+          `automatic rollback after failed deploy ${context.manifest.gitSha}`
         )
       } catch (rollbackError) {
         throw new AggregateError(
@@ -583,7 +981,29 @@ async function applyRelease(context, backupReceipt, smokeSpec) {
           'release failed and automatic application rollback also failed'
         )
       }
-      throw new Error(`release failed; previous application digests were restored: ${error.message}`, { cause: error })
+      throw new Error(`release failed; gateway returned to previous color: ${error.message}`, { cause: error })
+    }
+    if (candidateProvisioningStarted) {
+      try {
+        await drainApplicationColor(context, releaseEnvironmentFile, candidateColor)
+      } catch (cleanupError) {
+        process.stderr.write(
+          `[release-controller] failed candidate needs cleanup: ${
+            cleanupError instanceof Error ? cleanupError.message : String(cleanupError)
+          }\n`
+        )
+      }
+    }
+    if (gatewayProvisioningStarted && !previous) {
+      try {
+        await stopGateway(context, gatewayEnvironmentFile)
+      } catch (cleanupError) {
+        process.stderr.write(
+          `[release-controller] failed first-deploy gateway needs cleanup: ${
+            cleanupError instanceof Error ? cleanupError.message : String(cleanupError)
+          }\n`
+        )
+      }
     }
     throw error
   }
@@ -603,13 +1023,19 @@ async function buildContext(options) {
     Number.isInteger(readinessTimeoutSeconds) && readinessTimeoutSeconds > 0 && readinessTimeoutSeconds <= 180,
     '--readiness-timeout must be an integer between 1 and 180'
   )
+  const drainTimeoutSeconds = Number(options['drain-timeout'] ?? 30)
+  assert(
+    Number.isInteger(drainTimeoutSeconds) && drainTimeoutSeconds >= 5 && drainTimeoutSeconds <= 120,
+    '--drain-timeout must be an integer between 5 and 120'
+  )
   return {
     environment,
     runtimeEnvFile,
     runtimeImages,
     stateDirectory,
     networkName,
-    readinessTimeoutSeconds
+    readinessTimeoutSeconds,
+    drainTimeoutSeconds
   }
 }
 
@@ -617,7 +1043,8 @@ function printUsage() {
   process.stdout.write(`Usage:
   node scripts/deploy/release-controller.mjs plan \\
     --manifest release.json --backup-receipt backup.json \\
-    --smoke-spec smoke.json --runtime-env /secure/runtime.env \\
+    --smoke-spec smoke.json --observation-spec observation.json \\
+    --migration-mode expand --runtime-env /secure/runtime.env \\
     --environment production [--state-dir /var/lib/ray/releases/production]
 
   node scripts/deploy/release-controller.mjs apply [same options] --apply
@@ -651,6 +1078,10 @@ async function main() {
 
   if (command === 'plan' || command === 'apply') {
     context.manifest = validateReleaseManifest(await readJson(resolve(requireOption(options, 'manifest'))))
+    context.migrationMode = validateMigrationMode(requireOption(options, 'migration-mode'))
+    context.observationSpec = validateObservationSpec(
+      await readJson(resolve(requireOption(options, 'observation-spec')))
+    )
     const backupReceipt = validateBackupReceipt(await readJson(resolve(requireOption(options, 'backup-receipt'))), {
       environment: context.environment,
       maxAgeSeconds: Number(options['backup-max-age'] ?? 24 * 60 * 60)
@@ -660,7 +1091,8 @@ async function main() {
       manifest: context.manifest,
       environment: context.environment,
       currentRelease: current,
-      runtimeImages: context.runtimeImages
+      runtimeImages: context.runtimeImages,
+      migrationMode: context.migrationMode
     })
     if (command === 'plan') {
       process.stdout.write(`${JSON.stringify({ plan, backupReceipt }, null, 2)}\n`)

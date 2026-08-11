@@ -10,10 +10,14 @@ import {
   buildReleasePlan,
   createDeploymentEnvironment,
   releaseServices,
+  runObservationWindow,
   runSmokeChecks,
+  selectCandidateColor,
   selectRollbackRelease,
   toImageReference,
   validateBackupReceipt,
+  validateMigrationMode,
+  validateObservationSpec,
   validateReleaseManifest,
   validateRuntimeImageReferences,
   validateSmokeSpec
@@ -65,6 +69,20 @@ const smokeSpec = {
       expectedStatus: 401
     }
   ]
+}
+
+const observationSpec = {
+  schemaVersion: 1,
+  url: 'https://metrics.example.com/ray/deployment-window',
+  durationSeconds: 1,
+  intervalSeconds: 1,
+  thresholds: {
+    errorRate: 0.02,
+    p95LatencyMs: 750,
+    authFailureRate: 0.05,
+    databaseConnections: 180,
+    queueDepth: 1_000
+  }
 }
 
 async function runController(arguments_, environment) {
@@ -138,11 +156,13 @@ describe('release controller manifest', () => {
       manifest,
       runtimeEnvFile: '/secure/runtime.env',
       networkName: 'ray-production-platform',
-      releaseId: `${gitSha}-operation`
+      releaseId: `${gitSha}-operation`,
+      color: 'blue'
     })
     assert.match(environmentFile, /ENGINE_IMAGE=ghcr\.io\/forkpath\/ray-engine@sha256:/)
     assert.match(environmentFile, /MIGRATOR_IMAGE=ghcr\.io\/forkpath\/ray-migrator@sha256:/)
     assert.match(environmentFile, /RAY_RUNTIME_ENV_FILE=\/secure\/runtime\.env/)
+    assert.match(environmentFile, /RAY_COLOR=blue/)
     assert.doesNotMatch(environmentFile, /PASSWORD|SECRET|TOKEN|DATABASE_URL/)
   })
 })
@@ -238,23 +258,68 @@ describe('backup and smoke gates', () => {
     assert.equal(results.length, 4)
     assert.equal(calls[0].url, 'https://ray.example.com/api/v1/health')
   })
+
+  it('fails the observation window closed when a deployment threshold is exceeded', async () => {
+    assert.equal(validateObservationSpec(observationSpec).durationSeconds, 1)
+    const healthy = {
+      status: 200,
+      json: async () => ({
+        errorRate: 0.01,
+        p95LatencyMs: 300,
+        authFailureRate: 0.01,
+        databaseConnections: 40,
+        queueDepth: 10
+      })
+    }
+    await assert.doesNotReject(() =>
+      runObservationWindow(observationSpec, { fetchImplementation: async () => healthy })
+    )
+    await assert.rejects(
+      () =>
+        runObservationWindow(observationSpec, {
+          fetchImplementation: async () => ({
+            ...healthy,
+            json: async () => ({ ...(await healthy.json()), queueDepth: 1_001 })
+          })
+        }),
+      /threshold exceeded: queueDepth/
+    )
+  })
 })
 
 describe('forward-only release and rollback plan', () => {
-  it('migrates before switching and records the installed release last', () => {
+  it('migrates before switching and records active state before drain', () => {
     const plan = buildReleasePlan({
       manifest,
       environment: 'production',
-      currentRelease: { releaseId: 'previous' },
-      runtimeImages: { KONG_IMAGE: `kong@${digest('e')}` }
+      currentRelease: { releaseId: 'previous', color: 'green' },
+      runtimeImages: { KONG_IMAGE: `kong@${digest('e')}` },
+      migrationMode: 'expand'
     })
     const operations = plan.operations.map(item => item.operation)
     const migrationIndex = operations.indexOf('migrate-forward')
-    const switchIndex = operations.indexOf('switch-application-digests')
+    const switchIndex = operations.indexOf('atomic-gateway-switch')
     assert.ok(migrationIndex < switchIndex)
-    assert.equal(operations.at(-1), 'record-installed-release')
+    assert.ok(operations.indexOf('record-active-release') < operations.indexOf('drain-previous-color'))
+    assert.equal(operations.at(-1), 'record-drain-outcome')
     assert.equal(plan.previousReleaseId, 'previous')
     assert.equal(plan.operations.find(item => item.service === 'kong').image, `kong@${digest('e')}`)
+    assert.equal(plan.candidateColor, 'blue')
+    assert.equal(selectCandidateColor({ color: 'blue' }), 'green')
+    assert.equal(validateMigrationMode('expand'), 'expand')
+    assert.throws(() => validateMigrationMode('contract'), /expand or none/)
+
+    const noMigrationPlan = buildReleasePlan({
+      manifest,
+      environment: 'production',
+      currentRelease: null,
+      runtimeImages: { KONG_IMAGE: `kong@${digest('e')}` },
+      migrationMode: 'none'
+    })
+    assert.equal(
+      noMigrationPlan.operations.some(item => item.operation === 'migrate-forward'),
+      false
+    )
   })
 
   it('selects the newest prior installed release without database rollback', () => {
@@ -283,11 +348,28 @@ describe('forward-only release and rollback plan', () => {
     const manifestPath = join(directory, 'manifest.json')
     const backupPath = join(directory, 'backup.json')
     const smokePath = join(directory, 'smoke.json')
+    const observationPath = join(directory, 'observation.json')
     const stateDirectory = join(directory, 'state')
     const dockerLog = join(directory, 'docker.log')
     const fakeDocker = join(binDirectory, 'docker')
     let failNextSmoke = false
+    let failNextObservation = false
     const server = createServer((request, response) => {
+      if (request.url === '/deployment-metrics') {
+        const queueDepth = failNextObservation ? 1_001 : 10
+        failNextObservation = false
+        response.setHeader('Content-Type', 'application/json')
+        response.end(
+          JSON.stringify({
+            errorRate: 0.01,
+            p95LatencyMs: 300,
+            authFailureRate: 0.01,
+            databaseConnections: 40,
+            queueDepth
+          })
+        )
+        return
+      }
       if (failNextSmoke) {
         failNextSmoke = false
         response.statusCode = 500
@@ -330,6 +412,10 @@ describe('forward-only release and rollback plan', () => {
       )
       const port = await listen(server)
       await writeFile(smokePath, JSON.stringify({ ...smokeSpec, baseUrl: `http://127.0.0.1:${port}` }))
+      await writeFile(
+        observationPath,
+        JSON.stringify({ ...observationSpec, url: `http://127.0.0.1:${port}/deployment-metrics` })
+      )
 
       const sharedArguments = [
         '--environment',
@@ -340,6 +426,10 @@ describe('forward-only release and rollback plan', () => {
         backupPath,
         '--smoke-spec',
         smokePath,
+        '--observation-spec',
+        observationPath,
+        '--migration-mode',
+        'expand',
         '--runtime-env',
         runtimeEnv,
         '--state-dir',
@@ -362,12 +452,16 @@ describe('forward-only release and rollback plan', () => {
       const second = JSON.parse(await readFile(join(stateDirectory, 'current.json'), 'utf8'))
       assert.equal(second.manifest.gitSha, 'b'.repeat(40))
       assert.equal(second.previousReleaseId, first.releaseId)
+      assert.match(
+        await readFile(join(stateDirectory, 'environments', 'gateway.env'), 'utf8'),
+        /RAY_ACTIVE_COLOR=green/
+      )
 
       await writeFile(manifestPath, JSON.stringify({ ...manifest, gitSha: 'c'.repeat(40) }))
       failNextSmoke = true
       await assert.rejects(
         () => runController(['apply', ...sharedArguments], environment),
-        /previous application digests were restored/
+        /gateway returned to previous color/
       )
       const automaticallyRolledBack = JSON.parse(await readFile(join(stateDirectory, 'current.json'), 'utf8'))
       assert.equal(automaticallyRolledBack.operation, 'rollback')
@@ -377,7 +471,32 @@ describe('forward-only release and rollback plan', () => {
       assert.equal(attempts.length, 1)
       const failedAttempt = JSON.parse(await readFile(join(stateDirectory, 'attempts', attempts[0]), 'utf8'))
       assert.equal(failedAttempt.failedStage, 'smoke')
+      assert.equal(failedAttempt.candidateColor, 'blue')
+      assert.equal(failedAttempt.migrationMode, 'expand')
       assert.equal(failedAttempt.databaseRollbackPerformed, false)
+
+      await writeFile(manifestPath, JSON.stringify({ ...manifest, gitSha: 'd'.repeat(40) }))
+      failNextObservation = true
+      await assert.rejects(
+        () => runController(['apply', ...sharedArguments], environment),
+        /gateway returned to previous color/
+      )
+      const observationRolledBack = JSON.parse(await readFile(join(stateDirectory, 'current.json'), 'utf8'))
+      assert.equal(observationRolledBack.manifest.gitSha, 'b'.repeat(40))
+      assert.equal(observationRolledBack.rolledBackFrom, 'd'.repeat(40))
+      assert.match(
+        await readFile(join(stateDirectory, 'environments', 'gateway.env'), 'utf8'),
+        /RAY_ACTIVE_COLOR=green/
+      )
+      const attemptsAfterObservation = await readdir(join(stateDirectory, 'attempts'))
+      assert.equal(attemptsAfterObservation.length, 2)
+      const failedAttempts = await Promise.all(
+        attemptsAfterObservation.map(name => readFile(join(stateDirectory, 'attempts', name), 'utf8').then(JSON.parse))
+      )
+      assert.equal(
+        failedAttempts.find(attempt => attempt.manifest.gitSha === 'd'.repeat(40)).failedStage,
+        'observation'
+      )
 
       const commandsBeforeRollback = (await readFile(dockerLog, 'utf8')).trim().split('\n').length
       await runController(
@@ -400,11 +519,13 @@ describe('forward-only release and rollback plan', () => {
       assert.equal(rolledBack.manifest.gitSha, gitSha)
       assert.equal(rolledBack.rolledBackFrom, 'b'.repeat(40))
       assert.equal(rolledBack.databaseRollbackPerformed, false)
+      assert.match(await readFile(join(stateDirectory, 'environments', 'gateway.env'), 'utf8'), /RAY_ACTIVE_COLOR=blue/)
 
       const rollbackCommands = (await readFile(dockerLog, 'utf8')).trim().split('\n').slice(commandsBeforeRollback)
-      assert.equal(rollbackCommands.length, 1)
-      assert.match(rollbackCommands[0], /^compose /)
-      assert.doesNotMatch(rollbackCommands[0], /migrate|image pull/)
+      assert.ok(rollbackCommands.length >= 8)
+      assert.ok(rollbackCommands.some(command => command.includes('reload-color.sh')))
+      assert.ok(rollbackCommands.some(command => command.includes('stop --timeout')))
+      assert.ok(rollbackCommands.every(command => !/migrate|image pull/.test(command)))
     } finally {
       if (server.listening) await close(server)
       await rm(directory, { recursive: true, force: true })
@@ -416,18 +537,29 @@ describe('deployment composition guardrails', () => {
   it('separates infrastructure from applications and removes mutable deploy entrypoints', async () => {
     const infrastructure = await readFile('docker/compose.infrastructure.yml', 'utf8')
     const application = await readFile('docker/compose.application.yml', 'utf8')
+    const gateway = await readFile('docker/compose.gateway.yml', 'utf8')
     const kong = await readFile('docker/kong/kong.yml', 'utf8')
+    const kongReload = await readFile('docker/kong/reload-color.sh', 'utf8')
     const controller = await readFile('scripts/deploy/release-controller.mjs', 'utf8')
+    const pulseRuntime = await readFile('services/pulse/src/app/pulse-runtime.service.ts', 'utf8')
 
     assert.match(infrastructure, /^name: ray-infrastructure$/m)
     assert.match(infrastructure, /name: \$\{RAY_NETWORK_NAME/)
     assert.doesNotMatch(infrastructure, /^\s+engine:/m)
     assert.match(application, /external: true/)
     assert.match(application, /ENGINE_IMAGE.*immutable digest/)
-    assert.match(application, /KONG_ADMIN_LISTEN: 'off'/)
+    assert.match(gateway, /KONG_ADMIN_LISTEN: 'off'/)
+    assert.match(application, /engine-\$\{RAY_COLOR/)
+    assert.match(gateway, /RAY_ACTIVE_COLOR/)
     assert.match(application, /http:\/\/127\.0\.0\.1:3001\/health\/ready/)
-    assert.match(kong, /url: http:\/\/pulse:3001/)
+    assert.match(kong, /url: http:\/\/pulse-\$\{RAY_ACTIVE_COLOR\}:3001/)
     assert.match(kong, /- \/pulse\/socket\.io/)
+    assert.match(kongReload, /kong config parse/)
+    assert.match(kongReload, /kong reload/)
+    assert.match(kongReload, /escape_sed_replacement/)
+    assert.match(controller, /stop.*--timeout/s)
+    assert.match(controller, /migration mode must be expand or none/)
+    assert.match(pulseRuntime, /platform:draining/)
     assert.doesNotMatch(application, /^\s+build:/m)
     assert.doesNotMatch(application, /image: .*latest/)
     assert.doesNotMatch(controller, /git pull|prisma migrate reset|migrate down|npx /)

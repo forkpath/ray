@@ -51,6 +51,7 @@ Supported commands are:
 ```text
 migrate
 online-migrate
+compatibility-check
 billing-owner-backfill
 billing-contract-readiness
 ```
@@ -73,8 +74,8 @@ Migrator digest, and operator identity documented in
 
 The former tag-triggered SSH workflow was retired because it checked out source
 and built mutable images on the target server. This stage publishes immutable
-inputs only; it does not connect to or restart a deployment target. The next
-deployment stage must consume the release manifest, run the Migrator by digest,
-wait for readiness and smoke tests, record the installed manifest, and roll back
-by restoring the previous application digests while retaining additive database
-changes.
+inputs only; it does not connect to or restart a deployment target. The release
+controller consumes the manifest, runs the Migrator by digest, verifies schema
+compatibility, deploys an inactive color, atomically switches the stable Kong
+gateway, observes release health, and rolls back application traffic without
+reversing additive database changes.

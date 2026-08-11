@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "url": "https://metrics.example.com/ray/deployment-window",
+  "durationSeconds": 300,
+  "intervalSeconds": 15,
+  "thresholds": {
+    "errorRate": 0.02,
+    "p95LatencyMs": 750,
+    "authFailureRate": 0.05,
+    "databaseConnections": 180,
+    "queueDepth": 1000
+  },
+  "headersFromEnvironment": {
+    "Authorization": "DEPLOYMENT_METRICS_AUTHORIZATION"
+  }
+}

@@ -12,6 +12,7 @@ x-runtime: &runtime
   labels:
     io.ray.release.id: ${RAY_RELEASE_ID:?RAY_RELEASE_ID is required}
     io.ray.release.sha: ${RAY_RELEASE_SHA:?RAY_RELEASE_SHA is required}
+    io.ray.release.color: ${RAY_COLOR:?RAY_COLOR is required}
 
 services:
   engine:
@@ -24,6 +25,9 @@ services:
       REDIS_HOST: redis
       MONGO_HOST: mongo
       POSTGRES_HOST: postgres
+    networks:
+      platform:
+        aliases: ['engine-${RAY_COLOR:?RAY_COLOR is required}']
     healthcheck:
       test:
         - CMD-SHELL
@@ -44,6 +48,9 @@ services:
       REDIS_HOST: redis
       MONGO_HOST: mongo
       POSTGRES_HOST: postgres
+    networks:
+      platform:
+        aliases: ['pulse-${RAY_COLOR:?RAY_COLOR is required}']
     healthcheck:
       test:
         - CMD-SHELL
@@ -64,6 +71,9 @@ services:
       WORKER_QUEUE_NAME: ${WORKER_QUEUE_NAME:-platform-worker-v1}
       WORKER_ROUTING_KEY: ${WORKER_ROUTING_KEY:-platform.worker.v1}
       WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-4}
+    networks:
+      platform:
+        aliases: ['worker-${RAY_COLOR:?RAY_COLOR is required}']
     healthcheck:
       test:
         - CMD-SHELL
@@ -81,47 +91,13 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOST: 0.0.0.0
+    networks:
+      platform:
+        aliases: ['web-${RAY_COLOR:?RAY_COLOR is required}']
     healthcheck:
       test:
         - CMD-SHELL
         - wget -qO- http://127.0.0.1:3000/ >/dev/null || exit 1
-      interval: 10s
-      timeout: 5s
-      retries: 12
-      start_period: 20s
-
-  kong:
-    image: ${KONG_IMAGE:?KONG_IMAGE must be an immutable digest}
-    pull_policy: never
-    networks: [platform]
-    ports:
-      - ${RAY_HTTP_PORT:-80}:8000
-      - ${RAY_HTTPS_PORT:-443}:8443
-    entrypoint: ['/entrypoint.sh']
-    env_file:
-      - ${RAY_RUNTIME_ENV_FILE:?RAY_RUNTIME_ENV_FILE is required}
-    environment:
-      KONG_DATABASE: 'off'
-      KONG_DECLARATIVE_CONFIG: /etc/kong/kong.yml
-      KONG_PROXY_ACCESS_LOG: /dev/stdout
-      KONG_ADMIN_ACCESS_LOG: /dev/stdout
-      KONG_PROXY_ERROR_LOG: /dev/stderr
-      KONG_ADMIN_ERROR_LOG: /dev/stderr
-      KONG_ADMIN_LISTEN: 'off'
-      KONG_PROXY_LISTEN: 0.0.0.0:8000, 0.0.0.0:8443 ssl
-      KONG_TRUSTED_IPS: 0.0.0.0/0
-      KONG_REAL_IP_HEADER: X-Forwarded-For
-      KONG_REAL_IP_RECURSIVE: 'on'
-      KONG_LUA_SSL_TRUSTED_CERTIFICATE: system
-    volumes:
-      - ./kong/kong.yml:/etc/kong/kong.yml.template:ro
-      - ./kong/entrypoint.sh:/entrypoint.sh:ro
-    restart: unless-stopped
-    labels:
-      io.ray.release.id: ${RAY_RELEASE_ID:?RAY_RELEASE_ID is required}
-      io.ray.release.sha: ${RAY_RELEASE_SHA:?RAY_RELEASE_SHA is required}
-    healthcheck:
-      test: ['CMD', 'kong', 'health']
       interval: 10s
       timeout: 5s
       retries: 12
