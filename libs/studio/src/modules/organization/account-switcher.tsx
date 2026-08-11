@@ -68,6 +68,7 @@ export const AccountSwitcher = memo<AccountSwitcherProps>(({ user }) => {
           <PopoverTrigger asChild>
             <SidebarMenuButton
               size="lg"
+              aria-label={activeOrganization?.name ?? t('workspace:personal')}
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground gap-3 group-data-[collapsible=icon]:size-9! group-data-[collapsible=icon]:p-1!"
               tooltip={activeOrganization?.name ?? t('workspace:personal')}
             >
