@@ -85,6 +85,17 @@ jobs:
         if: steps.ci-mode.outputs.disable-cloud == 'true'
         run: echo 'NX_NO_CLOUD=true' >> "$GITHUB_ENV"
 
+      - name: Install deterministic Web E2E browser when required
+        env:
+          NX_BASE: ${{ steps.ci-mode.outputs.base }}
+          NX_HEAD: ${{ steps.ci-mode.outputs.head }}
+        run: |
+          if [[ "${{ steps.ci-mode.outputs.mode }}" == 'full' ]] || \
+            pnpm exec nx show projects --affected \
+              --base "$NX_BASE" --head "$NX_HEAD" | grep -Fxq web-e2e; then
+            pnpm exec playwright install --with-deps chromium
+          fi
+
       - name: Run Nx verification
         env:
           CI_METRICS_SAMPLE_ID: ${{ steps.ci-mode.outputs.mode }}

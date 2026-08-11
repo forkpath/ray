@@ -6,6 +6,32 @@
   "tags": ["type:app", "runtime:node", "domain:composition"],
   "implicitDependencies": ["web"],
   "targets": {
+    "test": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "dependsOn": [
+        {
+          "projects": ["web"],
+          "target": "build"
+        }
+      ],
+      "inputs": [
+        "default",
+        "^production",
+        "{projectRoot}/playwright.config.ts",
+        {
+          "externalDependencies": ["@playwright/test"]
+        }
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/.playwright/apps/web-e2e/test-output",
+        "{workspaceRoot}/dist/.playwright/apps/web-e2e/playwright-report"
+      ],
+      "options": {
+        "command": "playwright test --project=chromium",
+        "cwd": "apps/web-e2e"
+      }
+    },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
