@@ -3,17 +3,22 @@ import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 import { childEnvironment, readConfiguration, root, validateConfiguration } from './config.mjs'
+import { checkMobileTools } from './mobile-doctor.mjs'
 import { run } from './process.mjs'
 
 export const compose = ['compose', '-f', 'docker/docker-compose.dev.yml', '--env-file', '.env']
 
-export async function checkTools(env = childEnvironment({})) {
+export async function checkNodeTools(env = childEnvironment({})) {
   const manifest = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'))
   if (Number(process.versions.node.split('.')[0]) < 24)
     throw new Error('Node >=24 is required; use the version in .nvmrc')
   const pnpm = await run('pnpm', ['--version'], { env, capture: true, timeout: 30_000 })
   if (`pnpm@${pnpm}` !== manifest.packageManager) throw new Error(`Use ${manifest.packageManager}`)
   console.log(`OK Node ${process.versions.node}, pnpm ${pnpm}`)
+}
+
+export async function checkTools(env = childEnvironment({})) {
+  await checkNodeTools(env)
   const context =
     env.DOCKER_HOST && !env.DOCKER_CONTEXT
       ? env.DOCKER_HOST
@@ -36,7 +41,7 @@ export async function checkTools(env = childEnvironment({})) {
   return context
 }
 
-export async function doctor({ running = false } = {}) {
+export async function doctor({ running = false, mobile, e2e = false } = {}) {
   let failed = false
   const check = async (label, operation) => {
     try {
@@ -46,6 +51,18 @@ export async function doctor({ running = false } = {}) {
       failed = true
       console.error(`FAIL ${label}: ${error.message}`)
     }
+  }
+  if (mobile) {
+    await check('Node/pnpm', () => checkNodeTools(process.env))
+    await check('dependencies', () => access(resolve(root, 'node_modules/.bin/nx')))
+    try {
+      await checkMobileTools({ check, platform: mobile, e2e })
+    } catch (error) {
+      failed = true
+      console.error(`FAIL mobile configuration: ${error.message}`)
+    }
+    console.log('Environment checks do not replace native builds or device E2E runs.')
+    return !failed
   }
   await check('tools', () => checkTools())
   let configuration
@@ -92,8 +109,16 @@ export function readinessUrls(env) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  if (process.argv.slice(2).some(argument => argument !== '--running')) {
-    console.error('Usage: pnpm run doctor [--running]')
+  const args = process.argv.slice(2)
+  const mobileArgument = args.find(argument => /^--mobile(?:=(android|ios))?$/.test(argument))
+  const mobile = mobileArgument === '--mobile' ? 'all' : mobileArgument?.split('=')[1]
+  const e2e = args.includes('--e2e')
+  if (
+    args.some(argument => !['--running', '--e2e', '--mobile', '--mobile=android', '--mobile=ios'].includes(argument)) ||
+    (mobile && args.includes('--running')) ||
+    (e2e && !mobile)
+  ) {
+    console.error('Usage: pnpm run doctor [--running] | --mobile[=android|ios] [--e2e]')
     process.exitCode = 1
-  } else process.exitCode = (await doctor({ running: process.argv.includes('--running') })) ? 0 : 1
+  } else process.exitCode = (await doctor({ running: args.includes('--running'), mobile, e2e })) ? 0 : 1
 }

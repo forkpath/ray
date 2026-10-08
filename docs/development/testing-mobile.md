@@ -19,9 +19,9 @@ pnpm nx run mobile:e2e:ios
 - Java 21，设置 `JAVA_HOME` 并确认 `java -version`。
 - Android SDK、platform-tools、emulator、command-line tools；设置
   `ANDROID_HOME`。原生 SDK/NDK 版本由锁定的 Expo/React Native 构建配置决定。
-  设备镜像为 Android 35 / Google APIs / revision 9，Intel 使用 `x86_64`，
+  设备镜像为 Android 36 / Google APIs / revision 7，Intel 使用 `x86_64`，
   Apple Silicon 使用 `arm64-v8a`。例如使用已安装的 SDK 管理器安装
-  `system-images;android-35;google_apis;x86_64`。需要可用的硬件虚拟化。
+  `system-images;android-36;google_apis;x86_64`。需要可用的硬件虚拟化。
   构建前检查硬件加速，并记录 SDK 中已安装的 emulator 版本。
 - iOS 需要 macOS、Xcode 26.6、CocoaPods，以及配置文件指定的 iOS 26.5
   Simulator runtime。测试构建由 Xcode 使用本地 ad-hoc 签名，不要求开发者

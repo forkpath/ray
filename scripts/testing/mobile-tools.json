@@ -2,10 +2,10 @@
   "maestroVersion": "2.10.0",
   "maestroSha256": "29b675e10cc12080e445e9bfb2e2b4e4dfb9c0f2e30d5884120d258b5e1cd991",
   "javaMajor": 21,
-  "androidApi": 35,
+  "androidApi": 36,
   "androidImageVariant": "google_apis",
   "iosRuntime": "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
   "iosDeviceType": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
   "xcodeVersion": "26.6",
-  "androidImageRevision": 9
+  "androidImageRevision": 7
 }

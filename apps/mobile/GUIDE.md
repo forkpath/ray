@@ -11,6 +11,7 @@
   - [1.2 iOS 环境](#12-ios-环境)
   - [1.3 Android 环境](#13-android-环境)
   - [1.4 EAS CLI](#14-eas-cli)
+  - [1.5 环境检查与 Maestro](#15-环境检查与-maestro)
 - [2. 账号与证书](#2-账号与证书)
   - [2.1 Apple Developer（iOS 必需）](#21-apple-developeriOS-必需)
   - [2.2 Expo / EAS 账号](#22-expo--eas-账号)
@@ -40,13 +41,16 @@
 ### 1.1 基础工具
 
 ```bash
-# Node.js >= 22 + pnpm >= 10（项目根目录要求）
-node -v  # v22.x
-pnpm -v  # 10.x
+# Node.js >= 24，pnpm 使用根 package.json 的 packageManager 固定版本
+node -v
+pnpm -v
+pnpm install --frozen-lockfile
 
-# Watchman（Metro 文件监视，强烈推荐）
+# Watchman（可选，用于提高 Metro 文件监听效率）
 brew install watchman
 ```
+
+Watchman 不是编译必需项；未安装时 Metro 使用备用文件扫描/监听机制。大型仓库可能增加启动和监听开销。
 
 ### 1.2 iOS 环境
 
@@ -64,11 +68,18 @@ xcode-select --install
 # 安装 CocoaPods（iOS 依赖管理）
 brew install cocoapods
 
-# 验证
+# 验证选中的工具链、首次启动状态和 CocoaPods
+xcodebuild -version
+xcodebuild -checkFirstLaunchStatus
+pod --version
 xcrun simctl list devices  # 列出可用的 iOS 模拟器
 ```
 
-**模拟器**：Xcode 安装后自带。通过 Xcode → Settings → Platforms 下载额外的 iOS 版本。
+CocoaPods 也可使用独立 Ruby 环境通过 `gem install cocoapods` 安装；用户目录安装需将 gem 的 bin 目录加入 PATH。
+不要因 Homebrew 提示而删除 iOS 开发所需的 Xcode。安装方案见 [CocoaPods 官方指南](https://guides.cocoapods.org/using/getting-started.html)。
+
+**模拟器**：通过 Xcode → Settings → Platforms / Components 安装需要的 iOS runtime；确认 `xcrun simctl list runtimes` 显示可用。
+Xcode 版本与 iOS runtime 是独立配置。E2E 额外精确检查 `scripts/testing/mobile-tools.json` 指定的版本，普通环境检查通过不代表满足 E2E。
 
 **真机**：需要 Apple Developer 账号（见第 2 节）。
 
@@ -79,22 +90,51 @@ xcrun simctl list devices  # 列出可用的 iOS 模拟器
 brew install --cask android-studio
 
 # 首次打开 Android Studio，完成 Setup Wizard，确保安装：
-#   - Android SDK (API 35+)
-#   - Android SDK Build-Tools
+#   - Android SDK Platform 36（当前 Expo / React Native 编译 SDK）
+#   - Android SDK Build-Tools 36.0.0
+#   - NDK 27.1.12297006 和 CMake 3.30.5
+#   - Android SDK Command-line Tools（latest）
 #   - Android SDK Platform-Tools
 #   - Android Emulator
-#   - Intel HAXM 或 Android Emulator Hypervisor Driver
+#   - 所需 System Image（模拟器系统镜像，与 SDK Platform 分开安装）
 ```
 
-配置环境变量（添加到 `~/.zshrc`）：
+E2E 固定使用 Java 21。需要安装时，在终端执行一次：
 
 ```bash
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
+brew install --cask temurin@21
 ```
 
-**模拟器**：Android Studio → Device Manager → 创建 Virtual Device（推荐 Pixel 系列 + 最新 API）。
+配置环境变量（添加到 `~/.zshrc`，保留其他 JDK，通过 `JAVA_HOME` 和 `PATH` 切换）：
+
+```bash
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
+
+export JAVA_HOME=$(/usr/libexec/java_home -v 21)
+export PATH="$JAVA_HOME/bin:$PATH"
+```
+
+重新加载 shell 配置后验证：
+
+```bash
+java --version
+```
+
+当前编译工具版本来自锁定的 React Native，而不是机器上最新的 SDK。升级依赖后应重新核对这些版本；多个版本可并存。
+`pnpm run doctor --mobile=android` 会读取已安装 React Native 的版本声明，检查所需组件。
+
+**模拟器**：Android Studio → SDK Manager → Show Package Details 安装 System Image，再通过 Device Manager 创建 Virtual Device。
+Intel 选择 `x86_64`，Apple Silicon 选择 `arm64-v8a`。普通开发可选择兼容系统；E2E 镜像 API、variant 和 revision 以 `scripts/testing/mobile-tools.json` 为准。
+镜像修订号读取对应目录的 `source.properties` 中 `Pkg.Revision`，不能从 API 级别推算。
+
+macOS 使用内建 Hypervisor.Framework，无需安装 HAXM/Windows AEHD。验证：
+
+```bash
+"$ANDROID_HOME/emulator/emulator" -accel-check
+```
+
+参见 [Android 模拟器加速文档](https://developer.android.com/studio/run/emulator-acceleration)。
 
 **真机**：USB 连接 → 开启开发者模式 → 开启 USB 调试。无需付费账号即可在真机调试。
 
@@ -109,6 +149,34 @@ eas --version
 ```
 
 ---
+
+### 1.5 环境检查与 Maestro
+
+从仓库根目录运行：
+
+```bash
+pnpm run doctor --mobile                 # 原生编译工具，不要求 Docker 或后端 .env
+pnpm run doctor --mobile=android         # 仅 Android
+pnpm run doctor --mobile=ios             # 仅 iOS（macOS）
+pnpm run doctor --mobile --e2e           # 额外检查固定 Maestro、Java、镜像、Xcode 和 runtime
+```
+
+默认 `pnpm run doctor` / `pnpm run doctor --running` 仍检查 Web/服务环境。移动端模式不与 `--running` 混用。
+Watchman 和 EAS CLI 不属于本地原生编译必需项；使用 EAS 云构建时另外确认 `eas --version`。
+检查只读取环境，不安装组件、不启动模拟器，也不代表原生构建或设备测试通过。
+
+**Maestro 不会随 `pnpm install` 安装。** 根项目的 postinstall 仅安装 Git hooks。设备 E2E 前单独运行：
+
+```bash
+node scripts/testing/install-maestro.mjs
+pnpm run doctor --mobile=android --e2e
+pnpm nx run mobile:e2e:android
+# iOS 使用 --mobile=ios 和 mobile:e2e:ios
+```
+
+安装脚本读取固定版本与 SHA-256，下载到 `.cache/testing-tools` 并校验，不更改系统 Maestro。
+已有同版本可设置 `RAY_MAESTRO_BIN`。完整测试约定见 [移动端 E2E 指南](../../docs/development/testing-mobile.md)。
+本机工具版本与固定配置不匹配时检查会失败；不要为消除检查错误而跳过真实编译或设备测试。
 
 ## 2. 账号与证书
 
@@ -293,6 +361,9 @@ pnpm verify:mobile       # = nx run mobile:typecheck && nx run mobile:export
 ---
 
 ## 6. 构建
+
+`pnpm verify:mobile` 和 `pnpm nx run mobile:build` 验证的是类型/JS 导出链路，不生成 APK、AAB 或 iOS 原生应用。
+原生构建需执行下方本地或 EAS 构建命令；E2E 则另行编译测试 Release 应用并在设备上执行 Maestro。
 
 项目通过 `eas.json` 定义了三个构建配置：
 
