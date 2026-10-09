@@ -4,13 +4,6 @@ import type { Invitation as InvitationType } from '@libs/auth-contract'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { AuthLayout } from '~/modules/auth/layout/base'
-import { AuthHeader } from '~/modules/auth/layout/header'
-import { Link } from '~/modules/common/styled'
-import { organization } from '~/modules/organization/lib/api'
-import { user } from '~/modules/user/lib/api'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { router } from 'expo-router'
@@ -18,6 +11,14 @@ import { View } from 'react-native'
 
 import { Trans, useTranslation } from '@libs/i18n'
 import { Button, Icons, Spin, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { AuthLayout } from '~/modules/auth/layout/base'
+import { AuthHeader } from '~/modules/auth/layout/header'
+import { Link } from '~/modules/common/styled'
+import { organization } from '~/modules/organization/lib/api'
+import { user } from '~/modules/user/lib/api'
 
 import { InvitationSummaryCard } from './invitation-summary-card'
 

@@ -7,8 +7,8 @@ import { NestFactory } from '@nestjs/core'
 import { PLATFORM_SMOKE_EVENT } from '@libs/platform-contract'
 import { assertIsolatedTestEnvironment } from '@libs/testing-server'
 
-import { AppModule } from '../src/app/app.module'
-import { PlatformHandlerRegistry } from '../src/app/platform-handler.registry'
+import { AppModule } from '~/app/app.module'
+import { PlatformHandlerRegistry } from '~/app/platform-handler.registry'
 
 async function start() {
   assertIsolatedTestEnvironment()

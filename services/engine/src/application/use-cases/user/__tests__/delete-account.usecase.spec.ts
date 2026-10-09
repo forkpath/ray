@@ -1,14 +1,14 @@
-import type { IUserRepository } from '../../../../domain/repositories/user.repository.interface'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { User, UserRole } from '../../../../domain/entities/user.entity'
+import { DeleteAccountUseCase } from '~/application/use-cases/user/delete-account.usecase'
+import { User, UserRole } from '~/domain/entities/user.entity'
 import {
   AccountNotFoundException,
   LastAccountCannotBeDeletedException,
   UserNotFoundException
-} from '../../../../domain/exceptions/user.exception'
-import { DeleteAccountUseCase } from '../delete-account.usecase'
+} from '~/domain/exceptions/user.exception'
 
 const now = new Date('2026-04-28T00:00:00.000Z')
 

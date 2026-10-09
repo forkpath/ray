@@ -1,4 +1,4 @@
-import type { InvitationEntity, MemberEntity, OrganizationEntity } from '../../domain/entities/organization.entity'
+import type { InvitationEntity, MemberEntity, OrganizationEntity } from '~/domain/entities/organization.entity'
 import type {
   IOrganizationRepository,
   ListInvitationsCriteria,
@@ -7,17 +7,21 @@ import type {
   PagedResult,
   UpdateMemberData,
   UpdateOrganizationData
-} from '../../domain/repositories/organization.repository.interface'
+} from '~/domain/repositories/organization.repository.interface'
+import type { MemberRoleValue } from '~/domain/value-objects/member-role.vo'
+import type { UserId } from '~/domain/value-objects/user-id.vo'
 
 import { Injectable } from '@nestjs/common'
 
 import { Prisma, prisma } from '@libs/pg-dao'
 
-import { Invitation, Member, Organization } from '../../domain/entities/organization.entity'
-import { InvitationId } from '../../domain/value-objects/invitation-id.vo'
-import { MemberId } from '../../domain/value-objects/member-id.vo'
-import { OrganizationId } from '../../domain/value-objects/organization-id.vo'
-import { OrganizationSlug } from '../../domain/value-objects/organization-slug.vo'
+import { Invitation, Member, Organization } from '~/domain/entities/organization.entity'
+import { InvitationId } from '~/domain/value-objects/invitation-id.vo'
+import { MemberId } from '~/domain/value-objects/member-id.vo'
+import { MemberRole } from '~/domain/value-objects/member-role.vo'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
+import { OrganizationSlug } from '~/domain/value-objects/organization-slug.vo'
+
 import { listOffset, listOrder } from './list-query'
 
 @Injectable()
@@ -222,6 +226,20 @@ export class OrganizationRepository implements IOrganizationRepository {
   async countMembers(orgId: OrganizationId): Promise<number> {
     return prisma.member.count({
       where: { organizationId: orgId.getValue() }
+    })
+  }
+
+  async findMemberRole(orgId: OrganizationId, userId: UserId): Promise<MemberRoleValue | null> {
+    const member = await prisma.member.findFirst({
+      where: { organizationId: orgId.getValue(), userId: userId.getValue() },
+      select: { role: true }
+    })
+    return member ? MemberRole.create(member.role).getValue() : null
+  }
+
+  async countMembersByRole(orgId: OrganizationId, role: MemberRoleValue): Promise<number> {
+    return prisma.member.count({
+      where: { organizationId: orgId.getValue(), role }
     })
   }
 

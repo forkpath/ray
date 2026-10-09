@@ -1,4 +1,4 @@
-import { mobileEnv } from '../lib/env'
+import { mobileEnv } from '~/lib/env'
 
 export const appConfig = {
   locale: mobileEnv.defaultLocale,

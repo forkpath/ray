@@ -1,7 +1,7 @@
 import { render, screen, userEvent } from '@testing-library/react-native'
 import { Text, View } from 'react-native'
 
-import { SettingsTile } from '../src/modules/common/settings-tile'
+import { SettingsTile } from '~/modules/common/settings-tile'
 
 // The visual library loads optional native drawing modules. Keep its visual
 // boundary small here; the application component and native Pressable are real.

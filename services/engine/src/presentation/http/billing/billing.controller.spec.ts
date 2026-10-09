@@ -1,10 +1,10 @@
 import type { CommandBus, QueryBus } from '@nestjs/cqrs'
-import type { CheckoutDto } from '#/application/dtos/billing/billing.dto'
+import type { CheckoutDto } from '~/application/dtos/billing/billing.dto'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { CreateCheckoutSessionCommand } from '#/application/commands/billing/create-checkout-session.command'
-import { GetBillingSummaryQuery } from '#/application/queries/billing/get-billing-summary.query'
+import { CreateCheckoutSessionCommand } from '~/application/commands/billing/create-checkout-session.command'
+import { GetBillingSummaryQuery } from '~/application/queries/billing/get-billing-summary.query'
 
 import { BillingController, OrganizationBillingController } from './billing.controller'
 

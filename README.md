@@ -39,6 +39,7 @@ pnpm run doctor --running
 
 ## 开发入口
 
+- [项目现状与已知限制](docs/development/status.md)
 - [框架与依赖边界](docs/architecture/ray-framework-nx-guide.md)
 - [环境变量](docs/development/environment.md)
 - [本地启动与诊断](docs/development/bootstrap.md)

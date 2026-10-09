@@ -1,5 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 
+import { Redirect, useLocalSearchParams } from 'expo-router'
+import { View } from 'react-native'
+
 import { pathsConfig } from '~/config/paths'
 import { api } from '~/lib/api'
 import { authClient } from '~/lib/auth'
@@ -8,8 +11,6 @@ import { Invitation } from '~/modules/organization/invitations/invitation'
 import { InvitationEmailMismatch } from '~/modules/organization/invitations/invitation-email-mismatch'
 import { InvitationExpired } from '~/modules/organization/invitations/invitation-expired'
 import { organization } from '~/modules/organization/lib/api'
-import { Redirect, useLocalSearchParams } from 'expo-router'
-import { View } from 'react-native'
 
 const InvitationCheck = ({ invitationId, email }: { invitationId: string; email?: string }) => {
   const session = authClient.useSession()

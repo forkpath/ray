@@ -2,10 +2,6 @@ import { useCallback } from 'react'
 import { useMutation } from '@tanstack/react-query'
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { auth } from '~/modules/auth/lib/api'
-import { ScrollView } from '~/modules/common/styled'
 import * as Linking from 'expo-linking'
 import { useFocusEffect } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
@@ -25,6 +21,11 @@ import {
   Spin,
   Text
 } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { auth } from '~/modules/auth/lib/api'
+import { ScrollView } from '~/modules/common/styled'
 
 const EditEmail = () => {
   const { t } = useTranslation(['common', 'auth'])

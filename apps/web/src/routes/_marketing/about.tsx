@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { useTranslation } from 'react-i18next'
+
 import { Badge } from '~/components/marketing/badge'
 import { Container } from '~/components/marketing/container'
 import { CTA } from '~/components/marketing/cta'
@@ -13,7 +15,6 @@ import { SubHeading } from '~/components/marketing/subheading'
 import { Testimonials } from '~/components/marketing/testimonials'
 import { careers } from '~/constants/marketing/careers'
 import { founders } from '~/constants/marketing/founders'
-import { useTranslation } from 'react-i18next'
 
 /* 关于页面路由 */
 export const Route = createFileRoute('/_marketing/about')({

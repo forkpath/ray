@@ -1,5 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 
+import { useTranslation } from 'react-i18next'
+
+import { cn } from '@libs/ui-core'
+
 import { Badge } from '~/components/marketing/badge'
 import { Button } from '~/components/marketing/button'
 import { Container } from '~/components/marketing/container'
@@ -17,9 +21,6 @@ import { ScalesContainer } from '~/components/marketing/scales-container'
 import { SectionHeading } from '~/components/marketing/section-heading'
 import { SubHeading } from '~/components/marketing/subheading'
 import { careers } from '~/constants/marketing/careers'
-import { useTranslation } from 'react-i18next'
-
-import { cn } from '@libs/ui-core'
 
 /* 招聘页面路由 */
 export const Route = createFileRoute('/_marketing/careers')({

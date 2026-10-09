@@ -1,12 +1,12 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
-import type { IBillingRepository } from '#/domain/repositories/billing.repository.interface'
-import type { BillingOwner } from '#/domain/value-objects/billing-owner.vo'
+import type { IBillingRepository } from '~/domain/repositories/billing.repository.interface'
+import type { BillingOwner } from '~/domain/value-objects/billing-owner.vo'
 
 import { Inject } from '@nestjs/common'
 import { CommandHandler } from '@nestjs/cqrs'
 
-import { CreateBillingPortalUseCase } from '#/application/use-cases/billing/create-billing-portal.use-case'
-import { BILLING_REPOSITORY } from '#/domain/repositories/billing.repository.interface'
+import { CreateBillingPortalUseCase } from '~/application/use-cases/billing/create-billing-portal.use-case'
+import { BILLING_REPOSITORY } from '~/domain/repositories/billing.repository.interface'
 
 export class CreateBillingPortalCommand {
   constructor(

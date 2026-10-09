@@ -5,8 +5,8 @@ import { QueryBus } from '@nestjs/cqrs'
 
 import { Roles } from '@libs/auth-server/nest'
 
-import { ListCustomersQueryDto } from '#/application/dtos/customer/customer.dto'
-import { ListCustomersQuery } from '#/application/queries/customer/list-customers.query'
+import { ListCustomersQueryDto } from '~/application/dtos/customer/customer.dto'
+import { ListCustomersQuery } from '~/application/queries/customer/list-customers.query'
 
 @Controller('admin/customers')
 @Roles(['admin'])

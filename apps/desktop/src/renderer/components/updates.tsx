@@ -1,4 +1,4 @@
-import type { UpdateState } from '../../shared/updates'
+import type { UpdateState } from '~/shared/updates'
 
 import { useEffect, useState } from 'react'
 

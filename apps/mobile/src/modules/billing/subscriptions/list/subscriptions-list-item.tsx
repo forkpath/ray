@@ -1,8 +1,5 @@
 import type { Subscription } from '@libs/billing-contract'
 
-import { FeaturesList } from '~/modules/billing/features-list'
-import { NativePortalLink } from '~/modules/billing/portal/native-portal-link'
-import { WebPortalLink } from '~/modules/billing/portal/web-portal-link'
 import { View } from 'react-native'
 
 import {
@@ -24,7 +21,10 @@ import {
   Text
 } from '@libs/ui-native'
 
-import { BillingPeriodProgress } from '../billing-period-progress'
+import { FeaturesList } from '~/modules/billing/features-list'
+import { NativePortalLink } from '~/modules/billing/portal/native-portal-link'
+import { WebPortalLink } from '~/modules/billing/portal/web-portal-link'
+import { BillingPeriodProgress } from '~/modules/billing/subscriptions/billing-period-progress'
 
 export const SubscriptionsListItem = ({ subscription }: { subscription: Subscription }) => {
   const { t, i18n } = useTranslation(['common', 'billing'])

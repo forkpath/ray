@@ -1,12 +1,13 @@
 import { memo } from 'react'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { appConfig } from '~/config/app'
 import { getLocales } from 'expo-localization'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { config, I18nProvider as I18nClientProvider } from '@libs/i18n'
+
+import { appConfig } from '~/config/app'
 
 export const useI18nConfig = create<{
   config: {

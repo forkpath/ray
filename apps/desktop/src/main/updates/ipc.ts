@@ -3,7 +3,7 @@ import type { BrowserWindow, IpcMainInvokeEvent } from 'electron'
 
 import { ipcMain } from 'electron'
 
-import { updateChannels } from '../../shared/updates'
+import { updateChannels } from '~/shared/updates'
 
 export function isTrustedUpdateSender(event: IpcMainInvokeEvent, window: BrowserWindow, trustedUrl: string): boolean {
   if (window.isDestroyed() || event.sender !== window.webContents || event.senderFrame !== window.webContents.mainFrame)

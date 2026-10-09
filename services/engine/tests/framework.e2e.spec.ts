@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prisma } from '@libs/pg-dao'
 import { createIdentity, createOrganization, responseCookie } from '@libs/testing-server'
 
-import { createEngineApplication } from '../src/application'
+import { createEngineApplication } from '~/application'
 
 describe('Engine production HTTP assembly', () => {
   let app: NestExpressApplication

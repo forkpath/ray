@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, UseFilters } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { Session } from '@libs/auth-server/nest'
-import type { <%= className %>Snapshot } from '../../../domain/<%= name %>/<%= name %>.entity'
-import { Create<%= className %>Command, Update<%= className %>Command, Delete<%= className %>Command } from '../../../application/commands/<%= name %>/<%= name %>.commands'
-import { Get<%= className %>Query, List<%= className %>Query } from '../../../application/queries/<%= name %>/<%= name %>.queries'
+import type { <%= className %>Snapshot } from '~/domain/<%= name %>/<%= name %>.entity'
+import { Create<%= className %>Command, Update<%= className %>Command, Delete<%= className %>Command } from '~/application/commands/<%= name %>/<%= name %>.commands'
+import { Get<%= className %>Query, List<%= className %>Query } from '~/application/queries/<%= name %>/<%= name %>.queries'
 import { Create<%= className %>Dto, Update<%= className %>Dto, List<%= className %>Dto, <%= className %>ParamsDto<% if (org) { %>, <%= className %>OwnerDto<% } %> } from './<%= name %>.dto'
 import { <%= className %>Filter } from './<%= name %>.filter'
 

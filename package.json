@@ -28,6 +28,7 @@
     "ci:checks": "node --test scripts/ci/*.test.mjs",
     "ci:container-contracts": "bash scripts/ci/check-container-contracts.sh",
     "ci:nx-cache-contracts": "node scripts/ci/check-nx-cache-contracts.mjs",
+    "ci:patches": "node scripts/ci/check-patches.mjs",
     "dev:web": "dotenv -e .env -- nx run web:dev",
     "dev:engine": "dotenv -e .env -- nx run engine:serve",
     "dev:pulse": "dotenv -e .env -- nx run pulse:serve",

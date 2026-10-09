@@ -1,11 +1,12 @@
-import { getBaseUrl } from '~/lib/api'
-import { useI18nConfig } from '~/lib/providers/i18n'
 import * as Linking from 'expo-linking'
 import * as SecureStore from 'expo-secure-store'
 
 import { createClient } from '@libs/auth-client-native'
 import { APP_SLUG, Platform } from '@libs/common'
 import { config as i18nConfig } from '@libs/i18n'
+
+import { getBaseUrl } from '~/lib/api'
+import { useI18nConfig } from '~/lib/providers/i18n'
 
 export const authClient = createClient({
   baseURL: getBaseUrl(),

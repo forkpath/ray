@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { logger } from '@libs/common'
 
-import { getStorage, StorageKey, useStorage } from '../src/lib/storage'
+import { getStorage, StorageKey, useStorage } from '~/lib/storage'
 
 describe('extension theme storage', () => {
   it('uses the configured fallback, writes and removes a preference', async () => {

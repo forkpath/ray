@@ -45,7 +45,7 @@ main 使用同一 SHA 的 fast-forward 推广，见部署指南。YAML 成功运
 `codex/testing-baseline-20260928` 均要求 `Required checks`、严格同步基线，
 并对管理员生效。PR #1 临时转为 ready 后，失败检查使 GitHub 返回
 `mergeStateStatus=BLOCKED`；验证后恢复 draft，未执行合并。此记录不等于新 dev/main
-保护已生效；当前策略切换的实际读回与远端验证见 [优化计划](framework-hardening-plan.md)。
+保护已生效；当前策略切换的实际读回与远端验证见 [优化过程记录](archive/2026-09-hardening-log.md)。
 
 ## 发布前后
 
@@ -78,4 +78,4 @@ SMOKE_BASE_URL=https://your-deployed-origin node scripts/release/framework-smoke
 命令替身，证明失败报告不会触发 push；它不等同于真实 registry 或生产部署验收。
 
 Mobile 商店包、Desktop 签名/公证升级，以及真实厂商账户继续作为专项验收，
-不能用无签名测试包通过代替。当前通过与阻碍见 [验收记录](testing-framework-validation.md)。
+不能用无签名测试包通过代替。当前通过与限制见 [项目现状](status.md)。

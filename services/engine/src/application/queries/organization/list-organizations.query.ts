@@ -4,8 +4,8 @@ import type { GetOrganizationsReq, GetOrganizationsRes } from '@libs/payload'
 import { Inject } from '@nestjs/common'
 import { QueryHandler } from '@nestjs/cqrs'
 
-import { OrganizationMapper } from '../../mappers/organization.mapper'
-import { ListOrganizationsUseCase } from '../../use-cases/organization/list-organizations.usecase'
+import { OrganizationMapper } from '~/application/mappers/organization.mapper'
+import { ListOrganizationsUseCase } from '~/application/use-cases/organization/list-organizations.usecase'
 
 export class ListOrganizationsQuery {
   constructor(public readonly params: GetOrganizationsReq) {}

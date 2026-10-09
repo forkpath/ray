@@ -74,7 +74,8 @@ pnpm dev:web
 这些分步命令采用开发者配置，bootstrap 的本机限制不改变它们的能力。真机需将公开
 URL 改为开发机可访问地址。OAuth、邮件、支付、对象存储等仍需自己的提供商配置。
 十分钟目标取决于机器、网络、pnpm 下载缓存和 Docker 镜像，实际耗时以输出为准，
-不把依赖安装成功视为全栈验收。本阶段在 Intel macOS 上验证，其他操作系统尚未进行本阶段的完整启动与中断验收。
+不把依赖安装成功视为全栈验收。Intel macOS 有完整计时验收；Linux 由 CI 的 `bootstrap` 任务（`scripts/ci/bootstrap-acceptance.sh`）在启动相关文件变更和全量运行时，
+从全新检出执行创建配置、启动全栈、`doctor --running`、重复运行不改写 `.env` 及中断退出。Apple Silicon macOS 与 Windows 尚未验收。
 
 ## 已验证的启动耗时
 
@@ -89,4 +90,4 @@ URL 改为开发机可访问地址。OAuth、邮件、支付、对象存储等�
 
 这是上述条件下的实测值；首次下载所有依赖/镜像和其他机器的时间不在这项结论中。
 普通开发继续使用 Nx 默认缓存，无需修改缓存目录。详细发现和边界见
-[阶段验收记录](framework-hardening-plan.md)。
+[优化过程记录](archive/2026-09-hardening-log.md)。

@@ -1,12 +1,11 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
-import type { IUserRepository } from '#/domain/repositories/user.repository.interface'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { CommandHandler } from '@nestjs/cqrs'
 
-import { USER_REPOSITORY } from '#/domain/repositories/user.repository.interface'
-
-import { DeleteAccountUseCase } from '../../use-cases/user/delete-account.usecase'
+import { DeleteAccountUseCase } from '~/application/use-cases/user/delete-account.usecase'
+import { USER_REPOSITORY } from '~/domain/repositories/user.repository.interface'
 
 export class DeleteAccountCommand {
   constructor(

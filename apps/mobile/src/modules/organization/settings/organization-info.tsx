@@ -1,5 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 
+import { View } from 'react-native'
+
+import { toMemberRole } from '@libs/auth-contract'
+import { isKey, useTranslation } from '@libs/i18n'
+import { Badge, Skeleton, Text } from '@libs/ui-native'
+
 import { authClient } from '~/lib/auth'
 import {
   AvatarForm,
@@ -8,11 +14,6 @@ import {
   AvatarFormUploadButton
 } from '~/modules/common/avatar-form'
 import { organization } from '~/modules/organization/lib/api'
-import { View } from 'react-native'
-
-import { toMemberRole } from '@libs/auth-contract'
-import { isKey, useTranslation } from '@libs/i18n'
-import { Badge, Skeleton, Text } from '@libs/ui-native'
 
 const OrganizationInfoSkeleton = () => {
   return (

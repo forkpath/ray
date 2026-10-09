@@ -1,4 +1,5 @@
 import type { CanActivate, ContextType, ExecutionContext } from '@nestjs/common'
+import type { WsException as WsExceptionClass } from '@nestjs/websockets'
 import type { AuthModuleOptions } from './auth-module-definition'
 import type { getSession } from 'better-auth/api'
 
@@ -24,20 +25,19 @@ export type UserSession = BaseUserSession & {
 /**
  * 懒加载 WsException，避免强制依赖 @nestjs/websockets。
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let WsException: any
-function getWsException() {
-  if (!WsException) {
-    try {
-      WsException = require('@nestjs/websockets').WsException
-    } catch (error) {
-      throw new Error(
-        '@nestjs/websockets is required for WebSocket support. Please install it: npm install @nestjs/websockets @nestjs/platform-ws, error: ' +
-          error
-      )
-    }
+let WsException: typeof WsExceptionClass | undefined
+function getWsException(): typeof WsExceptionClass {
+  if (WsException) return WsException
+  try {
+    const loaded: typeof WsExceptionClass = require('@nestjs/websockets').WsException
+    WsException = loaded
+    return loaded
+  } catch (error) {
+    throw new Error(
+      '@nestjs/websockets is required for WebSocket support. Please install it: npm install @nestjs/websockets @nestjs/platform-ws, error: ' +
+        error
+    )
   }
-  return WsException
 }
 
 const AuthContextErrorMap: Record<ContextType, Record<'UNAUTHORIZED' | 'FORBIDDEN', (args?: unknown) => Error>> = {

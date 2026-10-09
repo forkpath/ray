@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { authClient } from '~/lib/auth'
-
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
 import { Icons } from '@libs/ui-web'
+
+import { authClient } from '~/lib/auth'
 
 export const Logout = ({ className, ...props }: React.ComponentProps<'button'>) => {
   const { t } = useTranslation('auth')

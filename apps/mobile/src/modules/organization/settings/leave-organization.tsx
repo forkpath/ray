@@ -1,16 +1,17 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { SettingsTile } from '~/modules/common/settings-tile'
-import { Spinner } from '~/modules/common/spinner'
-import { organization } from '~/modules/organization/lib/api'
 import { router } from 'expo-router'
 import { Alert } from 'react-native'
 
 import { MemberRole } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Icons, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { SettingsTile } from '~/modules/common/settings-tile'
+import { Spinner } from '~/modules/common/spinner'
+import { organization } from '~/modules/organization/lib/api'
 
 export const LeaveOrganization = () => {
   const { t } = useTranslation(['common', 'organization'])

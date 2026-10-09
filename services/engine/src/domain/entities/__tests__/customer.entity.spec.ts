@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { CustomerId } from '../../value-objects/customer-id.vo'
-import { ExternalId } from '../../value-objects/external-id.vo'
-import { BillingCustomer } from '../customer.entity'
+import { BillingCustomer } from '~/domain/entities/customer.entity'
+import { CustomerId } from '~/domain/value-objects/customer-id.vo'
+import { ExternalId } from '~/domain/value-objects/external-id.vo'
 
 const now = new Date('2026-04-28T00:00:00.000Z')
 

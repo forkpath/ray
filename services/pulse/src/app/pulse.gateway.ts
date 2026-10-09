@@ -11,8 +11,9 @@ import { auth } from '@libs/auth-server'
 import { EventEnvelopeV1, isEventEnvelopeV1, PLATFORM_SMOKE_EVENT, PlatformSmokePayload } from '@libs/platform-contract'
 import { RedisService } from '@libs/server-redis'
 
-import { AuthorizePulseUseCase } from '../application/authorize-pulse.usecase'
-import { PulseIdentity } from '../domain/pulse-access.repository'
+import { AuthorizePulseUseCase } from '~/application/authorize-pulse.usecase'
+import { PulseIdentity } from '~/domain/pulse-access.repository'
+
 import { pulseMessageSchema } from './pulse-message.schema'
 
 interface ConnectionContext extends PulseIdentity {

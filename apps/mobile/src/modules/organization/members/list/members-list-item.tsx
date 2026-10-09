@@ -2,10 +2,6 @@ import type { Member } from '@libs/auth-contract'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { organization } from '~/modules/organization/lib/api'
-import { UpdateMemberRoleBottomSheet } from '~/modules/organization/members/update-member-role'
 import { router } from 'expo-router'
 import { Alert, Pressable, View } from 'react-native'
 
@@ -29,6 +25,11 @@ import {
   Text,
   useBottomSheet
 } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { organization } from '~/modules/organization/lib/api'
+import { UpdateMemberRoleBottomSheet } from '~/modules/organization/members/update-member-role'
 
 export const MembersListItem = ({ member }: { member: Member }) => {
   const { t } = useTranslation(['common', 'auth', 'organization'])

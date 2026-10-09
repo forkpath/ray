@@ -1,4 +1,14 @@
-import type { UserEntity, UserSessionEntity } from '../../domain/entities/user.entity'
+import type {
+  GetUserAccountsReq,
+  GetUserInvitationsReq,
+  GetUserMembershipsReq,
+  GetUserOrdersReq,
+  GetUsersReq,
+  GetUsersRes,
+  GetUserSubscriptionsReq
+} from '@libs/payload'
+import type { UserResponse, UserSessionResponse } from '~/application/dtos/user/user.dto'
+import type { UserEntity, UserSessionEntity } from '~/domain/entities/user.entity'
 import type {
   DateRangeCriteria,
   ListUserAccountsCriteria,
@@ -9,17 +19,7 @@ import type {
   ListUserSubscriptionsCriteria,
   PagedResult,
   SortCriteria
-} from '../../domain/repositories/user.repository.interface'
-import type { UserResponse, UserSessionResponse } from '../dtos/user/user.dto'
-import type {
-  GetUserAccountsReq,
-  GetUserInvitationsReq,
-  GetUserMembershipsReq,
-  GetUserOrdersReq,
-  GetUsersReq,
-  GetUsersRes,
-  GetUserSubscriptionsReq
-} from '@libs/payload'
+} from '~/domain/repositories/user.repository.interface'
 
 /**
  * 用户实体映射器

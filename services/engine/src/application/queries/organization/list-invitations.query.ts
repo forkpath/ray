@@ -1,14 +1,13 @@
 import type { IQueryHandler } from '@nestjs/cqrs'
 import type { GetInvitationsReq, GetInvitationsRes } from '@libs/payload'
-import type { IOrganizationRepository } from '#/domain/repositories/organization.repository.interface'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { QueryHandler } from '@nestjs/cqrs'
 
-import { ORGANIZATION_REPOSITORY } from '#/domain/repositories/organization.repository.interface'
-import { OrganizationId } from '#/domain/value-objects/organization-id.vo'
-
-import { OrganizationMapper } from '../../mappers/organization.mapper'
+import { OrganizationMapper } from '~/application/mappers/organization.mapper'
+import { ORGANIZATION_REPOSITORY } from '~/domain/repositories/organization.repository.interface'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
 
 export class ListInvitationsQuery {
   constructor(

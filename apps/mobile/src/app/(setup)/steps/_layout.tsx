@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { pathsConfig } from '~/config/paths'
-import { SafeAreaView } from '~/modules/common/styled'
 import { router, Slot, usePathname } from 'expo-router'
 import { Platform, View } from 'react-native'
 import { create } from 'zustand'
@@ -10,6 +8,9 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 
 import { cn } from '@libs/ui-core'
 import { Button, Icons } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { SafeAreaView } from '~/modules/common/styled'
 
 const steps = [
   pathsConfig.setup.steps.start,

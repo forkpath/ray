@@ -1,4 +1,3 @@
-import { WIDTH } from '~/utils/device'
 import { BlurView as NativeBlurView } from 'expo-blur'
 import { GlassView as NativeGlassView } from 'expo-glass-effect'
 import { Link as NativeLink } from 'expo-router'
@@ -9,6 +8,8 @@ import { withUniwind } from 'uniwind'
 
 import { cn } from '@libs/ui-core'
 import { Text } from '@libs/ui-native'
+
+import { WIDTH } from '~/utils/device'
 
 export const KeyboardAvoidingView = withUniwind(NativeKeyboardAvoidingView)
 export const Link = withUniwind(NativeLink)

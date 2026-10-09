@@ -4,9 +4,6 @@ import type { BottomSheetContentRef } from '@libs/ui-native'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { authClient } from '~/lib/auth'
-import { organization } from '~/modules/organization/lib/api'
-import { WIDTH } from '~/utils/device'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
 
@@ -36,6 +33,10 @@ import {
   Text,
   useBottomSheet
 } from '@libs/ui-native'
+
+import { authClient } from '~/lib/auth'
+import { organization } from '~/modules/organization/lib/api'
+import { WIDTH } from '~/utils/device'
 
 interface UpdateMemberRoleBottomSheetProps {
   readonly member: Member

@@ -3,7 +3,6 @@ import type { BottomSheetContentRef } from '@libs/ui-native'
 
 import { useState } from 'react'
 
-import { useCopyToClipboard } from '~/modules/common/hooks/use-copy-to-clipboard'
 import { Alert, Share, View } from 'react-native'
 
 import { logger } from '@libs/common'
@@ -22,8 +21,10 @@ import {
   useBottomSheet
 } from '@libs/ui-native'
 
-import { RequirePassword } from '../require-password'
-import { useTwoFactor } from '../use-two-factor'
+import { useCopyToClipboard } from '~/modules/common/hooks/use-copy-to-clipboard'
+import { RequirePassword } from '~/modules/user/settings/account/two-factor/require-password'
+import { useTwoFactor } from '~/modules/user/settings/account/two-factor/use-two-factor'
+
 import { useBackupCodes } from './use-backup-codes'
 
 interface BackupCodesSheetProps {

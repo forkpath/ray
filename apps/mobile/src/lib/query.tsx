@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { onlineManager, QueryClient, QueryClientProvider as TanstackQueryClientProvider } from '@tanstack/react-query'
 
-import { useRefetchOnAppFocus } from '~/modules/common/hooks/use-refetch-on-app-focus'
 import * as Network from 'expo-network'
 import { Alert } from 'react-native'
 
 import { logger } from '@libs/common'
+
+import { useRefetchOnAppFocus } from '~/modules/common/hooks/use-refetch-on-app-focus'
 
 onlineManager.setEventListener(setOnline => {
   const eventSubscription = Network.addNetworkStateListener(state => {

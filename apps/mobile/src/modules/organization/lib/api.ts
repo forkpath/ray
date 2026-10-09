@@ -1,11 +1,12 @@
 import { infiniteQueryOptions, mutationOptions, queryOptions } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { api } from '~/lib/api'
-import { authClient } from '~/lib/auth'
 import * as Linking from 'expo-linking'
 
 import { orgKeys, orgMutations, orgQueries, orgRequests } from '@libs/api-client'
+
+import { pathsConfig } from '~/config/paths'
+import { api } from '~/lib/api'
+import { authClient } from '~/lib/auth'
 
 const KEY = 'organizations'
 

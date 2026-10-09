@@ -1,7 +1,7 @@
-import type { <%= className %>Access, <%= className %>Scope } from '../../../application/use-cases/<%= name %>/<%= name %>.use-cases'
+import type { <%= className %>Access, <%= className %>Scope } from '~/application/use-cases/<%= name %>/<%= name %>.use-cases'
 import { Injectable } from '@nestjs/common'
 <% if (org) { %>import { prisma } from '@libs/pg-dao'<% } %>
-import { <%= className %>Error } from '../../../domain/<%= name %>/<%= name %>.error'
+import { <%= className %>Error } from '~/domain/<%= name %>/<%= name %>.error'
 
 @Injectable()
 export class <%= className %>AccessPolicy implements <%= className %>Access {

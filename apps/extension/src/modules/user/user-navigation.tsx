@@ -3,9 +3,6 @@ import type { ActiveOrganization, User } from '@libs/auth-contract'
 import { memo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import { appConfig } from '~/config/app'
-import { billingQueries } from '~/modules/billing/lib/api'
-
 import { useApiClient } from '@libs/api-client'
 import { hasAdminPermission } from '@libs/auth-contract'
 import { getActivePlan } from '@libs/billing-contract'
@@ -26,6 +23,9 @@ import {
   Icons,
   Skeleton
 } from '@libs/ui-web'
+
+import { appConfig } from '~/config/app'
+import { billingQueries } from '~/modules/billing/lib/api'
 
 import { Logout } from './logout'
 

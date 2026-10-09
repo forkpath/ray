@@ -1,16 +1,16 @@
-import type { IOrganizationRepository } from '../../../../domain/repositories/organization.repository.interface'
-import type { MemberRoleValue } from '../../../../domain/value-objects/member-role.vo'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
+import type { MemberRoleValue } from '~/domain/value-objects/member-role.vo'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Member, Organization } from '../../../../domain/entities/organization.entity'
+import { RemoveMemberUseCase } from '~/application/use-cases/organization/remove-member.usecase'
+import { UpdateOrganizationUseCase } from '~/application/use-cases/organization/update-organization.usecase'
+import { Member, Organization } from '~/domain/entities/organization.entity'
 import {
   CannotRemoveOwnerException,
   OrganizationSlugConflictException
-} from '../../../../domain/exceptions/organization.exception'
-import { MemberRoleEnum } from '../../../../domain/value-objects/member-role.vo'
-import { RemoveMemberUseCase } from '../remove-member.usecase'
-import { UpdateOrganizationUseCase } from '../update-organization.usecase'
+} from '~/domain/exceptions/organization.exception'
+import { MemberRoleEnum } from '~/domain/value-objects/member-role.vo'
 
 const now = new Date('2026-04-28T00:00:00.000Z')
 

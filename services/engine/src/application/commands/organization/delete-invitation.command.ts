@@ -1,12 +1,11 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
-import type { IOrganizationRepository } from '#/domain/repositories/organization.repository.interface'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { CommandHandler } from '@nestjs/cqrs'
 
-import { ORGANIZATION_REPOSITORY } from '#/domain/repositories/organization.repository.interface'
-
-import { DeleteInvitationUseCase } from '../../use-cases/organization/delete-invitation.usecase'
+import { DeleteInvitationUseCase } from '~/application/use-cases/organization/delete-invitation.usecase'
+import { ORGANIZATION_REPOSITORY } from '~/domain/repositories/organization.repository.interface'
 
 export class DeleteInvitationCommand {
   constructor(

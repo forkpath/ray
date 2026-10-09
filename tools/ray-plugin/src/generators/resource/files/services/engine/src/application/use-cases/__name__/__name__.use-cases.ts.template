@@ -1,8 +1,8 @@
-import type { <%= className %>Changes } from '../../../domain/<%= name %>/<%= name %>.entity'
-import type { <%= className %>Repository } from '../../../domain/<%= name %>/<%= name %>.repository'
+import type { <%= className %>Changes } from '~/domain/<%= name %>/<%= name %>.entity'
+import type { <%= className %>Repository } from '~/domain/<%= name %>/<%= name %>.repository'
 
-import { <%= className %> } from '../../../domain/<%= name %>/<%= name %>.entity'
-import { <%= className %>Error } from '../../../domain/<%= name %>/<%= name %>.error'
+import { <%= className %> } from '~/domain/<%= name %>/<%= name %>.entity'
+import { <%= className %>Error } from '~/domain/<%= name %>/<%= name %>.error'
 
 export interface <%= className %>Scope {
   userId: string

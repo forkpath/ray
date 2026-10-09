@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { appConfig } from '~/config/app'
-import { Message, sendMessage } from '~/lib/messaging'
-
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
 import { Icons, Skeleton } from '@libs/ui-web'
+
+import { appConfig } from '~/config/app'
+import { Message, sendMessage } from '~/lib/messaging'
 
 interface MainProps {
   readonly className?: string

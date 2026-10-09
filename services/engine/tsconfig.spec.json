@@ -4,7 +4,7 @@
     "types": ["node", "vitest/globals"],
     "noEmit": true,
     "paths": {
-      "#/*": ["services/engine/src/*"],
+      "~/*": ["services/engine/src/*"],
       "@libs/mongo-dao": ["libs/mongo-dao/src/index.ts"],
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
       "@libs/billing-server": ["libs/billing-server/src/index.ts"],

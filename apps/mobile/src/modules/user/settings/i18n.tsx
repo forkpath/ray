@@ -1,6 +1,3 @@
-import { useI18nConfig } from '~/lib/providers/i18n'
-import { SettingsTile } from '~/modules/common/settings-tile'
-
 import { useTranslation } from '@libs/i18n'
 import {
   BottomSheet,
@@ -18,6 +15,9 @@ import {
   Text,
   useBottomSheet
 } from '@libs/ui-native'
+
+import { useI18nConfig } from '~/lib/providers/i18n'
+import { SettingsTile } from '~/modules/common/settings-tile'
 
 export const I18nSettings = () => {
   const { t, i18n } = useTranslation('common')

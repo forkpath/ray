@@ -1,15 +1,16 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { SettingsTile } from '~/modules/common/settings-tile'
-import { Spinner } from '~/modules/common/spinner'
-import { user } from '~/modules/user/lib/api'
 import { router } from 'expo-router'
 import { Alert } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Icons, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { SettingsTile } from '~/modules/common/settings-tile'
+import { Spinner } from '~/modules/common/spinner'
+import { user } from '~/modules/user/lib/api'
 
 export const DeleteAccount = () => {
   const { t } = useTranslation(['common', 'auth'])

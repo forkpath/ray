@@ -29,7 +29,19 @@ Kong 是统一入口：`/api`、`/api/auth` 进入 Engine，`/ws` 进入 Pulse�
 
 Web/Native 不得导入 Node 实现；契约不能依赖数据库。`email` 是通用契约，模板渲染与投递在 `email-server`。`analytics`、`monitoring` 是不读取环境的核心，具体实现与环境读取分别放在 `-web`、`-native`、`-server`。
 
+项目内部导入：apps 与 services 中，同目录及子目录用 `./`，其余一律用项目别名 `~/`（指向 `<项目>/src/*`），
+`../` 由 `noParentRelativeImports()` 规则拒绝，`src` 外的图片、JSON 等静态资源除外。libs 保持相对路径：Nx 会拒绝库通过别名导入自身，
+且库源码由各应用打包，库内别名会与应用别名冲突。新增应用或服务时，在 tsconfig 的 `paths`、测试配置和构建配置中加入 `~/*`，
+并在 `eslint.config.mjs` 追加 `...noParentRelativeImports()`。该规则只检查 TS/TSX 文件中的 import/export 语句；动态 `import()`、`require()` 和 `vi.mock`/`jest.mock` 的路径字符串不在检查范围，同样应使用 `~/`，需在评审时留意。
+Prettier 只负责把 `~/` 导入排在 `@libs/*` 之后，不改写路径。
+
 标签约束代码依赖，不代替服务端权限验证。实际 ESLint、浏览器打包与 Expo 配置语法检查见 [边界检查](../development/boundary-checks.md)。
+
+服务内部的分层由根配置导出的 `cleanArchitectureBoundaries()` 约束，Engine 与 Pulse 已启用：
+`domain/` 不得导入 Nest、数据库、SDK 及其他层；`application/` 不得导入 `@libs/pg-dao`、`@libs/mongo-dao`、
+Prisma、Mongoose、Redis、RabbitMQ、Stripe、AWS SDK，以及 `infrastructure/`、`presentation/` 下的代码（`~/` 别名和相对路径都会检查）。
+Application 需要外部能力时，在 `domain/repositories` 或 `domain/ports` 声明接口与注入 token，在 `infrastructure/` 实现，
+由 `presentation/` 的 Nest 模块绑定。新服务在自己的 `eslint.config.mjs` 中追加 `...cleanArchitectureBoundaries()` 即可启用。
 
 ## 可选能力
 

@@ -3,7 +3,6 @@ import type { ColorVariable, ThemeConfig } from '@libs/ui-core'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { appConfig } from '~/config/app'
 import { useColorScheme } from 'react-native'
 import { Uniwind } from 'uniwind'
 import { create } from 'zustand'
@@ -12,6 +11,8 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import { logger } from '@libs/common'
 import { captureException } from '@libs/monitoring-native'
 import { ThemeMode, themes } from '@libs/ui-core'
+
+import { appConfig } from '~/config/app'
 
 const useThemeConfig = create<{
   config: ThemeConfig

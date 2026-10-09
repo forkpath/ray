@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
-import { authClient } from '~/lib/auth'
-
 import { AnalyticsProvider as AnalyticsProviderEnum, createExtensionAnalyticsStrategy } from '@libs/analytics'
+
+import { authClient } from '~/lib/auth'
 
 const strategy = createExtensionAnalyticsStrategy(AnalyticsProviderEnum.POSTHOG)
 

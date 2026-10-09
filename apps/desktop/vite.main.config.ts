@@ -14,7 +14,7 @@ const external = [
 export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
-      '@main': path.resolve(import.meta.dirname, 'src/main')
+      '~': path.resolve(import.meta.dirname, 'src')
     }
   },
   build: {

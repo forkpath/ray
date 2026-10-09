@@ -4,7 +4,7 @@ import { Platform } from 'react-native'
 
 import { authConfigSchema, SocialProvider } from '@libs/auth-contract'
 
-import { mobileEnv } from '../lib/env'
+import { mobileEnv } from '~/lib/env'
 
 const oAuthProviders: SocialProvider[] = [
   Platform.select({

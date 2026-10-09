@@ -1,12 +1,13 @@
 import { memo } from 'react'
 
 import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native'
-import { useTheme } from '~/modules/common/hooks/use-theme'
-import { isAndroid } from '~/utils/device'
 import * as NavigationBar from 'expo-navigation-bar'
 import { StatusBar, View } from 'react-native'
 
 import { ThemeMode } from '@libs/ui-core'
+
+import { useTheme } from '~/modules/common/hooks/use-theme'
+import { isAndroid } from '~/utils/device'
 
 interface ThemeProviderProps {
   readonly children: React.ReactNode

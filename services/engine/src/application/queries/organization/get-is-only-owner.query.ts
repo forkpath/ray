@@ -3,7 +3,7 @@ import type { IsOnlyOwnerRes } from '@libs/payload'
 
 import { QueryHandler } from '@nestjs/cqrs'
 
-import { UserOrganizationAccessService } from '../../services/user-organization-access.service'
+import { UserOrganizationAccessService } from '~/application/services/user-organization-access.service'
 
 export class GetIsOnlyOwnerQuery {
   constructor(

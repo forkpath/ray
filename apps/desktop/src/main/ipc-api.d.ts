@@ -1,4 +1,4 @@
-import type { UpdateAPI } from '../shared/updates'
+import type { UpdateAPI } from '~/shared/updates'
 
 export interface ElectronWindowAPI {
   updates: UpdateAPI

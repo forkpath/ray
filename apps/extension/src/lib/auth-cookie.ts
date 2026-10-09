@@ -1,7 +1,8 @@
-import { appConfig } from '~/config/app'
 import { browser } from 'wxt/browser'
 
 import { APP_SLUG } from '@libs/common'
+
+import { appConfig } from '~/config/app'
 
 /**
  * ⚠️ 浏览器扩展开发中一个极易被忽略的坑 —— background service worker 拿不到登录 cookie。

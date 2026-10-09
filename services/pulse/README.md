@@ -72,4 +72,4 @@ pnpm nx run pulse:e2e
 
 需要可运行 Linux 容器的 Docker / Compose v2。入口自动创建本机隔离环境、迁移和测试数据，完成后保存日志并清理；不会读取开发 `.env` 或连接外部数据库。用例放在 `tests/*.integration.spec.ts` / `tests/*.e2e.spec.ts`，不能直接运行内部 runner 指向开发库。
 
-报告位于 `dist/test-results/pulse/<suite>/<run-id>/`。fixture、失败清理和新增用例说明见 [后端测试指南](../../docs/development/testing-backend.md)，实际结果见 [验收记录](../../docs/development/testing-framework-validation.md)。
+报告位于 `dist/test-results/pulse/<suite>/<run-id>/`。fixture、失败清理和新增用例说明见 [后端测试指南](../../docs/development/testing-backend.md)，实际结果见 [项目现状](../../docs/development/status.md)。

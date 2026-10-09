@@ -3,8 +3,9 @@ import './instrument'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-import { registerAllHandlers } from '@main/handlers/index'
 import { app, BrowserWindow } from 'electron'
+
+import { registerAllHandlers } from '~/main/handlers/index'
 
 import { registerSmokeReport } from './smoke'
 import { registerUpdateHandlers } from './updates/ipc'

@@ -1,5 +1,8 @@
 # Ray 脚手架优化与验收计划
 
+> 归档：本文是 2026-09 至 2026-10 的过程记录，保留历史失败、修复和证据路径，内容不再更新。
+> 当前能力、已知限制和验收方式见 [项目现状](../status.md)。
+
 开始日期：2026-09-30。状态：进行中。基线为已完成框架测试验收的
 `3dd1b28cbbf269957144aa5ffd8b08191e3bd640`，工作分支
 `codex/framework-hardening-20260930`。既有阶段 0–4 的完成不代表本轮 13 项优化已完成。
@@ -28,7 +31,7 @@
 PR #7 提交 `bb2d170` 的完整 CI 已通过：48 项目质量任务、28 项后端真实集成/E2E、
 生成器、Web、扩展和三平台桌面成功；Android/iOS 各 2 项模拟器流程通过，清理成功。
 已合并 dev 为 `ffe60af`，新的 dev 发布流水线正在执行。node-forge 的有期限本地补丁
-保留原始 High 1 告警，独立评估未缓解 0；规则见[依赖治理](dependency-governance.md)。
+保留原始 High 1 告警，独立评估未缓解 0；规则见[依赖治理](../dependency-governance.md)。
 
 用户已确认停止 staging 的 Nginx，提供的 80/443 监听检查为空；旧容器和数据卷保留。
 Kong 的自动 HTTPS 配置已在无网络临时容器中解析成功，但实际证书签发与公网仍待验收。
@@ -57,7 +60,7 @@ production 尚未部署，本 Goal 仍未完成。
   2026-10-01 已核对仓库及 Environment 配置名称与公开变量，修正两套 SSH 指纹格式。
   staging SSH 身份校验、登录、文件上传、镜像拉取和迁移已通过；用户已释放此前冲突的
   80/443 端口，Kong 与公网部署仍需实际验收。用户确认 production 配置已就绪，尚未执行部署。
-  具体步骤见 [GitHub 部署配置清单](github-deployment-setup.md)。
+  具体步骤见 [GitHub 部署配置清单](../github-deployment-setup.md)。
 - Testcontainers 为本轮明确要求，替换既有默认集成编排，避免新增两套维护路径。
 - 保留已验证的移动原生缓存；本地先完成可复现检查，再集中触发必要远端矩阵。
 
@@ -85,7 +88,7 @@ production 尚未部署，本 Goal 仍未完成。
 - 官方 registry 扫描已实际失败并保存报告：46 个包涉及 high/critical 告警。
   干净目录中仅复制 manifest/lockfile 的扫描同样退出 1，未创建 node_modules。
   已添加扫描 workflow 和 Dependabot 分组配置；依赖修复、复扫和远端门禁仍未完成。
-  具体边界见 [依赖治理](dependency-governance.md)。
+  具体边界见 [依赖治理](../dependency-governance.md)。
 - `@forkpath` 的账户和仓库 admin 权限已通过 GitHub API 验证，CODEOWNERS 和 PR 模板已添加。
   这些文件不等于独立审阅者批准；dev/main 保护仍需在分支策略阶段落实。
 
@@ -169,7 +172,7 @@ bootstrap、剩余 UI 拆分和 dev/main 自动部署仍未完成，Goal 保持�
 38 个 Vitest 项目接入同一覆盖率策略；CI 质量任务显式设置采集开关，沿既有 full /
 affected 分支执行项目完整 `test` target。统计包括未被导入的源码，四项门槛均为正数，
 数值取本轮实测基线的 90% 并向下保留一位小数，没有通过排除未覆盖业务文件提高结果。
-具体实测值、范围和本地命令见 [覆盖率指南](testing-coverage.md)。Web/Studio/UI 的
+具体实测值、范围和本地命令见 [覆盖率指南](../testing-coverage.md)。Web/Studio/UI 的
 起步覆盖率仍低，这一阶段建立的是可执行的防退步门禁，不代表完整业务已充分测试。
 
 新增行为样板：UI 的按钮、复选框和 Dialog 共 5 项；Web 正式路由守卫与真实 TanStack
@@ -331,7 +334,7 @@ Electron macOS x64 UI/仓外 smoke/更新流程通过。Mobile iOS/Android Herme
 Electron 未签名测试进程曾等待真实 macOS Keychain；临时测试入口改用 mock Keychain，
 并确保启动失败也删除临时 profile。正式应用安全配置不变，真实签名/钥匙串行为另行验收。
 
-命令、初次失败、修复复验和平台边界见 [依赖治理](dependency-governance.md)；原始
+命令、初次失败、修复复验和平台边界见 [依赖治理](../dependency-governance.md)；原始
 证据为 `dist/test-results/hardening-20260930/dependency-*`。主工作区暂存区未改写。
 此阶段未触发远端 Actions；当前提交的移动设备、其他桌面平台、远端必需检查仍待运行。
 dev/main 自动发布和合并保护尚未落实，完整 Goal 继续进行。
@@ -525,4 +528,4 @@ staging 实际通过 SSH、GHCR 拉取、四项基础服务健康检查，并成
 现有 4.x 安全下限已升至 4.9.4，锁文件仅五处对应替换。冻结安装、安全复扫、旧版失败/
 新版通过的隔离 Worker 探针、真实 SWC CLI 并行编译和三个后端生产构建通过。
 后续由新提交的完整 CI、镜像验证和实际部署继续验收，沿用缓存且不降低原生任务选择规则。
-详细来源和验证边界见 [依赖治理增量](dependency-governance.md#2026-10-02-扫描增量)。
+详细来源和验证边界见 [依赖治理增量](../dependency-governance.md#2026-10-02-扫描增量)。

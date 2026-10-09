@@ -2,16 +2,17 @@ import type { SocialProvider } from '@libs/auth-contract'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { authConfig } from '~/config/auth'
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { SocialIcons } from '~/modules/auth/form/social-providers'
-import { auth } from '~/modules/auth/lib/api'
 import { Alert, View } from 'react-native'
 
 import { capitalize } from '@libs/common'
 import { useTranslation } from '@libs/i18n'
 import { Button, Icons, Spin, Text } from '@libs/ui-native'
+
+import { authConfig } from '~/config/auth'
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { SocialIcons } from '~/modules/auth/form/social-providers'
+import { auth } from '~/modules/auth/lib/api'
 
 export default function AccountsScreen() {
   const { t, i18n } = useTranslation(['auth', 'common'])

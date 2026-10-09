@@ -81,4 +81,4 @@ pnpm nx run mobile:e2e:ios
 
 入口自动构建内嵌 JS 的独立 Release 测试包，创建专用模拟器、安装、执行 Maestro 页面往返与深链接流程，并保存报告和清理。无需生产账户或 EAS 订阅；需要固定版本的 SDK、Java / Xcode。新流程放在 `.maestro/`。
 
-工具要求、隔离边界和报告见 [设备测试指南](../../docs/development/testing-mobile.md)；实际通过情况见 [验收记录](../../docs/development/testing-framework-validation.md)。登录、支付、推送及真机硬件由使用这些能力的项目另做专项验收，Expo export 只验证打包。
+工具要求、隔离边界和报告见 [设备测试指南](../../docs/development/testing-mobile.md)；实际通过情况见 [项目现状](../../docs/development/status.md)。登录、支付、推送及真机硬件由使用这些能力的项目另做专项验收，Expo export 只验证打包。

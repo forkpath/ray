@@ -2,9 +2,9 @@ import type {
   BillingCheckoutCriteria,
   BillingPortalCriteria,
   IBillingRepository
-} from '#/domain/repositories/billing.repository.interface'
-import type { BillingOwner } from '#/domain/value-objects/billing-owner.vo'
-import type { UserId } from '#/domain/value-objects/user-id.vo'
+} from '~/domain/repositories/billing.repository.interface'
+import type { BillingOwner } from '~/domain/value-objects/billing-owner.vo'
+import type { UserId } from '~/domain/value-objects/user-id.vo'
 
 import {
   createStripeBillingPortalSession,
@@ -16,7 +16,7 @@ import {
 } from '@libs/billing-server'
 import { prisma } from '@libs/pg-dao'
 
-import { BillingAccount, BillingRedirect } from '#/domain/entities/billing-account.entity'
+import { BillingAccount, BillingRedirect } from '~/domain/entities/billing-account.entity'
 
 function toContractOwner(owner: BillingOwner) {
   return owner.kind === 'user'

@@ -6,20 +6,20 @@ import type {
   GetUsersRes,
   GetUserSubscriptionsRes
 } from '@libs/payload'
-import type { UserResponse, UserSessionResponse } from '#/application/dtos/user/user.dto'
+import type { UserResponse, UserSessionResponse } from '~/application/dtos/user/user.dto'
 
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 
 import { Roles, Session } from '@libs/auth-server/nest'
 
-import { BanUserCommand } from '#/application/commands/user/ban-user.command'
-import { DeleteAccountCommand } from '#/application/commands/user/delete-account.command'
-import { DeleteUserCommand } from '#/application/commands/user/delete-user.command'
-import { RevokeAllSessionsCommand, RevokeSessionCommand } from '#/application/commands/user/revoke-session.command'
-import { SetUserPasswordCommand } from '#/application/commands/user/set-password.command'
-import { UnbanUserCommand } from '#/application/commands/user/unban-user.command'
-import { UpdateUserCommand } from '#/application/commands/user/update-user.command'
+import { BanUserCommand } from '~/application/commands/user/ban-user.command'
+import { DeleteAccountCommand } from '~/application/commands/user/delete-account.command'
+import { DeleteUserCommand } from '~/application/commands/user/delete-user.command'
+import { RevokeAllSessionsCommand, RevokeSessionCommand } from '~/application/commands/user/revoke-session.command'
+import { SetUserPasswordCommand } from '~/application/commands/user/set-password.command'
+import { UnbanUserCommand } from '~/application/commands/user/unban-user.command'
+import { UpdateUserCommand } from '~/application/commands/user/update-user.command'
 import {
   BanUserDto,
   ListUserAccountsQueryDto,
@@ -31,15 +31,15 @@ import {
   RevokeSessionDto,
   SetUserPasswordDto,
   UpdateUserDto
-} from '#/application/dtos/user/user.dto'
-import { GetUserSessionsQuery } from '#/application/queries/user/get-user-sessions.query'
-import { GetUserQuery } from '#/application/queries/user/get-user.query'
-import { ListUserAccountsQuery } from '#/application/queries/user/list-user-accounts.query'
-import { ListUserInvitationsQuery } from '#/application/queries/user/list-user-invitations.query'
-import { ListUserMembershipsQuery } from '#/application/queries/user/list-user-memberships.query'
-import { ListUserOrdersQuery } from '#/application/queries/user/list-user-orders.query'
-import { ListUserSubscriptionsQuery } from '#/application/queries/user/list-user-subscriptions.query'
-import { ListUsersQuery } from '#/application/queries/user/list-users.query'
+} from '~/application/dtos/user/user.dto'
+import { GetUserSessionsQuery } from '~/application/queries/user/get-user-sessions.query'
+import { GetUserQuery } from '~/application/queries/user/get-user.query'
+import { ListUserAccountsQuery } from '~/application/queries/user/list-user-accounts.query'
+import { ListUserInvitationsQuery } from '~/application/queries/user/list-user-invitations.query'
+import { ListUserMembershipsQuery } from '~/application/queries/user/list-user-memberships.query'
+import { ListUserOrdersQuery } from '~/application/queries/user/list-user-orders.query'
+import { ListUserSubscriptionsQuery } from '~/application/queries/user/list-user-subscriptions.query'
+import { ListUsersQuery } from '~/application/queries/user/list-users.query'
 
 /**
  * 会话类型（来自 @libs/auth-server/nest AuthGuard）

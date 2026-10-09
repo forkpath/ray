@@ -1,6 +1,6 @@
-import type { BillingAccount, BillingRedirect } from '../entities/billing-account.entity'
-import type { BillingOwner } from '../value-objects/billing-owner.vo'
-import type { UserId } from '../value-objects/user-id.vo'
+import type { BillingAccount, BillingRedirect } from '~/domain/entities/billing-account.entity'
+import type { BillingOwner } from '~/domain/value-objects/billing-owner.vo'
+import type { UserId } from '~/domain/value-objects/user-id.vo'
 
 export const BILLING_REPOSITORY = Symbol('BILLING_REPOSITORY')
 

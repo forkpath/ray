@@ -1,14 +1,13 @@
 import type { IQueryHandler } from '@nestjs/cqrs'
 import type { GetUserMembershipsReq, GetUserMembershipsRes } from '@libs/payload'
-import type { IUserRepository } from '#/domain/repositories/user.repository.interface'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { QueryHandler } from '@nestjs/cqrs'
 
-import { USER_REPOSITORY } from '#/domain/repositories/user.repository.interface'
-import { UserId } from '#/domain/value-objects/user-id.vo'
-
-import { UserMapper } from '../../mappers/user.mapper'
+import { UserMapper } from '~/application/mappers/user.mapper'
+import { USER_REPOSITORY } from '~/domain/repositories/user.repository.interface'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 export class ListUserMembershipsQuery {
   constructor(

@@ -1,11 +1,11 @@
-import { CannotRemoveOwnerException } from '../exceptions/organization.exception'
-import { InvitationId } from '../value-objects/invitation-id.vo'
-import { InvitationStatus } from '../value-objects/invitation-status.vo'
-import { MemberId } from '../value-objects/member-id.vo'
-import { MemberRole } from '../value-objects/member-role.vo'
-import { OrganizationId } from '../value-objects/organization-id.vo'
-import { OrganizationSlug } from '../value-objects/organization-slug.vo'
-import { UserId } from '../value-objects/user-id.vo'
+import { CannotRemoveOwnerException } from '~/domain/exceptions/organization.exception'
+import { InvitationId } from '~/domain/value-objects/invitation-id.vo'
+import { InvitationStatus } from '~/domain/value-objects/invitation-status.vo'
+import { MemberId } from '~/domain/value-objects/member-id.vo'
+import { MemberRole } from '~/domain/value-objects/member-role.vo'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
+import { OrganizationSlug } from '~/domain/value-objects/organization-slug.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 export interface OrganizationPersistenceData {
   readonly id: string

@@ -1,8 +1,8 @@
-import { appConfig } from '~/config/app'
-import { getAuthCookieHeader } from '~/lib/auth-cookie'
-
 import { createClient } from '@libs/api-client'
 import { Platform } from '@libs/common'
+
+import { appConfig } from '~/config/app'
+import { getAuthCookieHeader } from '~/lib/auth-cookie'
 
 // engine 的业务接口有全局前缀 /api/v1（见 services/engine/src/main.ts 的 setGlobalPrefix）。
 // better-auth 走 authClient 不经过该前缀；其他业务 API 都要带 /api/v1。

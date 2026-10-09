@@ -1,9 +1,10 @@
-import { ScrollView } from '~/modules/common/styled'
-import { UserOrganizationInvitationsBanner } from '~/modules/organization/invitations/user/user-organization-invitations'
-import { OrganizationPicker } from '~/modules/organization/organization-picker'
 import { View } from 'react-native'
 
 import { BuiltWith } from '@libs/ui-native'
+
+import { ScrollView } from '~/modules/common/styled'
+import { UserOrganizationInvitationsBanner } from '~/modules/organization/invitations/user/user-organization-invitations'
+import { OrganizationPicker } from '~/modules/organization/organization-picker'
 
 export default function Home() {
   return (

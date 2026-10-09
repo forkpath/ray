@@ -1,10 +1,15 @@
-import type { Auth } from 'better-auth'
+import type { Auth, BetterAuthOptions } from 'better-auth'
 import type { NextFunction, Request, Response } from 'express'
 
 import { ConfigurableModuleBuilder } from '@nestjs/common'
 
-// auth 实例类型（better-auth 返回值）
-export type AuthType = Auth
+// Nest 适配器实际使用的 auth 能力。betterAuth(...) 的返回值按配置推导出具体类型，
+// 与默认的 Auth<BetterAuthOptions> 不兼容，因此这里只约束结构，任何实例都可直接传入。
+export interface AuthType {
+  handler: Auth['handler']
+  api: Pick<Auth['api'], 'getSession'>
+  options: Pick<BetterAuthOptions, 'basePath' | 'trustedOrigins' | 'hooks'>
+}
 
 // 模块配置项：auth 实例 + 行为开关
 export type AuthModuleOptions<A = AuthType> = {

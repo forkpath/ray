@@ -1,4 +1,4 @@
-import type { UpdateState } from '../../shared/updates'
+import type { UpdateState } from '~/shared/updates'
 
 export interface UpdateEvents {
   available(version: string): void

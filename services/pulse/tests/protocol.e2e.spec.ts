@@ -12,8 +12,9 @@ import { PLATFORM_SMOKE_EVENT } from '@libs/platform-contract'
 import { RedisService } from '@libs/server-redis'
 import { createIdentity, createOrganization, responseCookie } from '@libs/testing-server'
 
-import { AppModule } from '../src/app/app.module'
-import { PulseGateway } from '../src/app/pulse.gateway'
+import { AppModule } from '~/app/app.module'
+import { PulseGateway } from '~/app/pulse.gateway'
+
 import { connect } from './socket-fixture'
 
 describe('Pulse real ws and Redis fanout', () => {

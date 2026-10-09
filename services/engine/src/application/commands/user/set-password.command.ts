@@ -1,12 +1,12 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
-import type { IUserRepository } from '#/domain/repositories/user.repository.interface'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { CommandHandler } from '@nestjs/cqrs'
 
-import { UserNotFoundException } from '#/domain/exceptions/user.exception'
-import { USER_REPOSITORY } from '#/domain/repositories/user.repository.interface'
-import { UserId } from '#/domain/value-objects/user-id.vo'
+import { UserNotFoundException } from '~/domain/exceptions/user.exception'
+import { USER_REPOSITORY } from '~/domain/repositories/user.repository.interface'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 /**
  * 设置用户密码命令（管理员操作）

@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { CannotRemoveOwnerException } from '../../exceptions/organization.exception'
-import { InvitationStatus } from '../../value-objects/invitation-status.vo'
-import { MemberRole, MemberRoleEnum } from '../../value-objects/member-role.vo'
-import { OrganizationId } from '../../value-objects/organization-id.vo'
-import { OrganizationSlug } from '../../value-objects/organization-slug.vo'
-import { Invitation, Member, Organization } from '../organization.entity'
+import { Invitation, Member, Organization } from '~/domain/entities/organization.entity'
+import { CannotRemoveOwnerException } from '~/domain/exceptions/organization.exception'
+import { InvitationStatus } from '~/domain/value-objects/invitation-status.vo'
+import { MemberRole, MemberRoleEnum } from '~/domain/value-objects/member-role.vo'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
+import { OrganizationSlug } from '~/domain/value-objects/organization-slug.vo'
 
 const now = new Date('2026-04-28T00:00:00.000Z')
 

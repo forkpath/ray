@@ -1,6 +1,6 @@
 import { APP_NAME } from '@libs/common'
 
-import env from '../../env'
+import env from '~/lib/env'
 
 export const appConfig = {
   name: APP_NAME,

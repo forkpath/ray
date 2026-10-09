@@ -37,6 +37,12 @@ jobs:
       - name: Audit locked dependencies using the official registry
         shell: bash
         run: node scripts/ci/audit-dependencies.mjs dependency-audit.json
+      # Report-only: a newer upstream release prompts a review of the local patch.
+      # Registry failures still fail the step instead of producing an empty report.
+      - name: Check upstream releases for patched dependencies
+        if: always()
+        shell: bash
+        run: node scripts/ci/check-patches.mjs dependency-patches.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
@@ -44,5 +50,6 @@ jobs:
           path: |
             dependency-audit.json
             dependency-audit-evaluation.json
+            dependency-patches.json
           retention-days: 7
           if-no-files-found: error

@@ -1,4 +1,5 @@
 import type { Filter } from 'mongodb'
+import type { PipelineStage } from 'mongoose'
 
 import { Logger, NotFoundException } from '@nestjs/common'
 
@@ -88,8 +89,7 @@ export abstract class AbstractDao<TDocument extends AbstractDoc> {
     return result.deletedCount
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async aggregate<T = any>(pipeline: any[]): Promise<T[]> {
+  async aggregate<T = unknown>(pipeline: PipelineStage[]): Promise<T[]> {
     return this.model.aggregate<T>(pipeline).exec()
   }
 

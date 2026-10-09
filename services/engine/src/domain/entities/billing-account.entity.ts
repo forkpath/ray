@@ -1,6 +1,6 @@
-import { BillingAccessDeniedException } from '../exceptions/billing.exception'
-import { BillingOwner } from '../value-objects/billing-owner.vo'
-import { UserId } from '../value-objects/user-id.vo'
+import { BillingAccessDeniedException } from '~/domain/exceptions/billing.exception'
+import { BillingOwner } from '~/domain/value-objects/billing-owner.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 export interface BillingCustomerSnapshot {
   id: string

@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { appConfig } from '~/config/app'
-import { StorageKey, useStorage } from '~/lib/storage'
-
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
 import { Button, Icons, Popover, PopoverContent, PopoverTrigger } from '@libs/ui-web'
+
+import { appConfig } from '~/config/app'
+import { StorageKey, useStorage } from '~/lib/storage'
 
 const Customizer = () => {
   const { t } = useTranslation('common')

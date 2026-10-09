@@ -1,10 +1,10 @@
-import type { IUserRepository } from '../../../../domain/repositories/user.repository.interface'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { User, UserRole } from '../../../../domain/entities/user.entity'
-import { CannotOperateSelfException, UserNotFoundException } from '../../../../domain/exceptions/user.exception'
-import { BanUserUseCase } from '../ban-user.usecase'
+import { BanUserUseCase } from '~/application/use-cases/user/ban-user.usecase'
+import { User, UserRole } from '~/domain/entities/user.entity'
+import { CannotOperateSelfException, UserNotFoundException } from '~/domain/exceptions/user.exception'
 
 const now = new Date('2026-04-28T00:00:00.000Z')
 

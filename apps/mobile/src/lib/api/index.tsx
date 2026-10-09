@@ -1,9 +1,10 @@
-import { mobileEnv } from '~/lib/env'
 import Constants from 'expo-constants'
 import * as SecureStore from 'expo-secure-store'
 
 import { createClient } from '@libs/api-client'
 import { APP_SLUG, Platform } from '@libs/common'
+
+import { mobileEnv } from '~/lib/env'
 
 function normalizeOrigin(url: string): string {
   const trimmed = url.trim().replace(/\/$/, '')

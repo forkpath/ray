@@ -1,13 +1,14 @@
-import { pathsConfig } from '~/config/paths'
-import { SettingsTile } from '~/modules/common/settings-tile'
-import { I18nSettings } from '~/modules/user/settings/i18n'
-import { ThemeSettings } from '~/modules/user/settings/theme'
 import { router } from 'expo-router'
 import { checkForUpdateAsync, useUpdates } from 'expo-updates'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Icons, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { SettingsTile } from '~/modules/common/settings-tile'
+import { I18nSettings } from '~/modules/user/settings/i18n'
+import { ThemeSettings } from '~/modules/user/settings/theme'
 
 const CheckForUpdates = () => {
   const { t } = useTranslation('common')

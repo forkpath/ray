@@ -1,6 +1,6 @@
-import type { BillingCheckoutCriteria, IBillingRepository } from '#/domain/repositories/billing.repository.interface'
+import type { BillingCheckoutCriteria, IBillingRepository } from '~/domain/repositories/billing.repository.interface'
 
-import { UserId } from '#/domain/value-objects/user-id.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 import { getBillingMembershipRole } from './billing-access'
 

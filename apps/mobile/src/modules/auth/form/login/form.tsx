@@ -3,15 +3,16 @@ import type { RoutePath } from 'expo-router'
 
 import { Suspense, useState } from 'react'
 
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { Link } from '~/modules/common/styled'
 import { useLocalSearchParams } from 'expo-router'
 import { View } from 'react-native'
 
 import { AuthProvider } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Badge, Tabs, TabsContent, TabsList, TabsTrigger, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { Link } from '~/modules/common/styled'
 
 import { EmailOtpLoginForm } from './email-otp'
 import { MagicLinkLoginForm } from './magic-link'

@@ -1,9 +1,10 @@
-import { DivideX } from '~/components/marketing/divide'
-import { IntegrationsLogo } from '~/components/marketing/icons/bento-icons'
-import { AnthropicLogo, MetaLogo, OpenAILogo } from '~/components/marketing/icons/general'
 import { motion } from 'motion/react'
 
 import { cn } from '@libs/ui-core'
+
+import { DivideX } from '~/components/marketing/divide'
+import { IntegrationsLogo } from '~/components/marketing/icons/bento-icons'
+import { AnthropicLogo, MetaLogo, OpenAILogo } from '~/components/marketing/icons/general'
 
 /* 核心功能骨架屏动画 */
 export const LLMModelSelectorSkeleton = () => {

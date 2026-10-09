@@ -4,9 +4,10 @@ import { ConfigModule } from '@nestjs/config'
 import { PgDaoModule } from '@libs/pg-dao'
 import { RedisModule } from '@libs/server-redis'
 
-import { AuthorizePulseUseCase } from '../application/authorize-pulse.usecase'
-import { PulseAccessRepository } from '../domain/pulse-access.repository'
-import { PrismaPulseAccessRepository } from '../infrastructure/prisma-pulse-access.repository'
+import { AuthorizePulseUseCase } from '~/application/authorize-pulse.usecase'
+import { PulseAccessRepository } from '~/domain/pulse-access.repository'
+import { PrismaPulseAccessRepository } from '~/infrastructure/prisma-pulse-access.repository'
+
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { PulseGateway } from './pulse.gateway'

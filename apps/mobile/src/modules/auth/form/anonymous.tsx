@@ -4,13 +4,13 @@ import type { RoutePath } from 'expo-router'
 
 import { useMutation } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
 import { router } from 'expo-router'
 
 import { useTranslation } from '@libs/i18n'
 import { Button, Icons, Spin, Text } from '@libs/ui-native'
 
-import { auth } from '../lib/api'
+import { pathsConfig } from '~/config/paths'
+import { auth } from '~/modules/auth/lib/api'
 
 interface AnonymousLoginProps {
   readonly redirectTo?: RoutePath

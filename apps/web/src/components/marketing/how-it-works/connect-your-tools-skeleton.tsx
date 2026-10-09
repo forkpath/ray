@@ -1,17 +1,18 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { motion } from 'motion/react'
 
 import { DivideX } from '~/components/marketing/divide'
 import { IntegrationsLogo } from '~/components/marketing/icons/bento-icons'
 import { AnthropicLogo, OpenAILogo } from '~/components/marketing/icons/general'
 import { LogoSVG } from '~/components/marketing/logo'
 import { Scale } from '~/components/marketing/scale'
-import { motion } from 'motion/react'
 
 export const ConnectYourTooklsSkeleton = () => {
   const text = `Write the first and second rule of it using Claude and ChatGPT.`
   const [mounted, setMounted] = useState(false)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const randomWidth = useMemo(() => Math.random() * 100, [mounted])
+  // 仅在客户端挂载后渲染，随机值不参与 SSR 输出
+  const [randomWidth] = useState(() => Math.random() * 100)
 
   useEffect(() => {
     setMounted(true)

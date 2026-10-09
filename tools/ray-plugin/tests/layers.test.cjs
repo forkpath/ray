@@ -12,11 +12,11 @@ test('detects forbidden direct, alias, barrel, type, dynamic and require depende
     [
       'domain/note/entity.ts',
       "export * from './barrel'",
-      ['domain/note/barrel.ts', "export * from '#/infrastructure/repositories/note/repository'"]
+      ['domain/note/barrel.ts', "export * from '~/infrastructure/repositories/note/repository'"]
     ],
     [
       'application/use-cases/note/use-case.ts',
-      "import { Repository } from '#/infrastructure/repositories/note/repository'"
+      "import { Repository } from '~/infrastructure/repositories/note/repository'"
     ],
     ['application/commands/note/handler.ts', "const db = require('@libs/pg-dao')"],
     ['application/queries/note/handler.ts', "const db = import('@libs/pg-dao')"],
@@ -26,7 +26,7 @@ test('detects forbidden direct, alias, barrel, type, dynamic and require depende
     const path = 'services/engine/src/' + entry
     const files = new Map([[path, source]])
     if (extra) files.set('services/engine/src/' + extra[0], extra[1])
-    assert.ok(checkLayers(files, [path], { '#/*': ['services/engine/src/*'] }).length, source)
+    assert.ok(checkLayers(files, [path], { '~/*': ['services/engine/src/*'] }).length, source)
   }
 })
 test('permits pure domain/use case dependencies and CQRS adapters', () => {

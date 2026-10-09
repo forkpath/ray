@@ -1,12 +1,12 @@
-import type { ICustomerRepository } from '../../../../domain/repositories/customer.repository.interface'
+import type { ICustomerRepository } from '~/domain/repositories/customer.repository.interface'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { BillingCustomer } from '../../../../domain/entities/customer.entity'
-import { ListCustomersUseCase } from '../../../use-cases/customer/list-customers.usecase'
-import { ListCustomersHandler, ListCustomersQuery } from '../list-customers.query'
+import { ListCustomersHandler, ListCustomersQuery } from '~/application/queries/customer/list-customers.query'
+import { ListCustomersUseCase } from '~/application/use-cases/customer/list-customers.usecase'
+import { BillingCustomer } from '~/domain/entities/customer.entity'
 
-vi.mock('#/domain/repositories/customer.repository.interface', () => ({
+vi.mock('~/domain/repositories/customer.repository.interface', () => ({
   CUSTOMER_REPOSITORY: Symbol('CUSTOMER_REPOSITORY')
 }))
 

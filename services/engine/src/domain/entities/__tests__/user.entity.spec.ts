@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { CannotOperateSelfException, UserAlreadyBannedException } from '../../exceptions/user.exception'
-import { Email } from '../../value-objects/email.vo'
-import { UserId } from '../../value-objects/user-id.vo'
-import { User, UserRole } from '../user.entity'
+import { User, UserRole } from '~/domain/entities/user.entity'
+import { CannotOperateSelfException, UserAlreadyBannedException } from '~/domain/exceptions/user.exception'
+import { Email } from '~/domain/value-objects/email.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 const now = new Date('2026-04-28T00:00:00.000Z')
 

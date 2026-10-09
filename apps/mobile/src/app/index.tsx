@@ -1,8 +1,9 @@
+import { Redirect } from 'expo-router'
+
 import { useSetupSteps } from '~/app/(setup)/steps/_layout'
 import { pathsConfig } from '~/config/paths'
 import { authClient } from '~/lib/auth'
 import { Spinner } from '~/modules/common/spinner'
-import { Redirect } from 'expo-router'
 
 export default function Index() {
   const { data, isPending } = authClient.useSession()

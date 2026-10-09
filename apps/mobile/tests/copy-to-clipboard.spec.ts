@@ -3,7 +3,7 @@ import * as Clipboard from 'expo-clipboard'
 
 import { logger } from '@libs/common'
 
-import { useCopyToClipboard } from '../src/modules/common/hooks/use-copy-to-clipboard'
+import { useCopyToClipboard } from '~/modules/common/hooks/use-copy-to-clipboard'
 
 describe('useCopyToClipboard', () => {
   it('reports a successful native write and remembers the copied text', async () => {

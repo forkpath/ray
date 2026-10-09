@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 
 import '~/lib/monitoring'
 
-import { authClient } from '~/lib/auth'
-
 import { identify, initialize, Provider } from '@libs/monitoring-web/extension'
+
+import { authClient } from '~/lib/auth'
 
 initialize()
 

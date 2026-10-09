@@ -2,9 +2,9 @@ import { createMemoryHistory, createRootRoute, createRoute, createRouter } from 
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { Route as AppRoute } from '../routes/_app'
-import { Route as AdminRoute } from '../routes/_app/admin'
-import { Route as AuthRoute } from '../routes/auth'
+import { Route as AppRoute } from '~/routes/_app'
+import { Route as AdminRoute } from '~/routes/_app/admin'
+import { Route as AuthRoute } from '~/routes/auth'
 
 const auth = vi.hoisted(() => ({ getSession: vi.fn(), list: vi.fn(), getActiveMember: vi.fn() }))
 

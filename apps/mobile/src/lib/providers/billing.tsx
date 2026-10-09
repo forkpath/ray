@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 
+import { Provider, useCustomer } from '@libs/billing-client-native'
+
 import { authClient } from '~/lib/auth'
 import { useI18nConfig } from '~/lib/providers/i18n'
-
-import { Provider, useCustomer } from '@libs/billing-client-native'
 
 const Identity = () => {
   const { identify, reset } = useCustomer()

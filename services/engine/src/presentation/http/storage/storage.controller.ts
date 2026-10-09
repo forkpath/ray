@@ -1,11 +1,11 @@
 import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 
-import { GetDeleteUrlCommand } from '#/application/commands/storage/get-delete-url.command'
-import { GetUploadUrlCommand } from '#/application/commands/storage/get-upload-url.command'
-import { StoragePathQueryDto } from '#/application/dtos/storage/storage.dto'
-import { GetPublicUrlQuery } from '#/application/queries/storage/get-public-url.query'
-import { GetSignedUrlQuery } from '#/application/queries/storage/get-signed-url.query'
+import { GetDeleteUrlCommand } from '~/application/commands/storage/get-delete-url.command'
+import { GetUploadUrlCommand } from '~/application/commands/storage/get-upload-url.command'
+import { StoragePathQueryDto } from '~/application/dtos/storage/storage.dto'
+import { GetPublicUrlQuery } from '~/application/queries/storage/get-public-url.query'
+import { GetSignedUrlQuery } from '~/application/queries/storage/get-signed-url.query'
 
 const ALLOWED_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'webp'])
 

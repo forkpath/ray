@@ -1,4 +1,4 @@
-import type { BillingCustomerEntity } from '../entities/customer.entity'
+import type { BillingCustomerEntity } from '~/domain/entities/customer.entity'
 
 export interface DateRangeCriteria {
   readonly from: Date

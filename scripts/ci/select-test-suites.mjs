@@ -61,6 +61,14 @@ export function selectTestSuites({ affected, nativeAffected = affected, files, f
     desktop: has('desktop'),
     web: has('web') || has('web-e2e'),
     generator: has('ray-plugin') || files.includes('ray.resources.json'),
+    // Fresh-checkout setup: only environment-level inputs, not ordinary app code.
+    bootstrap:
+      all ||
+      files.some(file =>
+        /^(scripts\/development\/|\.env\.example$|package\.json$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|nx\.json$|libs\/pg-dao\/(prisma\.config\.|src\/(migrations|seed)))/.test(
+          file
+        )
+      ),
     mobileAndroid,
     mobileIos: mobileAndroid && (nativeAll || nativeChanged)
   }
@@ -146,6 +154,7 @@ function main() {
     desktop: suites.desktop,
     web: suites.web,
     generator: suites.generator,
+    bootstrap: suites.bootstrap,
     mobileAndroid: suites.mobileAndroid,
     mobileIos: suites.mobileIos,
     mobile: JSON.stringify({

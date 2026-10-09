@@ -1,6 +1,6 @@
-import { CannotOperateSelfException, UserAlreadyBannedException } from '../exceptions/user.exception'
-import { Email } from '../value-objects/email.vo'
-import { UserId } from '../value-objects/user-id.vo'
+import { CannotOperateSelfException, UserAlreadyBannedException } from '~/domain/exceptions/user.exception'
+import { Email } from '~/domain/value-objects/email.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 /**
  * 用户角色

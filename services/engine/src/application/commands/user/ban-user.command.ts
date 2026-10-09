@@ -1,14 +1,13 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
-import type { UserResponse } from '../../dtos/user/user.dto'
-import type { IUserRepository } from '#/domain/repositories/user.repository.interface'
+import type { UserResponse } from '~/application/dtos/user/user.dto'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { CommandHandler } from '@nestjs/cqrs'
 
-import { USER_REPOSITORY } from '#/domain/repositories/user.repository.interface'
-
-import { UserMapper } from '../../mappers/user.mapper'
-import { BanUserUseCase } from '../../use-cases/user/ban-user.usecase'
+import { UserMapper } from '~/application/mappers/user.mapper'
+import { BanUserUseCase } from '~/application/use-cases/user/ban-user.usecase'
+import { USER_REPOSITORY } from '~/domain/repositories/user.repository.interface'
 
 /**
  * 封禁用户命令

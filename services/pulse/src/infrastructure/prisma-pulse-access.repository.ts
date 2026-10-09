@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import { PrismaService } from '@libs/pg-dao'
 
-import { PulseAccessRepository, PulseIdentity } from '../domain/pulse-access.repository'
+import { PulseAccessRepository, PulseIdentity } from '~/domain/pulse-access.repository'
 
 @Injectable()
 export class PrismaPulseAccessRepository extends PulseAccessRepository {

@@ -4,6 +4,7 @@
     "types": ["node", "vitest/globals"],
     "noEmit": true,
     "paths": {
+      "~/*": ["services/pulse/src/*"],
       "@libs/mongo-dao": ["libs/mongo-dao/src/index.ts"],
       "@libs/pg-dao": ["libs/pg-dao/src/index.ts"],
       "@libs/common": ["libs/common/src/index.ts"],

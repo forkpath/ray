@@ -40,6 +40,8 @@ pnpm nx g @ray/plugin:resource team-note --plural=team-notes --ownership=organiz
 业务表保存带索引的用户或组织 ID，没有对自动生成认证模型的 Prisma relation 或级联删除。
 接入实际产品时，需要明确账号/组织删除后的业务数据保留与清理策略；不要假设删除身份会删除这些记录。
 该起点不包含 UI 页面、全文搜索、文件、支付、Worker 消息或对并发编辑的乐观锁。
+页面需要手写：列表可参考 `libs/studio/src/modules/admin` 中基于 `useDataTable` 与生成的 React Query 工厂的数据表，
+Web 路由参考 `apps/web/src/routes/_app/admin`。
 
 ## 使用与验证
 

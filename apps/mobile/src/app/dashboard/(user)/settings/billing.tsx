@@ -1,11 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { FeaturesList } from '~/modules/billing/features-list'
-import { billing } from '~/modules/billing/lib/api'
-import { OrdersList } from '~/modules/billing/orders/list/orders-list'
-import { BillingInfo } from '~/modules/billing/portal/billing-info'
-import { SubscriptionsList } from '~/modules/billing/subscriptions/list/subscriptions-list'
-import { ScrollView } from '~/modules/common/styled'
 import { View } from 'react-native'
 
 import { usePaywall } from '@libs/billing-client-native'
@@ -24,6 +18,13 @@ import {
   Skeleton,
   Text
 } from '@libs/ui-native'
+
+import { FeaturesList } from '~/modules/billing/features-list'
+import { billing } from '~/modules/billing/lib/api'
+import { OrdersList } from '~/modules/billing/orders/list/orders-list'
+import { BillingInfo } from '~/modules/billing/portal/billing-info'
+import { SubscriptionsList } from '~/modules/billing/subscriptions/list/subscriptions-list'
+import { ScrollView } from '~/modules/common/styled'
 
 /**
  * When there is no billing information available, we show an empty state

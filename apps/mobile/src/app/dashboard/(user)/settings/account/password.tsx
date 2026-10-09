@@ -1,10 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { auth } from '~/modules/auth/lib/api'
-import { Link, ScrollView } from '~/modules/common/styled'
 import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
@@ -12,6 +8,11 @@ import { Alert, View } from 'react-native'
 import { changePasswordSchema } from '@libs/auth-contract'
 import { Trans, useTranslation } from '@libs/i18n'
 import { Button, Field, FieldDescription, FieldError, FieldLabel, Icons, Input, Spin, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { auth } from '~/modules/auth/lib/api'
+import { Link, ScrollView } from '~/modules/common/styled'
 
 export default function Password() {
   const { t } = useTranslation(['common', 'auth'])

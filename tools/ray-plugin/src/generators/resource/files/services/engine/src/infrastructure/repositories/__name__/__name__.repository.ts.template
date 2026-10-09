@@ -1,5 +1,5 @@
-import type { <%= className %>Snapshot } from '../../../domain/<%= name %>/<%= name %>.entity'
-import type { <%= className %>Repository } from '../../../domain/<%= name %>/<%= name %>.repository'
+import type { <%= className %>Snapshot } from '~/domain/<%= name %>/<%= name %>.entity'
+import type { <%= className %>Repository } from '~/domain/<%= name %>/<%= name %>.repository'
 
 import { Injectable } from '@nestjs/common'
 import { prisma } from '@libs/pg-dao'

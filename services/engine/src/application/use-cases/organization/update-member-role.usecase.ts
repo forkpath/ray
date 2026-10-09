@@ -1,13 +1,10 @@
-import type { MemberEntity } from '../../../domain/entities/organization.entity'
-import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface'
+import type { MemberEntity } from '~/domain/entities/organization.entity'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
-import {
-  MemberNotFoundException,
-  OrganizationNotFoundException
-} from '../../../domain/exceptions/organization.exception'
-import { MemberId } from '../../../domain/value-objects/member-id.vo'
-import { MemberRole } from '../../../domain/value-objects/member-role.vo'
-import { OrganizationId } from '../../../domain/value-objects/organization-id.vo'
+import { MemberNotFoundException, OrganizationNotFoundException } from '~/domain/exceptions/organization.exception'
+import { MemberId } from '~/domain/value-objects/member-id.vo'
+import { MemberRole } from '~/domain/value-objects/member-role.vo'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
 
 export interface UpdateMemberRoleInput {
   organizationId: string

@@ -1,9 +1,5 @@
 import type { ImageSource } from 'expo-image'
 
-import { pathsConfig } from '~/config/paths'
-import { useTheme } from '~/modules/common/hooks/use-theme'
-import { SafeAreaView } from '~/modules/common/styled'
-import { WIDTH } from '~/utils/device'
 import { Image } from 'expo-image'
 import { router } from 'expo-router'
 import { View } from 'react-native'
@@ -18,6 +14,11 @@ import {
   SliderPaginationDots,
   Text
 } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { useTheme } from '~/modules/common/hooks/use-theme'
+import { SafeAreaView } from '~/modules/common/styled'
+import { WIDTH } from '~/utils/device'
 
 const images = [
   {

@@ -2,7 +2,7 @@ import type {
   ICustomerRepository,
   ListCustomersCriteria,
   PagedCustomerResult
-} from '../../../domain/repositories/customer.repository.interface'
+} from '~/domain/repositories/customer.repository.interface'
 
 export class ListCustomersUseCase {
   constructor(private readonly repository: ICustomerRepository) {}

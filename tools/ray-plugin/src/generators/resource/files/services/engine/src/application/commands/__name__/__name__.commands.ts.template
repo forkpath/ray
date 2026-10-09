@@ -1,8 +1,8 @@
 import { Inject } from '@nestjs/common'
 import { Command, CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import type { <%= className %>Snapshot, <%= className %>Changes } from '../../../domain/<%= name %>/<%= name %>.entity'
-import type { <%= className %>Scope } from '../../use-cases/<%= name %>/<%= name %>.use-cases'
-import { <%= className %>UseCases } from '../../use-cases/<%= name %>/<%= name %>.use-cases'
+import type { <%= className %>Snapshot, <%= className %>Changes } from '~/domain/<%= name %>/<%= name %>.entity'
+import type { <%= className %>Scope } from '~/application/use-cases/<%= name %>/<%= name %>.use-cases'
+import { <%= className %>UseCases } from '~/application/use-cases/<%= name %>/<%= name %>.use-cases'
 
 export class Create<%= className %>Command extends Command<<%= className %>Snapshot> {
   constructor(readonly scope: <%= className %>Scope, readonly input: { title: string; description?: string | null }) { super() }

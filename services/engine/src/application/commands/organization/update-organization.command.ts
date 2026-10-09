@@ -1,14 +1,13 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
 import type { GetOrganizationRes } from '@libs/payload'
-import type { IOrganizationRepository } from '#/domain/repositories/organization.repository.interface'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { CommandHandler } from '@nestjs/cqrs'
 
-import { ORGANIZATION_REPOSITORY } from '#/domain/repositories/organization.repository.interface'
-
-import { OrganizationMapper } from '../../mappers/organization.mapper'
-import { UpdateOrganizationUseCase } from '../../use-cases/organization/update-organization.usecase'
+import { OrganizationMapper } from '~/application/mappers/organization.mapper'
+import { UpdateOrganizationUseCase } from '~/application/use-cases/organization/update-organization.usecase'
+import { ORGANIZATION_REPOSITORY } from '~/domain/repositories/organization.repository.interface'
 
 export class UpdateOrganizationCommand {
   constructor(

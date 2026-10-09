@@ -5,10 +5,6 @@ import type { Invitation } from '@libs/auth-contract'
 import { memo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { api } from '~/lib/api'
-import { authClient } from '~/lib/auth'
-import { organization } from '~/modules/organization/lib/api'
-import { user } from '~/modules/user/lib/api'
 import dayjs from 'dayjs'
 import { Alert, Pressable, View } from 'react-native'
 
@@ -33,7 +29,11 @@ import {
   useBottomSheet
 } from '@libs/ui-native'
 
-import { InvitationSummaryCard } from '../invitation-summary-card'
+import { api } from '~/lib/api'
+import { authClient } from '~/lib/auth'
+import { InvitationSummaryCard } from '~/modules/organization/invitations/invitation-summary-card'
+import { organization } from '~/modules/organization/lib/api'
+import { user } from '~/modules/user/lib/api'
 
 export const UserOrganizationInvitationsBanner = memo(() => {
   const { t } = useTranslation(['organization', 'common'])

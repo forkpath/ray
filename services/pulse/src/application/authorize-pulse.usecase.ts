@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { PulseAccessRepository, PulseIdentity } from '../domain/pulse-access.repository'
+import { PulseAccessRepository, PulseIdentity } from '~/domain/pulse-access.repository'
 
 @Injectable()
 export class AuthorizePulseUseCase {

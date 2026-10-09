@@ -2,13 +2,14 @@
 
 import { useMutation } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Avatar, AvatarFallback, AvatarImage, Button, Icons, Skeleton, Spin, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
 
 import { CreateOrganizationBottomSheet } from './create-organization'
 import { organization } from './lib/api'

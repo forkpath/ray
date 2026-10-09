@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 import { identify, Provider, reset } from '@libs/analytics-web/desktop'
 import { authClient } from '@libs/studio'
 
-import '../analytics'
+import '~/renderer/lib/analytics'
 
 export function AnalyticsProvider({ children }: { children: ReactNode }) {
   const session = authClient.useSession()

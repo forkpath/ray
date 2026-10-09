@@ -13,11 +13,88 @@ export const typescriptOverrides = {
   }
 }
 
+const persistenceAndSdkPackages = [
+  '@libs/pg-dao',
+  '@libs/mongo-dao',
+  '@prisma/*',
+  'mongoose',
+  'ioredis',
+  'amqplib',
+  'stripe',
+  '@aws-sdk/*'
+]
+
+function layerImportRule(layers, packages, message) {
+  return [
+    'error',
+    {
+      patterns: [
+        { group: packages, message },
+        { regex: `(^~/|(^|/)\\.\\.?/(.*/)?)(${layers.join('|')})(/|$)`, message }
+      ]
+    }
+  ]
+}
+
+// Clean Architecture boundaries for a Nest service: Domain and Application
+// depend on ports; persistence and SDK adapters live in infrastructure.
+export function cleanArchitectureBoundaries(srcRoot = 'src') {
+  return [
+    {
+      files: [`${srcRoot}/application/**/*.ts`],
+      rules: {
+        'no-restricted-imports': layerImportRule(
+          ['infrastructure', 'presentation', 'app'],
+          persistenceAndSdkPackages,
+          'Application code depends on domain ports. Implement adapters in infrastructure.'
+        )
+      }
+    },
+    {
+      files: [`${srcRoot}/domain/**/*.ts`],
+      rules: {
+        'no-restricted-imports': layerImportRule(
+          ['application', 'infrastructure', 'presentation', 'app'],
+          [...persistenceAndSdkPackages, '@nestjs/*'],
+          'Domain code must stay framework- and persistence-free.'
+        )
+      }
+    }
+  ]
+}
+
+// Apps and services import their own files with `./` (same directory or below) or the
+// project alias `~/` (-> <project>/src). Parent paths (`../`) are rejected; static assets
+// outside src (images, JSON) stay relative. Libs keep relative imports because Nx module
+// boundaries reject self-imports through an alias. A separate rule name keeps this from
+// replacing the core no-restricted-imports used by cleanArchitectureBoundaries().
+export function noParentRelativeImports(roots = ['src', 'tests']) {
+  return [
+    {
+      files: roots.map(root => `${root}/**/*.{ts,tsx}`),
+      rules: {
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          {
+            patterns: [
+              {
+                regex: '^\\.\\.(/(?!.*\\.(png|jpe?g|gif|webp|svg|json)$)|$)',
+                message: "Use the project alias '~/' instead of a parent-relative path."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+
 export default [
   ...nx.configs['flat/base'],
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   typescriptOverrides,
+  ...noParentRelativeImports(['apps/mobile/src', 'apps/extension/src']),
   {
     files: ['libs/{email,analytics,monitoring}/src/**/*.{ts,tsx}'],
     rules: {

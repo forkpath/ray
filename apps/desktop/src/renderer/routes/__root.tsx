@@ -9,8 +9,8 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { Toaster } from '@libs/studio'
 import { cn } from '@libs/ui-core'
 
-import { AnalyticsProvider } from '../lib/providers/analytics'
-import { MonitoringProvider } from '../lib/providers/monitoring'
+import { AnalyticsProvider } from '~/renderer/lib/providers/analytics'
+import { MonitoringProvider } from '~/renderer/lib/providers/monitoring'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient

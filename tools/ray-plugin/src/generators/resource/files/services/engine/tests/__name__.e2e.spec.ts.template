@@ -5,8 +5,8 @@ import { z } from 'zod'
 import { prisma } from '@libs/pg-dao'
 import { <%= propertyName %>Schema, <%= propertyName %>PageSchema } from '@libs/payload'
 import { createIdentity, responseCookie<% if (org) { %>, createOrganization<% } %> } from '@libs/testing-server'
-import { createEngineApplication } from '../src/application'
-import { Prisma<%= className %>Repository } from '../src/infrastructure/repositories/<%= name %>/<%= name %>.repository'
+import { createEngineApplication } from '~/application'
+import { Prisma<%= className %>Repository } from '~/infrastructure/repositories/<%= name %>/<%= name %>.repository'
 
 describe('<%= className %> generated production HTTP and PostgreSQL', () => {
   let app: NestExpressApplication

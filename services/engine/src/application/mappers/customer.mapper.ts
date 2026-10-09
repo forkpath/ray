@@ -1,12 +1,12 @@
-import type { BillingCustomerEntity } from '../../domain/entities/customer.entity'
+import type { GetCustomersReq, GetCustomersRes } from '@libs/payload'
+import type { BillingCustomerEntity } from '~/domain/entities/customer.entity'
 import type {
   DateRangeCriteria,
   ListCustomersCriteria,
   NumberRangeCriteria,
   PagedCustomerResult,
   SortCriteria
-} from '../../domain/repositories/customer.repository.interface'
-import type { GetCustomersReq, GetCustomersRes } from '@libs/payload'
+} from '~/domain/repositories/customer.repository.interface'
 
 type CustomerListItem = GetCustomersRes['list'][number]
 

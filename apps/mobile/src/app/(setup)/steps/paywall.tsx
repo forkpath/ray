@@ -1,14 +1,15 @@
 import { useState } from 'react'
 
-import { useSetupSteps } from '~/app/(setup)/steps/_layout'
-import { pathsConfig } from '~/config/paths'
-import { ScrollView } from '~/modules/common/styled'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { usePaywall } from '@libs/billing-client-native'
 import { useTranslation } from '@libs/i18n'
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Text } from '@libs/ui-native'
+
+import { useSetupSteps } from '~/app/(setup)/steps/_layout'
+import { pathsConfig } from '~/config/paths'
+import { ScrollView } from '~/modules/common/styled'
 
 type PaywallStatus = 'idle' | 'opening' | 'dismissed' | 'skipped' | 'error'
 

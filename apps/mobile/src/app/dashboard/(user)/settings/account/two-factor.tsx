@@ -4,16 +4,17 @@ import type { PasswordPayload } from '@libs/auth-contract'
 
 import { useCallback, useMemo } from 'react'
 
+import { View } from 'react-native'
+
+import { useTranslation } from '@libs/i18n'
+import { Switch, Text, useBottomSheet } from '@libs/ui-native'
+
 import { BackupCodesTile } from '~/modules/user/settings/account/two-factor/backup-codes/backup-codes'
 import { useBackupCodes } from '~/modules/user/settings/account/two-factor/backup-codes/use-backup-codes'
 import { RequirePassword } from '~/modules/user/settings/account/two-factor/require-password'
 import { TotpSheet, TotpTile } from '~/modules/user/settings/account/two-factor/totp/totp'
 import { useTotp } from '~/modules/user/settings/account/two-factor/totp/use-totp'
 import { useTwoFactor } from '~/modules/user/settings/account/two-factor/use-two-factor'
-import { View } from 'react-native'
-
-import { useTranslation } from '@libs/i18n'
-import { Switch, Text, useBottomSheet } from '@libs/ui-native'
 
 export default function TwoFactor() {
   const { t } = useTranslation(['common', 'auth'])

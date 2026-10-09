@@ -15,9 +15,7 @@ const indent = (level: number) => '  '.repeat(level)
 const generateCSSVariables = (theme: ThemeColorsVariables, indentLevel = 0) =>
   Object.entries(theme)
     .map(
-      ([key, value]: [string, ColorVariable]) =>
-        // @ts-expect-error - value is actually a tuple
-        `${indent(indentLevel)}--${key}: ${oklchToString(...value)};`
+      ([key, [l, c, h, a]]: [string, ColorVariable]) => `${indent(indentLevel)}--${key}: ${oklchToString(l, c, h, a)};`
     )
     .join('\n')
 

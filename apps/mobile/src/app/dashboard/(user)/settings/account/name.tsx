@@ -1,8 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { authClient } from '~/lib/auth'
-import { user } from '~/modules/user/lib/api'
 import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
@@ -10,6 +8,9 @@ import { View } from 'react-native'
 import { updateUserSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button, Field, FieldDescription, FieldError, FieldLabel, Icons, Input, Spin, Text } from '@libs/ui-native'
+
+import { authClient } from '~/lib/auth'
+import { user } from '~/modules/user/lib/api'
 
 const EditName = () => {
   const { t } = useTranslation(['common', 'auth'])

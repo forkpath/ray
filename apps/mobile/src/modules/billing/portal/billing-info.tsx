@@ -3,14 +3,15 @@ import type { Icon } from '@libs/ui-native'
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import { billing } from '~/modules/billing/lib/api'
-import { NativePortalLink } from '~/modules/billing/portal/native-portal-link'
-import { WebPortalLink } from '~/modules/billing/portal/web-portal-link'
 import { View } from 'react-native'
 
 import { MOBILE_STORE_LINKS, MobileStore } from '@libs/billing-contract'
 import { useTranslation } from '@libs/i18n'
 import { buttonTextVariants, Icons, Text } from '@libs/ui-native'
+
+import { billing } from '~/modules/billing/lib/api'
+import { NativePortalLink } from '~/modules/billing/portal/native-portal-link'
+import { WebPortalLink } from '~/modules/billing/portal/web-portal-link'
 
 const MobileStoreIcon: Record<MobileStore, Icon> = {
   [MobileStore.APP_STORE]: Icons.AppleStroke,

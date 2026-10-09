@@ -1,11 +1,12 @@
-import { pathsConfig } from '~/config/paths'
-import { AuthLayout } from '~/modules/auth/layout/base'
-import { AuthHeader } from '~/modules/auth/layout/header'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { Trans, useTranslation } from '@libs/i18n'
 import { Button, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { AuthLayout } from '~/modules/auth/layout/base'
+import { AuthHeader } from '~/modules/auth/layout/header'
 
 interface InvitationEmailMismatchProps {
   readonly invitationId: string

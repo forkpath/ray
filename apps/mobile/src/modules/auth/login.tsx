@@ -3,6 +3,12 @@ import type { RoutePath } from 'expo-router'
 
 import { memo, useState } from 'react'
 
+import { View } from 'react-native'
+
+import { SecondFactor } from '@libs/auth-contract'
+import { useTranslation } from '@libs/i18n'
+import { FieldSeparator } from '@libs/ui-native'
+
 import { authConfig } from '~/config/auth'
 import { AnonymousLogin } from '~/modules/auth/form/anonymous'
 import { LOGIN_OPTIONS } from '~/modules/auth/form/login/constants'
@@ -13,11 +19,6 @@ import { TwoFactorCta, TwoFactorForm } from '~/modules/auth/form/two-factor'
 import { AuthLayout } from '~/modules/auth/layout/base'
 import { AuthHeader } from '~/modules/auth/layout/header'
 import { InvitationDisclaimer } from '~/modules/auth/layout/invitation-disclaimer'
-import { View } from 'react-native'
-
-import { SecondFactor } from '@libs/auth-contract'
-import { useTranslation } from '@libs/i18n'
-import { FieldSeparator } from '@libs/ui-native'
 
 const LoginStep = {
   FORM: 'form',

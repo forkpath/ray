@@ -1,7 +1,7 @@
+import { getI18n } from '@libs/i18n'
+
 import { getLocale } from '~/lib/i18n'
 import { Message, onMessage } from '~/lib/messaging'
-
-import { getI18n } from '@libs/i18n'
 
 const getMessage = async (filename: string) => {
   const locale = await getLocale()

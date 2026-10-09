@@ -4,8 +4,6 @@ import type { BottomSheetContentRef } from '@libs/ui-native'
 import { useMemo, useState } from 'react'
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { useCopyToClipboard } from '~/modules/common/hooks/use-copy-to-clipboard'
-import { useTheme } from '~/modules/common/hooks/use-theme'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
 import QRCode from 'react-qr-code'
@@ -32,9 +30,12 @@ import {
   useBottomSheet
 } from '@libs/ui-native'
 
-import { BackupCodesSheet } from '../backup-codes/backup-codes'
-import { RequirePassword } from '../require-password'
-import { useTwoFactor } from '../use-two-factor'
+import { useCopyToClipboard } from '~/modules/common/hooks/use-copy-to-clipboard'
+import { useTheme } from '~/modules/common/hooks/use-theme'
+import { BackupCodesSheet } from '~/modules/user/settings/account/two-factor/backup-codes/backup-codes'
+import { RequirePassword } from '~/modules/user/settings/account/two-factor/require-password'
+import { useTwoFactor } from '~/modules/user/settings/account/two-factor/use-two-factor'
+
 import { useTotp } from './use-totp'
 
 interface TotpSheetProps {

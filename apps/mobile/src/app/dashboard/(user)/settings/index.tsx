@@ -1,11 +1,5 @@
 import type { Session } from '@libs/auth-contract'
 
-import { appConfig } from '~/config/app'
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { SettingsTile } from '~/modules/common/settings-tile'
-import { SafeAreaView, ScrollView } from '~/modules/common/styled'
-import { AccountInfo } from '~/modules/user/settings/account/account-info'
 import Constants from 'expo-constants'
 import * as Linking from 'expo-linking'
 import { router } from 'expo-router'
@@ -14,6 +8,13 @@ import { Share, View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Icons, Text } from '@libs/ui-native'
+
+import { appConfig } from '~/config/app'
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { SettingsTile } from '~/modules/common/settings-tile'
+import { SafeAreaView, ScrollView } from '~/modules/common/styled'
+import { AccountInfo } from '~/modules/user/settings/account/account-info'
 
 const getSections = (session?: Session | null) =>
   [

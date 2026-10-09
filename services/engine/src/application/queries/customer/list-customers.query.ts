@@ -4,8 +4,8 @@ import type { GetCustomersReq, GetCustomersRes } from '@libs/payload'
 import { Inject } from '@nestjs/common'
 import { QueryHandler } from '@nestjs/cqrs'
 
-import { CustomerMapper } from '../../mappers/customer.mapper'
-import { ListCustomersUseCase } from '../../use-cases/customer/list-customers.usecase'
+import { CustomerMapper } from '~/application/mappers/customer.mapper'
+import { ListCustomersUseCase } from '~/application/use-cases/customer/list-customers.usecase'
 
 export class ListCustomersQuery {
   constructor(public readonly params: GetCustomersReq) {}

@@ -41,8 +41,7 @@ import { UserModule } from './presentation/http/user/user.module'
      * 默认该模块中使用AuthGuard来进行全局认证鉴权
      * 可以手动关掉disableGlobalAuthGuard: true,
      */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    AuthModule.forRoot({ auth: auth as any }),
+    AuthModule.forRoot({ auth }),
 
     // 日志模块
     LoggerModule.register('portal'),

@@ -1,8 +1,8 @@
-import type { User } from '../../../domain/entities/user.entity'
-import type { IUserRepository } from '../../../domain/repositories/user.repository.interface'
+import type { User } from '~/domain/entities/user.entity'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
-import { UserNotFoundException } from '../../../domain/exceptions/user.exception'
-import { UserId } from '../../../domain/value-objects/user-id.vo'
+import { UserNotFoundException } from '~/domain/exceptions/user.exception'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 export interface BanUserInput {
   readonly userId: string

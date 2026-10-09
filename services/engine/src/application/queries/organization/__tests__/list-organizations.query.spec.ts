@@ -1,11 +1,14 @@
-import type { IOrganizationRepository } from '#/domain/repositories/organization.repository.interface'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
 import { Test } from '@nestjs/testing'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ListOrganizationsUseCase } from '../../../use-cases/organization/list-organizations.usecase'
-import { ListOrganizationsHandler, ListOrganizationsQuery } from '../list-organizations.query'
+import {
+  ListOrganizationsHandler,
+  ListOrganizationsQuery
+} from '~/application/queries/organization/list-organizations.query'
+import { ListOrganizationsUseCase } from '~/application/use-cases/organization/list-organizations.usecase'
 
 describe('ListOrganizationsHandler', () => {
   let handler: ListOrganizationsHandler

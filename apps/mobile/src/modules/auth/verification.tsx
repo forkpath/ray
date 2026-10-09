@@ -3,13 +3,14 @@ import type { RoutePath } from 'expo-router'
 import { useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
 
+import { router, useGlobalSearchParams } from 'expo-router'
+
+import { VerificationType } from '@libs/auth-contract'
+
 import { useSetupSteps } from '~/app/(setup)/steps/_layout'
 import { pathsConfig } from '~/config/paths'
 import { Spinner } from '~/modules/common/spinner'
 import { user } from '~/modules/user/lib/api'
-import { router, useGlobalSearchParams } from 'expo-router'
-
-import { VerificationType } from '@libs/auth-contract'
 
 import { auth } from './lib/api'
 

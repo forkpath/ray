@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
-import { authClient } from '~/lib/auth'
-import { organization } from '~/modules/organization/lib/api'
 import { FlatList, RefreshControl, View } from 'react-native'
 
 import { InvitationStatus } from '@libs/auth-contract'
@@ -11,6 +9,9 @@ import { pickBy } from '@libs/common'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
 import { Text } from '@libs/ui-native'
+
+import { authClient } from '~/lib/auth'
+import { organization } from '~/modules/organization/lib/api'
 
 import { InvitationsListFilters } from './invitations-list-filters'
 import { InvitationListItem, InvitationListItemSkeleton } from './invitations-list-item'

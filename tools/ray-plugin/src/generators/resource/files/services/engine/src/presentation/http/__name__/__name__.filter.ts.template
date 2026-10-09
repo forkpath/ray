@@ -1,7 +1,7 @@
 import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common'
 import type { Response } from 'express'
 import { Catch } from '@nestjs/common'
-import { <%= className %>Error } from '../../../domain/<%= name %>/<%= name %>.error'
+import { <%= className %>Error } from '~/domain/<%= name %>/<%= name %>.error'
 
 @Catch(<%= className %>Error)
 export class <%= className %>Filter implements ExceptionFilter<<%= className %>Error> {

@@ -1,7 +1,7 @@
-import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
-import { OrganizationNotFoundException } from '../../../domain/exceptions/organization.exception'
-import { OrganizationId } from '../../../domain/value-objects/organization-id.vo'
+import { OrganizationNotFoundException } from '~/domain/exceptions/organization.exception'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
 
 export interface DeleteOrganizationInput {
   organizationId: string

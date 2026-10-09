@@ -11,8 +11,7 @@
     "skipLibCheck": true,
     "noEmit": true,
     "paths": {
-      "@main/*": ["apps/desktop/src/main/*"],
-      "~/*": ["apps/web/src/*"],
+      "~/*": ["apps/desktop/src/*"],
       "@libs/common": ["libs/common/src/index.ts"],
       "@libs/payload": ["libs/payload/src/index.ts"],
       "@libs/auth-client-web": ["libs/auth-client-web/src/index.ts"],

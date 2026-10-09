@@ -1,5 +1,6 @@
-import { StorageKey, useStorage } from '~/lib/storage'
 import { Toaster as Sonner } from 'sonner'
+
+import { StorageKey, useStorage } from '~/lib/storage'
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 

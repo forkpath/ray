@@ -1,12 +1,12 @@
 import type { IQueryHandler } from '@nestjs/cqrs'
-import type { UserSessionResponse } from '../../dtos/user/user.dto'
-import type { IUserRepository } from '#/domain/repositories/user.repository.interface'
+import type { UserSessionResponse } from '~/application/dtos/user/user.dto'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { QueryHandler } from '@nestjs/cqrs'
 
-import { USER_REPOSITORY } from '#/domain/repositories/user.repository.interface'
-import { UserId } from '#/domain/value-objects/user-id.vo'
+import { USER_REPOSITORY } from '~/domain/repositories/user.repository.interface'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 /**
  * 获取用户会话列表查询

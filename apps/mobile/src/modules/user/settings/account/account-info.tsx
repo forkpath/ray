@@ -1,5 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 
+import { Redirect } from 'expo-router'
+import { View } from 'react-native'
+
+import { Skeleton, Text } from '@libs/ui-native'
+
 import { pathsConfig } from '~/config/paths'
 import { authClient } from '~/lib/auth'
 import {
@@ -9,10 +14,6 @@ import {
   AvatarFormUploadButton
 } from '~/modules/common/avatar-form'
 import { user } from '~/modules/user/lib/api'
-import { Redirect } from 'expo-router'
-import { View } from 'react-native'
-
-import { Skeleton, Text } from '@libs/ui-native'
 
 const AccountInfoSkeleton = () => {
   return (

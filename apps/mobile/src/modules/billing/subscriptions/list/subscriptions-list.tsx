@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { billing } from '~/modules/billing/lib/api'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Text } from '@libs/ui-native'
+
+import { billing } from '~/modules/billing/lib/api'
 
 import { SubscriptionsListItem } from './subscriptions-list-item'
 

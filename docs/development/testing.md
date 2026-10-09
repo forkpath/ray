@@ -1,6 +1,16 @@
 # 测试开发指南
 
-Ray 的测试设施面向可复用开发框架：维护者提供测试入口、隔离环境、fixture、报告和验证框架能力的用例；业务开发者编写自己的领域规则与业务流程测试。已有业务示例不等于所有使用者都必须运行的框架检查。后续工具选型、入口约定和分阶段验收见 [框架测试与 CI 实施方案](testing-framework-plan.md)；该方案中的未实施入口不能当作现有命令执行。
+Ray 的测试设施面向可复用开发框架：维护者提供测试入口、隔离环境、fixture、报告和验证框架能力的用例；业务开发者编写自己的领域规则与业务流程测试。已有业务示例不等于所有使用者都必须运行的框架检查。各运行时的工具选择见下文；当时的选型与分阶段验收过程见 [归档方案](archive/2026-09-testing-framework-plan.md)。
+
+## 按运行时选择工具
+
+| 运行时                             | 单元／组件测试                                  | 集成／端到端测试                                     |
+| ---------------------------------- | ----------------------------------------------- | ---------------------------------------------------- |
+| Mobile 的 RN 组件、Expo 模块、路由 | Jest + jest-expo + React Native Testing Library | Maestro 驱动 Android Emulator / iOS Simulator        |
+| 与平台无关的 TypeScript 库         | Vitest                                          | 按公开契约补必要集成测试                             |
+| Web、Extension 的 React DOM 组件   | Vitest + React Testing Library                  | Playwright；扩展加载真实扩展产物                     |
+| Desktop main / renderer            | Vitest，分别使用 Node / DOM 环境                | Electron E2E、打包运行和升级验证                     |
+| Engine / Pulse / Worker            | Vitest，按需使用 Nest TestingModule             | Vitest + 真实 HTTP / ws / RabbitMQ 与 Testcontainers |
 
 ## 选择测试入口
 
@@ -105,7 +115,7 @@ pnpm nx run extension:smoke
 
 # 后端真实依赖测试
 
-Engine、Pulse、Worker 提供独立的 `test-integration` 与 `e2e` 入口，自动创建和清理一次性数据库及消息环境。运行方式、数据 fixture、报告目录和新增用例说明见 [后端框架测试指南](testing-backend.md)。实际通过情况以 [阶段验收记录](testing-framework-validation.md) 为准。
+Engine、Pulse、Worker 提供独立的 `test-integration` 与 `e2e` 入口，自动创建和清理一次性数据库及消息环境。运行方式、数据 fixture、报告目录和新增用例说明见 [后端框架测试指南](testing-backend.md)。当前通过情况与限制见 [项目现状](status.md)。
 
 Mobile 原生设备的固定工具、隔离测试构建和 Maestro 流程见 [设备测试指南](testing-mobile.md)。
 

@@ -1,12 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { billing } from '~/modules/billing/lib/api'
 import * as Linking from 'expo-linking'
 import { Alert } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Button, buttonTextVariants, Icons, Spin } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { billing } from '~/modules/billing/lib/api'
 
 export const WebPortalLink = ({
   children,

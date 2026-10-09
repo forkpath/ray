@@ -1,7 +1,7 @@
-import type { IUserRepository } from '../../../domain/repositories/user.repository.interface'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
-import { UserNotFoundException } from '../../../domain/exceptions/user.exception'
-import { UserId } from '../../../domain/value-objects/user-id.vo'
+import { UserNotFoundException } from '~/domain/exceptions/user.exception'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 export interface DeleteUserInput {
   readonly userId: string

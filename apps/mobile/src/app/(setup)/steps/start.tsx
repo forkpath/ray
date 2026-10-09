@@ -1,9 +1,10 @@
-import { useSetupSteps } from '~/app/(setup)/steps/_layout'
-import { ScrollView } from '~/modules/common/styled'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Button, Text } from '@libs/ui-native'
+
+import { useSetupSteps } from '~/app/(setup)/steps/_layout'
+import { ScrollView } from '~/modules/common/styled'
 
 export default function StartStep() {
   const { t } = useTranslation(['common', 'marketing'])

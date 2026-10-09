@@ -1,7 +1,7 @@
-import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
-import { InvitationId } from '../../../domain/value-objects/invitation-id.vo'
-import { OrganizationId } from '../../../domain/value-objects/organization-id.vo'
+import { InvitationId } from '~/domain/value-objects/invitation-id.vo'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
 
 export interface DeleteInvitationInput {
   organizationId: string

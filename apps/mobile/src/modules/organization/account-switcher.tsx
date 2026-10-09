@@ -1,11 +1,6 @@
 import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { billing } from '~/modules/billing/lib/api'
-import { Spinner } from '~/modules/common/spinner'
-import { organization } from '~/modules/organization/lib/api'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
@@ -30,6 +25,12 @@ import {
   Text,
   useBottomSheet
 } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { billing } from '~/modules/billing/lib/api'
+import { Spinner } from '~/modules/common/spinner'
+import { organization } from '~/modules/organization/lib/api'
 
 import { CreateOrganizationBottomSheet } from './create-organization'
 

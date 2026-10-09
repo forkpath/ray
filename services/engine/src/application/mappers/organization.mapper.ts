@@ -1,13 +1,3 @@
-import type { InvitationEntity, MemberEntity, OrganizationEntity } from '../../domain/entities/organization.entity'
-import type {
-  DateRangeCriteria,
-  ListInvitationsCriteria,
-  ListMembersCriteria,
-  ListOrganizationsCriteria,
-  NumberRangeCriteria,
-  PagedResult,
-  SortCriteria
-} from '../../domain/repositories/organization.repository.interface'
 import type {
   GetInvitationsReq,
   GetInvitationsRes,
@@ -17,6 +7,16 @@ import type {
   GetOrganizationsReq,
   GetOrganizationsRes
 } from '@libs/payload'
+import type { InvitationEntity, MemberEntity, OrganizationEntity } from '~/domain/entities/organization.entity'
+import type {
+  DateRangeCriteria,
+  ListInvitationsCriteria,
+  ListMembersCriteria,
+  ListOrganizationsCriteria,
+  NumberRangeCriteria,
+  PagedResult,
+  SortCriteria
+} from '~/domain/repositories/organization.repository.interface'
 
 type OrganizationListItem = GetOrganizationsRes['list'][number]
 type MemberListItem = GetMembersRes['list'][number]

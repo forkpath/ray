@@ -1,7 +1,4 @@
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { useSetupSteps } from '~/app/(setup)/steps/_layout'
-import { appConfig } from '~/config/app'
-import { ScrollView } from '~/modules/common/styled'
 import * as Linking from 'expo-linking'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
@@ -9,6 +6,10 @@ import * as z from 'zod'
 
 import { Trans, useTranslation } from '@libs/i18n'
 import { Button, Checkbox, Field, FieldLabel, Text } from '@libs/ui-native'
+
+import { useSetupSteps } from '~/app/(setup)/steps/_layout'
+import { appConfig } from '~/config/app'
+import { ScrollView } from '~/modules/common/styled'
 
 export default function RequiredStep() {
   const { t } = useTranslation(['common', 'marketing'])

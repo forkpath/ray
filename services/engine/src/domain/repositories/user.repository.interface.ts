@@ -1,6 +1,6 @@
-import type { User, UserRole, UserSessionEntity } from '../entities/user.entity'
-import type { Email } from '../value-objects/email.vo'
-import type { UserId } from '../value-objects/user-id.vo'
+import type { User, UserRole, UserSessionEntity } from '~/domain/entities/user.entity'
+import type { Email } from '~/domain/value-objects/email.vo'
+import type { UserId } from '~/domain/value-objects/user-id.vo'
 
 export interface AccountEntity {
   readonly id: string

@@ -1,11 +1,11 @@
-import type { IUserRepository } from '../../../domain/repositories/user.repository.interface'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import {
   AccountNotFoundException,
   LastAccountCannotBeDeletedException,
   UserNotFoundException
-} from '../../../domain/exceptions/user.exception'
-import { UserId } from '../../../domain/value-objects/user-id.vo'
+} from '~/domain/exceptions/user.exception'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 export interface DeleteAccountInput {
   readonly userId: string

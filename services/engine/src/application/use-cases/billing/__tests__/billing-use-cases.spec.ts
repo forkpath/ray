@@ -1,18 +1,17 @@
-import type { IBillingRepository } from '#/domain/repositories/billing.repository.interface'
-import type { BillingOwner } from '#/domain/value-objects/billing-owner.vo'
+import type { IBillingRepository } from '~/domain/repositories/billing.repository.interface'
+import type { BillingOwner } from '~/domain/value-objects/billing-owner.vo'
 
 import { describe, expect, it, vi } from 'vitest'
 
-import { BillingAccount, BillingRedirect } from '#/domain/entities/billing-account.entity'
+import { CreateBillingCheckoutUseCase } from '~/application/use-cases/billing/create-billing-checkout.use-case'
+import { CreateBillingPortalUseCase } from '~/application/use-cases/billing/create-billing-portal.use-case'
+import { GetBillingSummaryUseCase } from '~/application/use-cases/billing/get-billing-summary.use-case'
+import { BillingAccount, BillingRedirect } from '~/domain/entities/billing-account.entity'
 import {
   BillingAccessDeniedException,
   OrganizationBillingDisabledException
-} from '#/domain/exceptions/billing.exception'
-import { BillingOwner as BillingOwnerValue } from '#/domain/value-objects/billing-owner.vo'
-
-import { CreateBillingCheckoutUseCase } from '../create-billing-checkout.use-case'
-import { CreateBillingPortalUseCase } from '../create-billing-portal.use-case'
-import { GetBillingSummaryUseCase } from '../get-billing-summary.use-case'
+} from '~/domain/exceptions/billing.exception'
+import { BillingOwner as BillingOwnerValue } from '~/domain/value-objects/billing-owner.vo'
 
 function repositoryFixture(input: { owner: BillingOwner; enabled?: boolean; role?: string | null }) {
   const account = new BillingAccount(input.owner, [])

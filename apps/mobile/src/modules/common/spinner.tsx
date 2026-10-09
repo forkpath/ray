@@ -1,9 +1,10 @@
 import { Fragment } from 'react'
 
 import { Portal } from '@rn-primitives/portal'
-import { isIOS } from '~/utils/device'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { FullWindowOverlay as RNFullWindowOverlay } from 'react-native-screens'
+
+import { isIOS } from '~/utils/device'
 
 const FullWindowOverlay = isIOS ? RNFullWindowOverlay : Fragment
 

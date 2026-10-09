@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
-import { Badge } from '~/components/marketing/badge'
-import { Container } from '~/components/marketing/container'
-import { SectionHeading } from '~/components/marketing/section-heading'
-import { SubHeading } from '~/components/marketing/subheading'
 import { AnimatePresence, motion } from 'motion/react'
 
 import { cn } from '@libs/ui-core'
 
-import { PixelatedCanvas } from '../pixelated-canvas'
+import { Badge } from '~/components/marketing/badge'
+import { Container } from '~/components/marketing/container'
+import { PixelatedCanvas } from '~/components/marketing/pixelated-canvas'
+import { SectionHeading } from '~/components/marketing/section-heading'
+import { SubHeading } from '~/components/marketing/subheading'
+
 import { ConnectYourTooklsSkeleton, DeployAndScaleSkeleton, DesignYourWorkflowSkeleton } from './skeletons'
 
 type Tab = {
@@ -44,20 +45,20 @@ export const HowItWorks = () => {
     }
   ]
 
-  const [activeTab, setActiveTab] = useState(tabs[0])
+  const [activeIndex, setActiveIndex] = useState(0)
+  const activeTab = tabs[activeIndex]
+  const tabCount = tabs.length
 
   const DURATION = 8000
 
   useEffect(() => {
+    // activeIndex 变化（含手动点击）时重新计时
     const interval = setInterval(() => {
-      const currentIndex = tabs.findIndex(tab => tab.id === activeTab.id)
-      const nextIndex = (currentIndex + 1) % tabs.length
-      setActiveTab(tabs[nextIndex])
+      setActiveIndex((activeIndex + 1) % tabCount)
     }, DURATION)
 
     return () => clearInterval(interval)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab.id])
+  }, [activeIndex, tabCount])
   return (
     <Container className="border-divide border-x">
       <div className="flex flex-col items-center pt-16">
@@ -74,7 +75,7 @@ export const HowItWorks = () => {
               <button
                 key={tab.title}
                 className="group relative flex w-full flex-col items-start overflow-hidden px-12 py-8 hover:bg-gray-100 dark:hover:bg-neutral-800"
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveIndex(index)}
               >
                 {tab.id === activeTab.id && <Canvas activeTab={tab} duration={2500} />}
                 {tab.id === activeTab.id && <Loader duration={DURATION} />}

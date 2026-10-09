@@ -1,5 +1,8 @@
 # 框架测试实施验收记录
 
+> 归档：本文是 2026-09 至 2026-10 的过程记录，保留历史失败、修复和证据路径，内容不再更新。
+> 当前能力、已知限制和验收方式见 [项目现状](../status.md)。
+
 本文记录实际执行结果，不能以配置文件存在代替运行验收。最终验收提交为 `3dd1b28cbbf269957144aa5ffd8b08191e3bd640`，阶段 0–4 已完成；详见文末 [Goal 结项复核](#goal-结项复核2026-09-29)。下文按阶段与运行轮次保留历史失败及修复过程，历史“待验证”不代表当前仍受阻。PR 尚未合并，没有发布应用或修改生产数据库。
 
 ## 阶段 1：单测入口与 Extension（2026-09-28）
@@ -39,7 +42,7 @@ pnpm nx run extension:e2e --skipNxCache
 - SettingsTile 增加原生按钮角色，交互测试同时验证可用与禁用状态。
 - 一次并行高负载运行出现 Jest worker 退出提示；专项 `--detectOpenHandles --runInBand` 和干净副本复跑均正常结束，无遗留句柄报告。冷启动路由套件需要转换较多 Expo 模块。
 
-边界：Mobile 的这些用例运行于 Jest，尚不是模拟器 E2E；Firefox 尚未执行真实扩展加载；签名、商店上传和 CI 分支规则不在本阶段通过范围。具体新增用例方式见 [测试指南](testing.md)。
+边界：Mobile 的这些用例运行于 Jest，尚不是模拟器 E2E；Firefox 尚未执行真实扩展加载；签名、商店上传和 CI 分支规则不在本阶段通过范围。具体新增用例方式见 [测试指南](../testing.md)。
 
 ## 阶段 2：后端隔离环境与真实协议（本地与 Linux CI 已验收）
 
@@ -136,7 +139,7 @@ Windows 的 E2E 与打包 smoke 通过，随后真实安装包的升级测试暴
 
 修复使用同一条 URL 加载页面和校验来源，保留窗口、主 frame、协议、host、origin、pathname、query 及导航限制。升级 E2E 的临时目录固定包含 `~`，让此行为持续进入回归验收。Desktop 的 lint、类型检查、构建与 28 项单测均通过。独立运行 `36452719302` 已通过真实 Windows 0.1.0 → 0.1.1 安装、重启与数据保留断言，`installed=true`；最后删除安装目录时出现 `EBUSY`，因此整个 job 仍失败。清理现使用有上限的删除重试，失败仍传播。临时诊断 workflow 不属于交付的 CI 配置。
 
-iOS 在 Xcode 26.6 完成编译后，链接失败于菜单依赖 `react-native-ios-utilities@5.2.0` 的 `_OBJC_CLASS_$_RCTRootContentView`。采用上游 `dbc4ae1` 的同一 Swift 修复，通过 pnpm patch 固定；GitHub 虽有 5.2.1 tag，当时 npm 仍返回 404。来源及移除条件见 [补丁说明](../../patches/README.md)。冻结安装通过；Mobile lint、两类类型检查及 6 项单测通过；三个服务重新构建和 runtime 锁文件裁剪通过，没有把 Native 补丁引入后端 runtime。
+iOS 在 Xcode 26.6 完成编译后，链接失败于菜单依赖 `react-native-ios-utilities@5.2.0` 的 `_OBJC_CLASS_$_RCTRootContentView`。采用上游 `dbc4ae1` 的同一 Swift 修复，通过 pnpm patch 固定；GitHub 虽有 5.2.1 tag，当时 npm 仍返回 404。来源及移除条件见 [补丁说明](../../../patches/README.md)。冻结安装通过；Mobile lint、两类类型检查及 6 项单测通过；三个服务重新构建和 runtime 锁文件裁剪通过，没有把 Native 补丁引入后端 runtime。
 
 Android 报告 `e40819b5ca89af69` 的 Release APK 和最终 bundle 页面检查通过（5909 个来源），随后模拟器因只余 4021.59 MB、默认数据分区要求 7372.80 MB 而退出；报告为 `passed=false, cleaned=true`。修复在 APK 和报告保存后删除本次临时原生编译目录，并把专用测试设备的数据分区固定为 2 GB；不触碰已有模拟器或工作区原生工程。
 

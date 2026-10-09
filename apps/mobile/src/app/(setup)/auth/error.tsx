@@ -1,10 +1,11 @@
-import { pathsConfig } from '~/config/paths'
-import { Link } from '~/modules/common/styled'
 import { useLocalSearchParams } from 'expo-router'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Icons, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { Link } from '~/modules/common/styled'
 
 const AuthError = () => {
   const { error } = useLocalSearchParams<{ error?: string }>()

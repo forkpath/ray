@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { useEffect } from 'react'
 
-import '../monitoring/sentry'
+import '~/lib/monitoring/sentry'
 
 import { identify, initialize, Provider } from '@libs/monitoring-web'
 import { authClient } from '@libs/studio'

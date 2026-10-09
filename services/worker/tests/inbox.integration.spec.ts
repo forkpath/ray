@@ -4,7 +4,7 @@ import { afterAll, describe, expect, it } from 'vitest'
 
 import { prisma, PrismaService } from '@libs/pg-dao'
 
-import { InboxService } from '../src/app/inbox.service'
+import { InboxService } from '~/app/inbox.service'
 
 describe('Inbox claims against PostgreSQL', () => {
   const inbox = new InboxService(prisma as PrismaService)

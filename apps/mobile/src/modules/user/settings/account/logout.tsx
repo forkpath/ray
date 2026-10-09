@@ -1,16 +1,17 @@
 import { useMutation } from '@tanstack/react-query'
 
+import { router } from 'expo-router'
+import { Alert } from 'react-native'
+
+import { useTranslation } from '@libs/i18n'
+import { Icons, Text } from '@libs/ui-native'
+
 import { useSetupSteps } from '~/app/(setup)/steps/_layout'
 import { pathsConfig } from '~/config/paths'
 import { authClient } from '~/lib/auth'
 import { auth } from '~/modules/auth/lib/api'
 import { SettingsTile } from '~/modules/common/settings-tile'
 import { Spinner } from '~/modules/common/spinner'
-import { router } from 'expo-router'
-import { Alert } from 'react-native'
-
-import { useTranslation } from '@libs/i18n'
-import { Icons, Text } from '@libs/ui-native'
 
 export const Logout = () => {
   const { t } = useTranslation(['common', 'auth'])

@@ -1,4 +1,4 @@
-import type { IBillingRepository } from '#/domain/repositories/billing.repository.interface'
+import type { IBillingRepository } from '~/domain/repositories/billing.repository.interface'
 
 export class HandleStripeWebhookUseCase {
   constructor(private readonly repository: IBillingRepository) {}

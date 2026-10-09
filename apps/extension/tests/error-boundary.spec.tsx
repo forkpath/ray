@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { logger } from '@libs/common'
 
-import { ErrorBoundary } from '../src/modules/common/error-boundary'
+import { ErrorBoundary } from '~/modules/common/error-boundary'
 
 describe('extension ErrorBoundary', () => {
   it('renders healthy children', () => {

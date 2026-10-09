@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { AnimatePresence, motion } from 'motion/react'
+
 import { Badge } from '~/components/marketing/badge'
 import { HorizontalLine } from '~/components/marketing/common/horizontal-line'
 import { IconBlock } from '~/components/marketing/common/icon-block'
@@ -19,7 +21,6 @@ import { OpenAILogo, SlackLogo } from '~/components/marketing/icons/general'
 import { LogoSVG } from '~/components/marketing/logo'
 import { SectionHeading } from '~/components/marketing/section-heading'
 import { SubHeading } from '~/components/marketing/subheading'
-import { AnimatePresence, motion } from 'motion/react'
 
 /* 核心优势板块 */
 export const Benefits = () => {

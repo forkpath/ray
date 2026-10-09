@@ -1,8 +1,5 @@
 import type { Order } from '@libs/billing-contract'
 
-import { FeaturesList } from '~/modules/billing/features-list'
-import { NativePortalLink } from '~/modules/billing/portal/native-portal-link'
-import { WebPortalLink } from '~/modules/billing/portal/web-portal-link'
 import { View } from 'react-native'
 
 import { findPlanByVariantId, MobileStore, PaymentStatus } from '@libs/billing-contract'
@@ -18,6 +15,10 @@ import {
   Icons,
   Text
 } from '@libs/ui-native'
+
+import { FeaturesList } from '~/modules/billing/features-list'
+import { NativePortalLink } from '~/modules/billing/portal/native-portal-link'
+import { WebPortalLink } from '~/modules/billing/portal/web-portal-link'
 
 export const OrdersListItem = ({ order }: { order: Order }) => {
   const { t, i18n } = useTranslation(['common', 'billing'])

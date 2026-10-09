@@ -8,6 +8,7 @@ export function verifyRequiredChecks(results) {
   const selected = {
     backend: 'backendEnabled',
     generator: 'generator',
+    bootstrap: 'bootstrap',
     extension: 'extension',
     web: 'web',
     mobile: 'mobileAndroid',

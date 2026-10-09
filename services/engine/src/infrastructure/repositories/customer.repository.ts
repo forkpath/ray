@@ -1,15 +1,16 @@
-import type { BillingCustomerEntity } from '../../domain/entities/customer.entity'
+import type { BillingCustomerEntity } from '~/domain/entities/customer.entity'
 import type {
   ICustomerRepository,
   ListCustomersCriteria,
   PagedCustomerResult
-} from '../../domain/repositories/customer.repository.interface'
+} from '~/domain/repositories/customer.repository.interface'
 
 import { Injectable } from '@nestjs/common'
 
 import { Prisma, prisma } from '@libs/pg-dao'
 
-import { BillingCustomer } from '../../domain/entities/customer.entity'
+import { BillingCustomer } from '~/domain/entities/customer.entity'
+
 import { listOffset, listOrder } from './list-query'
 
 @Injectable()

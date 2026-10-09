@@ -1,11 +1,11 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
-import type { IBillingRepository } from '#/domain/repositories/billing.repository.interface'
+import type { IBillingRepository } from '~/domain/repositories/billing.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { CommandHandler } from '@nestjs/cqrs'
 
-import { HandleStripeWebhookUseCase } from '#/application/use-cases/billing/handle-billing-webhooks.use-case'
-import { BILLING_REPOSITORY } from '#/domain/repositories/billing.repository.interface'
+import { HandleStripeWebhookUseCase } from '~/application/use-cases/billing/handle-billing-webhooks.use-case'
+import { BILLING_REPOSITORY } from '~/domain/repositories/billing.repository.interface'
 
 export class HandleStripeWebhookCommand {
   constructor(

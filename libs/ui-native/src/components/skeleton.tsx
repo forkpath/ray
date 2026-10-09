@@ -17,8 +17,7 @@ function Skeleton({ className, style, ...props }: React.ComponentPropsWithoutRef
 
   React.useEffect(() => {
     sv.value = withRepeat(withSequence(withTiming(0.5, { duration }), withTiming(1, { duration })), -1)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sv])
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: sv.value

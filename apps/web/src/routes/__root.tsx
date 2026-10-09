@@ -8,17 +8,16 @@ import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
-import { DefaultCatchBoundary } from '~/components/default-catch-boundary'
-import { NotFound } from '~/components/not-found'
-import { AnalyticsProvider } from '~/lib/providers/analytics'
-import { MonitoringProvider } from '~/lib/providers/monitoring'
-import { seo } from '~/utils/seo'
-
 import { config, I18nProvider } from '@libs/i18n'
 import { ThemeProvider, ThemeScript, Toaster } from '@libs/studio'
 import { cn } from '@libs/ui-core'
 
-import appCss from '../styles/app.css?url' // 注意因为试用了?url，所以需要使用相对路径
+import { DefaultCatchBoundary } from '~/components/default-catch-boundary'
+import { NotFound } from '~/components/not-found'
+import { AnalyticsProvider } from '~/lib/providers/analytics'
+import { MonitoringProvider } from '~/lib/providers/monitoring'
+import appCss from '~/styles/app.css?url'
+import { seo } from '~/utils/seo'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient

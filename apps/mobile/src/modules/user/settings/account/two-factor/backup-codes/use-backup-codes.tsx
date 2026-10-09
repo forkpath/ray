@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { auth } from '~/modules/auth/lib/api'
 import { create } from 'zustand'
+
+import { auth } from '~/modules/auth/lib/api'
 
 const useBackupCodesStore = create<{
   codes: string[]

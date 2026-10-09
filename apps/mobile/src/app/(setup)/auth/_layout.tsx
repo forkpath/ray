@@ -1,6 +1,7 @@
+import { router, Stack } from 'expo-router'
+
 import { pathsConfig } from '~/config/paths'
 import { BaseHeader } from '~/modules/common/layout/header'
-import { router, Stack } from 'expo-router'
 
 export default function AuthLayout() {
   return (

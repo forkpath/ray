@@ -1,6 +1,9 @@
 # 框架测试与 CI 实施方案
 
-状态：2026-09-29 结项复核。阶段 0–4 的实现、阶段代码自审与本方案范围内的整体验收均已完成。提交 `3dd1b28cbbf269957144aa5ffd8b08191e3bd640` 的 [完整 CI 36554712030](https://github.com/forkpath/postfly.io/actions/runs/36554712030) 共 15 项检查成功，包含 Android/iOS 模拟器 E2E 和 `Required checks`；合并保护与失败阻断也已验证。证据、审核范围与专项验收边界见 [阶段验收记录](testing-framework-validation.md#goal-结项复核2026-09-29)。本次结项不包含 PR 合并、生产部署或签名上架。
+> 归档：本文是 2026-09 至 2026-10 的过程记录，保留历史失败、修复和证据路径，内容不再更新。
+> 当前能力、已知限制和验收方式见 [项目现状](../status.md)。
+
+状态：2026-09-29 结项复核。阶段 0–4 的实现、阶段代码自审与本方案范围内的整体验收均已完成。提交 `3dd1b28cbbf269957144aa5ffd8b08191e3bd640` 的 [完整 CI 36554712030](https://github.com/forkpath/postfly.io/actions/runs/36554712030) 共 15 项检查成功，包含 Android/iOS 模拟器 E2E 和 `Required checks`；合并保护与失败阻断也已验证。证据、审核范围与专项验收边界见 [阶段验收记录](2026-09-testing-framework-validation.md#goal-结项复核2026-09-29)。本次结项不包含 PR 合并、生产部署或签名上架。
 
 ## 目标与责任边界
 
@@ -151,4 +154,4 @@ Web 现有 API 示例的 `/api` 与实际 `/api/v1` 不一致应修正并在隔�
 - [Detox 的 RN E2E 方式](https://wix.github.io/Detox/docs/introduction/getting-started/)
 - [WXT 的 Vitest 支持](https://wxt.dev/guide/essentials/unit-testing)
 - [Playwright 的扩展测试](https://playwright.dev/docs/chrome-extensions)
-- [仓库当前测试指南](testing.md)
+- [仓库当前测试指南](../testing.md)

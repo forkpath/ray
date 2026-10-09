@@ -2,10 +2,9 @@ import { Test } from '@nestjs/testing'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { USER_REPOSITORY } from '#/domain/repositories/user.repository.interface'
-import { UserId } from '#/domain/value-objects/user-id.vo'
-
-import { ListUserAccountsHandler, ListUserAccountsQuery } from '../list-user-accounts.query'
+import { ListUserAccountsHandler, ListUserAccountsQuery } from '~/application/queries/user/list-user-accounts.query'
+import { USER_REPOSITORY } from '~/domain/repositories/user.repository.interface'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 describe('ListUserAccountsHandler', () => {
   let handler: ListUserAccountsHandler

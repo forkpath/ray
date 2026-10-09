@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 
-import { tiers } from '~/constants/marketing/pricing'
 import { motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
+
+import { tiers } from '~/constants/marketing/pricing'
 
 import { Badge } from './badge'
 import { Button } from './button'

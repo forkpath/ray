@@ -5,11 +5,6 @@ import { memo } from 'react'
 import { useMutation } from '@tanstack/react-query'
 
 import { GoogleSignin, isCancelledResponse, isSuccessResponse } from '@react-native-google-signin/google-signin'
-import { authConfig } from '~/config/auth'
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { mobileEnv } from '~/lib/env'
-import { isAndroid, isIOS } from '~/utils/device'
 import * as AppleAuthentication from 'expo-apple-authentication'
 import { router } from 'expo-router'
 import { View } from 'react-native'
@@ -18,7 +13,12 @@ import { SocialProvider as SocialProviderType } from '@libs/auth-contract'
 import { Trans, useTranslation } from '@libs/i18n'
 import { Badge, Button, Icons, Spin, Text } from '@libs/ui-native'
 
-import { auth } from '../lib/api'
+import { authConfig } from '~/config/auth'
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { mobileEnv } from '~/lib/env'
+import { auth } from '~/modules/auth/lib/api'
+import { isAndroid, isIOS } from '~/utils/device'
 
 interface SocialProvidersProps {
   readonly providers: SocialProviderType[]

@@ -1,9 +1,9 @@
-import type { UpdateState } from '../shared/updates'
 import type { ElectronWindowAPI } from './ipc-api'
+import type { UpdateState } from '~/shared/updates'
 
 import { contextBridge, ipcRenderer } from 'electron'
 
-import { updateChannels } from '../shared/updates'
+import { updateChannels } from '~/shared/updates'
 
 contextBridge.exposeInMainWorld('electronAPI', {
   updates: {

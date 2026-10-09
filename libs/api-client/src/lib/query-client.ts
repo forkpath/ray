@@ -1,4 +1,4 @@
-import type { Query, QueryClient } from '@tanstack/react-query'
+import type { Mutation, Query, QueryClient } from '@tanstack/react-query'
 
 import {
   defaultShouldDehydrateQuery,
@@ -9,10 +9,9 @@ import {
 
 import { ApiError, ApiNetworkError } from '@libs/api-core'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyQuery = Query<any, any, any, any>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyMutation = { mutationId: number; options: any; state: any }
+// 与 QueryCache/MutationCache 全局 onError 回调的参数类型一致
+type AnyQuery = Query<unknown, unknown, unknown>
+type AnyMutation = Mutation<unknown, unknown, unknown>
 
 /**
  * Query 错误回调参数

@@ -1,8 +1,9 @@
 import { mutationOptions, queryOptions } from '@tanstack/react-query'
 
+import * as Linking from 'expo-linking'
+
 import { pathsConfig } from '~/config/paths'
 import { authClient } from '~/lib/auth'
-import * as Linking from 'expo-linking'
 
 const KEY = 'user'
 

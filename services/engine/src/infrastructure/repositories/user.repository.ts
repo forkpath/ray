@@ -1,4 +1,4 @@
-import type { User, UserSessionEntity } from '../../domain/entities/user.entity'
+import type { User, UserSessionEntity } from '~/domain/entities/user.entity'
 import type {
   AccountEntity,
   IUserRepository,
@@ -13,16 +13,16 @@ import type {
   UserMembershipEntity,
   UserOrderEntity,
   UserSubscriptionEntity
-} from '../../domain/repositories/user.repository.interface'
+} from '~/domain/repositories/user.repository.interface'
 
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
 
 import { auth } from '@libs/auth-server'
 import { Prisma, prisma } from '@libs/pg-dao'
 
-import { User as UserEntity, UserRole } from '../../domain/entities/user.entity'
-import { Email } from '../../domain/value-objects/email.vo'
-import { UserId } from '../../domain/value-objects/user-id.vo'
+import { User as UserEntity, UserRole } from '~/domain/entities/user.entity'
+import { Email } from '~/domain/value-objects/email.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 /**
  * 用户仓储实现

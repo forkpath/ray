@@ -1,10 +1,11 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { authClient } from '~/lib/auth'
-import { auth } from '~/modules/auth/lib/api'
 import { Alert } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
+
+import { authClient } from '~/lib/auth'
+import { auth } from '~/modules/auth/lib/api'
 
 export const useTwoFactor = () => {
   const { data } = authClient.useSession()

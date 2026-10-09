@@ -1,6 +1,6 @@
-import { api } from '~/lib/api'
-
 import { billingMutations, billingQueries } from '@libs/api-client'
+
+import { api } from '~/lib/api'
 
 const queries = {
   summary: {

@@ -1,11 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { useTranslation } from 'react-i18next'
+
 import { Button } from '~/components/marketing/button'
 import { Container } from '~/components/marketing/container'
 import { Heading } from '~/components/marketing/heading'
 import { LogoSVG } from '~/components/marketing/logo'
 import { SubHeading } from '~/components/marketing/subheading'
-import { useTranslation } from 'react-i18next'
 
 /* 联系我们页面路由 */
 export const Route = createFileRoute('/_marketing/contact')({

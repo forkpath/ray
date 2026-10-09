@@ -5,22 +5,22 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs'
 
 import { Roles } from '@libs/auth-server/nest'
 
-import { DeleteInvitationCommand } from '#/application/commands/organization/delete-invitation.command'
-import { DeleteMemberCommand } from '#/application/commands/organization/delete-member.command'
-import { DeleteOrganizationCommand } from '#/application/commands/organization/delete-organization.command'
-import { UpdateMemberCommand } from '#/application/commands/organization/update-member.command'
-import { UpdateOrganizationCommand } from '#/application/commands/organization/update-organization.command'
+import { DeleteInvitationCommand } from '~/application/commands/organization/delete-invitation.command'
+import { DeleteMemberCommand } from '~/application/commands/organization/delete-member.command'
+import { DeleteOrganizationCommand } from '~/application/commands/organization/delete-organization.command'
+import { UpdateMemberCommand } from '~/application/commands/organization/update-member.command'
+import { UpdateOrganizationCommand } from '~/application/commands/organization/update-organization.command'
 import {
   ListInvitationsQueryDto,
   ListMembersQueryDto,
   ListOrganizationsQueryDto,
   UpdateMemberDto,
   UpdateOrganizationDto
-} from '#/application/dtos/organization/organization.dto'
-import { GetOrganizationQuery } from '#/application/queries/organization/get-organization.query'
-import { ListInvitationsQuery } from '#/application/queries/organization/list-invitations.query'
-import { ListMembersQuery } from '#/application/queries/organization/list-members.query'
-import { ListOrganizationsQuery } from '#/application/queries/organization/list-organizations.query'
+} from '~/application/dtos/organization/organization.dto'
+import { GetOrganizationQuery } from '~/application/queries/organization/get-organization.query'
+import { ListInvitationsQuery } from '~/application/queries/organization/list-invitations.query'
+import { ListMembersQuery } from '~/application/queries/organization/list-members.query'
+import { ListOrganizationsQuery } from '~/application/queries/organization/list-organizations.query'
 
 @Controller('admin/organizations')
 @Roles(['admin'])

@@ -208,3 +208,22 @@ test('generator changes run generated HTTP acceptance without selecting native d
   assert.equal(result.generator, true)
   assert.equal(result.mobileAndroid || result.mobileIos || result.desktop, false)
 })
+
+test('environment-level setup changes run the fresh-checkout bootstrap acceptance without native devices', () => {
+  for (const file of [
+    'scripts/development/bootstrap.mjs',
+    '.env.example',
+    'package.json',
+    'pnpm-lock.yaml',
+    'nx.json',
+    'libs/pg-dao/src/migrations/20260921000000_init/migration.sql',
+    'libs/pg-dao/src/seed.ts'
+  ]) {
+    assert.equal(selectTestSuites({ affected: [], files: [file], full: false }).bootstrap, true, file)
+  }
+  const app = selectTestSuites({ affected: ['engine'], files: ['services/engine/src/main.ts'], full: false })
+  assert.equal(app.bootstrap, false)
+  assert.equal(selectTestSuites({ affected: [], files: [], full: true }).bootstrap, true)
+  const setup = selectTestSuites({ affected: [], files: ['scripts/development/doctor.mjs'], full: false })
+  assert.equal(setup.mobileAndroid || setup.mobileIos || setup.desktop, false)
+})

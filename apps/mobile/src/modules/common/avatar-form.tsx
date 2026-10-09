@@ -3,8 +3,6 @@ import type { ImagePickerAsset } from 'expo-image-picker'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { useMutation, useMutationState } from '@tanstack/react-query'
 
-import { api } from '~/lib/api'
-import { useImagePicker } from '~/modules/common/hooks/use-image-picker'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { Alert, Text, View } from 'react-native'
 import * as z from 'zod'
@@ -13,6 +11,9 @@ import { storageMutations } from '@libs/api-client'
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
 import { Avatar, AvatarFallback, AvatarImage, Button, Icons, Spin } from '@libs/ui-native'
+
+import { api } from '~/lib/api'
+import { useImagePicker } from '~/modules/common/hooks/use-image-picker'
 
 interface AvatarFormProps {
   readonly id: string

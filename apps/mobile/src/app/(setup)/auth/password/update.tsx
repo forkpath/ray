@@ -1,9 +1,10 @@
-import { UpdatePasswordForm } from '~/modules/auth/form/password/update'
-import { AuthLayout } from '~/modules/auth/layout/base'
-import { AuthHeader } from '~/modules/auth/layout/header'
 import { useLocalSearchParams } from 'expo-router'
 
 import { useTranslation } from '@libs/i18n'
+
+import { UpdatePasswordForm } from '~/modules/auth/form/password/update'
+import { AuthLayout } from '~/modules/auth/layout/base'
+import { AuthHeader } from '~/modules/auth/layout/header'
 
 const UpdatePassword = () => {
   const { token } = useLocalSearchParams<{ token?: string }>()

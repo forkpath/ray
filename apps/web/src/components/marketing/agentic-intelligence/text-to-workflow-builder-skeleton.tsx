@@ -2,8 +2,9 @@ import type React from 'react'
 
 import { useEffect, useState } from 'react'
 
-import { AttachmentIcon, SendIcon } from '~/components/marketing/icons/bento-icons'
 import { motion } from 'motion/react'
+
+import { AttachmentIcon, SendIcon } from '~/components/marketing/icons/bento-icons'
 
 import { AssistantMessage, UserMessage } from './workflow-chat-messages'
 

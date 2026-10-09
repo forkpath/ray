@@ -1,7 +1,7 @@
-import type { IBillingRepository } from '#/domain/repositories/billing.repository.interface'
-import type { BillingOwner } from '#/domain/value-objects/billing-owner.vo'
+import type { IBillingRepository } from '~/domain/repositories/billing.repository.interface'
+import type { BillingOwner } from '~/domain/value-objects/billing-owner.vo'
 
-import { UserId } from '#/domain/value-objects/user-id.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 import { getBillingMembershipRole } from './billing-access'
 

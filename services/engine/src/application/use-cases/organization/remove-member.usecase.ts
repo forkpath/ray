@@ -1,13 +1,13 @@
-import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
 import {
   CannotRemoveLastAdminException,
   MemberNotFoundException,
   OrganizationNotFoundException
-} from '../../../domain/exceptions/organization.exception'
-import { MemberId } from '../../../domain/value-objects/member-id.vo'
-import { MemberRoleEnum } from '../../../domain/value-objects/member-role.vo'
-import { OrganizationId } from '../../../domain/value-objects/organization-id.vo'
+} from '~/domain/exceptions/organization.exception'
+import { MemberId } from '~/domain/value-objects/member-id.vo'
+import { MemberRoleEnum } from '~/domain/value-objects/member-role.vo'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
 
 export interface RemoveMemberInput {
   organizationId: string

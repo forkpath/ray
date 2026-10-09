@@ -3,10 +3,11 @@ import type { WxtStorageItem } from 'wxt/utils/storage'
 
 import { useEffect, useState } from 'react'
 
-import { appConfig } from '~/config/app'
 import { storage as browserStorage } from 'wxt/utils/storage'
 
 import { logger } from '@libs/common'
+
+import { appConfig } from '~/config/app'
 
 export const StorageKey = {
   THEME: 'local:theme'

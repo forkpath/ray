@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
-import { BillingAccessDeniedException } from '../../exceptions/billing.exception'
-import { BillingOwner } from '../../value-objects/billing-owner.vo'
-import { UserId } from '../../value-objects/user-id.vo'
-import { BillingAccount } from '../billing-account.entity'
+import { BillingAccount } from '~/domain/entities/billing-account.entity'
+import { BillingAccessDeniedException } from '~/domain/exceptions/billing.exception'
+import { BillingOwner } from '~/domain/value-objects/billing-owner.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 describe('BillingAccount', () => {
   it('allows a user to manage their own billing account', () => {

@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common'
 import { Query, QueryHandler, IQueryHandler } from '@nestjs/cqrs'
-import type { <%= className %>Snapshot } from '../../../domain/<%= name %>/<%= name %>.entity'
-import type { <%= className %>Page } from '../../../domain/<%= name %>/<%= name %>.repository'
-import type { <%= className %>Scope } from '../../use-cases/<%= name %>/<%= name %>.use-cases'
-import { <%= className %>UseCases } from '../../use-cases/<%= name %>/<%= name %>.use-cases'
+import type { <%= className %>Snapshot } from '~/domain/<%= name %>/<%= name %>.entity'
+import type { <%= className %>Page } from '~/domain/<%= name %>/<%= name %>.repository'
+import type { <%= className %>Scope } from '~/application/use-cases/<%= name %>/<%= name %>.use-cases'
+import { <%= className %>UseCases } from '~/application/use-cases/<%= name %>/<%= name %>.use-cases'
 
 export class Get<%= className %>Query extends Query<<%= className %>Snapshot> {
   constructor(readonly scope: <%= className %>Scope, readonly id: string) { super() }

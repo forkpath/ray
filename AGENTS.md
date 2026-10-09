@@ -49,6 +49,7 @@ Always prefer Nx commands (`nx run`, `nx run-many`, `nx affected`) so task graph
 
 - Prettier: 2 spaces, single quotes, no semicolons, width 120. Tailwind + import-sort plugins are enabled; avoid manual formatting changes outside your diff.
 - ESLint: respect `@nx/enforce-module-boundaries`. Only import from a project’s public API (lib `src/index.ts`).
+- Imports inside apps/services: use `./` for the same directory or below and the project alias `~/` (`<project>/src/*`) for everything else; `../` is rejected by ESLint (static assets outside `src` excepted). Libs keep relative imports, because Nx rejects self-imports through an alias.
 - Naming: PascalCase components, camelCase variables/functions, kebab-case filenames (angular style). Group related files by feature.
 - TypeScript: no `any`. Prefer interfaces over types, avoid enums (use literal unions or maps). Use guard clauses + early returns for error handling.
 - Validation: Zod for payloads/forms. Model expected errors as typed results; rely on error boundaries for unexpected failures.

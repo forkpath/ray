@@ -1,3 +1,5 @@
+import type { IObjectStorage, ObjectStorageUrl } from '~/domain/ports/object-storage.port'
+
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
@@ -5,7 +7,7 @@ import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } fro
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 @Injectable()
-export class StorageService {
+export class S3ObjectStorage implements IObjectStorage {
   private readonly client: S3Client
   private readonly bucket: string
   private readonly endpoint: string
@@ -28,14 +30,14 @@ export class StorageService {
     })
   }
 
-  async getUploadUrl(path: string): Promise<{ url: string }> {
+  async getUploadUrl(path: string): Promise<ObjectStorageUrl> {
     const url = await getSignedUrl(this.client, new PutObjectCommand({ Bucket: this.bucket, Key: path }), {
       expiresIn: 300
     })
     return { url }
   }
 
-  getPublicUrl(path: string): { url: string } {
+  getPublicUrl(path: string): ObjectStorageUrl {
     const url = this.endpoint
       ? `${this.endpoint}/${this.bucket}/${path}`
       : `https://${this.bucket}.s3.amazonaws.com/${path}`
@@ -43,14 +45,14 @@ export class StorageService {
     return { url }
   }
 
-  async getDeleteUrl(path: string): Promise<{ url: string }> {
+  async getDeleteUrl(path: string): Promise<ObjectStorageUrl> {
     const url = await getSignedUrl(this.client, new DeleteObjectCommand({ Bucket: this.bucket, Key: path }), {
       expiresIn: 300
     })
     return { url }
   }
 
-  async getSignedUrl(path: string): Promise<{ url: string }> {
+  async getSignedUrl(path: string): Promise<ObjectStorageUrl> {
     const url = await getSignedUrl(this.client, new GetObjectCommand({ Bucket: this.bucket, Key: path }), {
       expiresIn: 3600
     })

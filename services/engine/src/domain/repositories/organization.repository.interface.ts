@@ -1,9 +1,10 @@
-import type { InvitationEntity, MemberEntity, OrganizationEntity } from '../entities/organization.entity'
-import type { InvitationId } from '../value-objects/invitation-id.vo'
-import type { MemberId } from '../value-objects/member-id.vo'
-import type { MemberRoleValue } from '../value-objects/member-role.vo'
-import type { OrganizationId } from '../value-objects/organization-id.vo'
-import type { OrganizationSlug } from '../value-objects/organization-slug.vo'
+import type { InvitationEntity, MemberEntity, OrganizationEntity } from '~/domain/entities/organization.entity'
+import type { InvitationId } from '~/domain/value-objects/invitation-id.vo'
+import type { MemberId } from '~/domain/value-objects/member-id.vo'
+import type { MemberRoleValue } from '~/domain/value-objects/member-role.vo'
+import type { OrganizationId } from '~/domain/value-objects/organization-id.vo'
+import type { OrganizationSlug } from '~/domain/value-objects/organization-slug.vo'
+import type { UserId } from '~/domain/value-objects/user-id.vo'
 
 export interface DateRangeCriteria {
   readonly from: Date
@@ -77,6 +78,10 @@ export interface IOrganizationRepository {
   findMemberById(orgId: OrganizationId, memberId: MemberId): Promise<MemberEntity | null>
 
   countMembers(orgId: OrganizationId): Promise<number>
+
+  findMemberRole(orgId: OrganizationId, userId: UserId): Promise<MemberRoleValue | null>
+
+  countMembersByRole(orgId: OrganizationId, role: MemberRoleValue): Promise<number>
 
   updateMember(orgId: OrganizationId, memberId: MemberId, data: UpdateMemberData): Promise<MemberEntity>
 

@@ -4,8 +4,6 @@ import { memo } from 'react'
 import { useMutation } from '@tanstack/react-query'
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { pathsConfig } from '~/config/paths'
-import { Link } from '~/modules/common/styled'
 import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
@@ -14,7 +12,9 @@ import { passwordLoginSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button, Checkbox, Field, FieldError, FieldLabel, Icons, Input, Spin, Text } from '@libs/ui-native'
 
-import { auth } from '../../lib/api'
+import { pathsConfig } from '~/config/paths'
+import { auth } from '~/modules/auth/lib/api'
+import { Link } from '~/modules/common/styled'
 
 interface PasswordLoginFormProps {
   readonly redirectTo?: RoutePath

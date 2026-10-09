@@ -1,11 +1,12 @@
-import { UserHeader } from '~/modules/common/layout/header'
-import { TabBarLabel } from '~/modules/common/styled'
 import { Tabs } from 'expo-router'
 import { Easing } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
 import { Icons } from '@libs/ui-native'
+
+import { UserHeader } from '~/modules/common/layout/header'
+import { TabBarLabel } from '~/modules/common/styled'
 
 export default function UserLayout() {
   const { t } = useTranslation('common')

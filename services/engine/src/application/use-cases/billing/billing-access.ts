@@ -1,8 +1,8 @@
-import type { IBillingRepository } from '#/domain/repositories/billing.repository.interface'
-import type { BillingOwner } from '#/domain/value-objects/billing-owner.vo'
-import type { UserId } from '#/domain/value-objects/user-id.vo'
+import type { IBillingRepository } from '~/domain/repositories/billing.repository.interface'
+import type { BillingOwner } from '~/domain/value-objects/billing-owner.vo'
+import type { UserId } from '~/domain/value-objects/user-id.vo'
 
-import { OrganizationBillingDisabledException } from '#/domain/exceptions/billing.exception'
+import { OrganizationBillingDisabledException } from '~/domain/exceptions/billing.exception'
 
 export async function getBillingMembershipRole(
   repository: IBillingRepository,

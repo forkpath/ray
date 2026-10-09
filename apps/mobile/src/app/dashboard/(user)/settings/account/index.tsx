@@ -1,15 +1,16 @@
 import React from 'react'
 
-import { pathsConfig } from '~/config/paths'
-import { SettingsTile } from '~/modules/common/settings-tile'
-import { ScrollView } from '~/modules/common/styled'
-import { DeleteAccount } from '~/modules/user/settings/account/delete-account'
-import { Logout } from '~/modules/user/settings/account/logout'
 import { router } from 'expo-router'
 import { View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { Icons, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { SettingsTile } from '~/modules/common/settings-tile'
+import { ScrollView } from '~/modules/common/styled'
+import { DeleteAccount } from '~/modules/user/settings/account/delete-account'
+import { Logout } from '~/modules/user/settings/account/logout'
 
 const sections = [
   [

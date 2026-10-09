@@ -7,7 +7,13 @@ export default defineConfig(() => ({
   root: import.meta.dirname,
   envDir: false,
   cacheDir: '../../node_modules/.vite/services/worker',
-  plugins: [tsconfigPaths({ root: import.meta.dirname, envDir: false, projects: ['../../tsconfig.base.json'] })],
+  plugins: [
+    tsconfigPaths({
+      root: import.meta.dirname,
+      envDir: false,
+      projects: ['../../tsconfig.base.json', './tsconfig.app.json']
+    })
+  ],
   test: {
     name: 'worker',
     watch: false,

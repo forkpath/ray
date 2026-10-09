@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 
-import { BoltIcon, CloudCheckIcon, ShieldSplitIcon, SparklesIcon } from '~/components/marketing/icons/card-icons'
 import { motion } from 'motion/react'
+
+import { BoltIcon, CloudCheckIcon, ShieldSplitIcon, SparklesIcon } from '~/components/marketing/icons/card-icons'
 
 import { Scale } from './scale'
 

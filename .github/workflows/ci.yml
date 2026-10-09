@@ -45,6 +45,7 @@ jobs:
       desktop: ${{ steps.suites.outputs.desktop }}
       web: ${{ steps.suites.outputs.web }}
       generator: ${{ steps.suites.outputs.generator }}
+      bootstrap: ${{ steps.suites.outputs.bootstrap }}
       mobile: ${{ steps.suites.outputs.mobile }}
       mobileAndroid: ${{ steps.suites.outputs.mobileAndroid }}
     env:
@@ -257,6 +258,35 @@ jobs:
           path: dist/test-results/ray-plugin
           if-no-files-found: error
 
+  bootstrap:
+    needs: select
+    if: needs.select.outputs.bootstrap == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      NX_NO_CLOUD: 'true'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.14.1
+          cache: pnpm
+      # bootstrap performs the frozen install itself, exactly as a new developer would.
+      - name: Bootstrap a fresh Linux checkout and start the full stack
+        run: bash scripts/ci/bootstrap-acceptance.sh dist/test-results/bootstrap
+      - name: Stop development infrastructure
+        if: always()
+        run: test ! -f .env || pnpm docker:dev:down
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: bootstrap-acceptance
+          path: dist/test-results/bootstrap
+          if-no-files-found: error
+
   extension:
     needs: select
     if: needs.select.outputs.extension == 'true'
@@ -432,7 +462,8 @@ jobs:
   required-checks:
     name: Required checks
     if: always()
-    needs: [select, security, main, database-contract, backend, generator, extension, web, mobile, desktop-checks]
+    needs:
+      [select, security, main, database-contract, backend, generator, bootstrap, extension, web, mobile, desktop-checks]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262

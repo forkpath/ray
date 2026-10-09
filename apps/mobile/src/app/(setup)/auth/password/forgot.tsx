@@ -1,8 +1,8 @@
+import { useTranslation } from '@libs/i18n'
+
 import { ForgotPasswordForm } from '~/modules/auth/form/password/forgot'
 import { AuthLayout } from '~/modules/auth/layout/base'
 import { AuthHeader } from '~/modules/auth/layout/header'
-
-import { useTranslation } from '@libs/i18n'
 
 const ForgotPassword = () => {
   const { t } = useTranslation('auth')

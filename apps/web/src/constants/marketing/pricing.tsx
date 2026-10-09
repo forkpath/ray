@@ -1,5 +1,5 @@
-import { CheckIcon } from '../../components/marketing/icons/card-icons'
-import { CloseIcon } from '../../components/marketing/icons/general'
+import { CheckIcon } from '~/components/marketing/icons/card-icons'
+import { CloseIcon } from '~/components/marketing/icons/general'
 
 export enum TierName {
   TIER_1 = 'Growth',

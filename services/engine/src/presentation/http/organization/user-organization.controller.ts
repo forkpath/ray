@@ -9,11 +9,11 @@ import {
   GenerateOrganizationSlugQueryDto,
   ListInvitationsQueryDto,
   ListMembersQueryDto
-} from '#/application/dtos/organization/organization.dto'
-import { GenerateOrganizationSlugQuery } from '#/application/queries/organization/generate-organization-slug.query'
-import { GetIsOnlyOwnerQuery } from '#/application/queries/organization/get-is-only-owner.query'
-import { ListUserOrganizationInvitationsQuery } from '#/application/queries/organization/list-user-organization-invitations.query'
-import { ListUserOrganizationMembersQuery } from '#/application/queries/organization/list-user-organization-members.query'
+} from '~/application/dtos/organization/organization.dto'
+import { GenerateOrganizationSlugQuery } from '~/application/queries/organization/generate-organization-slug.query'
+import { GetIsOnlyOwnerQuery } from '~/application/queries/organization/get-is-only-owner.query'
+import { ListUserOrganizationInvitationsQuery } from '~/application/queries/organization/list-user-organization-invitations.query'
+import { ListUserOrganizationMembersQuery } from '~/application/queries/organization/list-user-organization-members.query'
 
 interface AuthSession {
   user: { id: string; email: string; role?: string }

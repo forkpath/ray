@@ -1,12 +1,12 @@
-import type { OrganizationEntity } from '../../../domain/entities/organization.entity'
-import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface'
+import type { OrganizationEntity } from '~/domain/entities/organization.entity'
+import type { IOrganizationRepository } from '~/domain/repositories/organization.repository.interface'
 
 import {
   OrganizationNotFoundException,
   OrganizationSlugConflictException
-} from '../../../domain/exceptions/organization.exception'
-import { OrganizationId } from '../../../domain/value-objects/organization-id.vo'
-import { OrganizationSlug } from '../../../domain/value-objects/organization-slug.vo'
+} from '~/domain/exceptions/organization.exception'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
+import { OrganizationSlug } from '~/domain/value-objects/organization-slug.vo'
 
 export interface UpdateOrganizationInput {
   organizationId: string

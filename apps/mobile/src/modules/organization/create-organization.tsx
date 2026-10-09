@@ -4,8 +4,6 @@ import type { BottomSheetContentRef } from '@libs/ui-native'
 import { useMutation } from '@tanstack/react-query'
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
 import { router } from 'expo-router'
 import { Controller, useForm } from 'react-hook-form'
 import { View } from 'react-native'
@@ -32,6 +30,9 @@ import {
   Text,
   useBottomSheet
 } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
 
 import { organization } from './lib/api'
 

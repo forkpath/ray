@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { Message, onMessage, sendMessage } from '../src/lib/messaging'
+import { Message, onMessage, sendMessage } from '~/lib/messaging'
 
 describe('extension messaging', () => {
   it('passes the typed payload through the registered handler', async () => {

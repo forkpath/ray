@@ -74,7 +74,7 @@ dist/test-results/<project>/<integration|e2e>/<run-id>/
   process-<pid>.log       # Worker 进程恢复测试
 ```
 
-`run.json` 分别记录测试是否通过、资源是否清理、中断状态及命名空间。CI 应始终上传整个报告目录，包括失败时的日志。断言通过但清理失败不是成功；本地通过也不能替代 Linux CI 记录。此前测试基线见 [阶段验收记录](testing-framework-validation.md)，本轮迁移结果与剩余工作见 [脚手架强化计划](framework-hardening-plan.md)。
+`run.json` 分别记录测试是否通过、资源是否清理、中断状态及命名空间。CI 应始终上传整个报告目录，包括失败时的日志。断言通过但清理失败不是成功；本地通过也不能替代 Linux CI 记录。此前测试基线见 [测试框架验收记录](archive/2026-09-testing-framework-validation.md)，本轮迁移结果与剩余工作见 [优化过程记录](archive/2026-09-hardening-log.md)。
 
 实现依据：[Testcontainers 容器与生命周期](https://node.testcontainers.org/features/containers/)。每个服务先通过健康与端口检查，宿主端口必须仅绑定 loopback；缺 Docker 或远程 Docker 不会跳过测试。
 

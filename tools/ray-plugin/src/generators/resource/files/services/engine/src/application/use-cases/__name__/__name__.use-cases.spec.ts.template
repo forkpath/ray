@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { <%= className %>Repository } from '../../../domain/<%= name %>/<%= name %>.repository'
+import type { <%= className %>Repository } from '~/domain/<%= name %>/<%= name %>.repository'
 import { <%= className %>UseCases } from './<%= name %>.use-cases'
 
 function fixture() {

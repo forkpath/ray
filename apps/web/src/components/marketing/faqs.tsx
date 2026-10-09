@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from 'react'
 
-import { faqs } from '~/constants/marketing/faqs'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 import useMeasure from 'react-use-measure'
+
+import { faqs } from '~/constants/marketing/faqs'
 
 import { Badge } from './badge'
 import { Button } from './button'

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import { logos } from '~/constants/marketing/logos'
 import { AnimatePresence, motion } from 'motion/react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@libs/ui-core'
+
+import { logos } from '~/constants/marketing/logos'
 
 import { Container } from './container'
 

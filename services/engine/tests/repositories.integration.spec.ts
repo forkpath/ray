@@ -5,8 +5,10 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prisma } from '@libs/pg-dao'
 import { createIdentity, createOrganization } from '@libs/testing-server'
 
-import { CustomerRepository } from '../src/infrastructure/repositories/customer.repository'
-import { OrganizationRepository } from '../src/infrastructure/repositories/organization.repository'
+import { OrganizationId } from '~/domain/value-objects/organization-id.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
+import { CustomerRepository } from '~/infrastructure/repositories/customer.repository'
+import { OrganizationRepository } from '~/infrastructure/repositories/organization.repository'
 
 describe('real admin list repositories', () => {
   const customers = new CustomerRepository()
@@ -106,5 +108,36 @@ describe('real admin list repositories', () => {
         /sort/i
       )
     }
+  })
+})
+
+describe('real organization membership lookups', () => {
+  const organizations = new OrganizationRepository()
+
+  afterAll(() => prisma.$disconnect())
+
+  it('resolves membership roles and counts owners within one organization', async () => {
+    const owner = await createIdentity()
+    const admin = await createIdentity()
+    const outsider = await createIdentity()
+    const organization = await createOrganization(owner.id)
+    const otherOrganization = await createOrganization(outsider.id)
+    await prisma.member.create({
+      data: {
+        id: randomUUID(),
+        organizationId: organization.id,
+        userId: admin.id,
+        role: 'admin',
+        createdAt: new Date()
+      }
+    })
+    const orgId = OrganizationId.create(organization.id)
+
+    expect(await organizations.findMemberRole(orgId, UserId.create(owner.id))).toBe('owner')
+    expect(await organizations.findMemberRole(orgId, UserId.create(admin.id))).toBe('admin')
+    expect(await organizations.findMemberRole(orgId, UserId.create(outsider.id))).toBeNull()
+    expect(await organizations.countMembersByRole(orgId, 'owner')).toBe(1)
+    expect(await organizations.countMembersByRole(orgId, 'admin')).toBe(1)
+    expect(await organizations.countMembersByRole(OrganizationId.create(otherOrganization.id), 'admin')).toBe(0)
   })
 })

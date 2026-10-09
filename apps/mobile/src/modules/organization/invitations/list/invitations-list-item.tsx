@@ -2,8 +2,6 @@ import type { Invitation } from '@libs/auth-contract'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { authClient } from '~/lib/auth'
-import { organization } from '~/modules/organization/lib/api'
 import dayjs from 'dayjs'
 import { Alert, Pressable, View } from 'react-native'
 
@@ -22,6 +20,9 @@ import {
   Skeleton,
   Text
 } from '@libs/ui-native'
+
+import { authClient } from '~/lib/auth'
+import { organization } from '~/modules/organization/lib/api'
 
 export const InvitationListItem = ({ invitation }: { invitation: Invitation }) => {
   const { t, i18n } = useTranslation(['common', 'organization'])

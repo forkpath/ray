@@ -1,7 +1,8 @@
+import { Redirect, Stack } from 'expo-router'
+
 import { pathsConfig } from '~/config/paths'
 import { authClient } from '~/lib/auth'
 import { Spinner } from '~/modules/common/spinner'
-import { Redirect, Stack } from 'expo-router'
 
 export default function DashboardLayout() {
   const session = authClient.useSession()

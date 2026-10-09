@@ -10,6 +10,7 @@ function successfulRun() {
       outputs: {
         backendEnabled: 'true',
         generator: 'true',
+        bootstrap: 'false',
         extension: 'false',
         web: 'true',
         mobileAndroid: 'false',
@@ -21,6 +22,7 @@ function successfulRun() {
     'database-contract': { result: 'success' },
     backend: { result: 'success' },
     generator: { result: 'success' },
+    bootstrap: { result: 'skipped' },
     extension: { result: 'skipped' },
     web: { result: 'success' },
     mobile: { result: 'skipped' },
@@ -54,4 +56,19 @@ test('a selected generator acceptance failure cannot be hidden by the other gree
     run.generator.result = result
     assert.throws(() => verifyRequiredChecks(run), /generator/)
   }
+})
+
+test('a selected bootstrap acceptance must succeed and an unselected one must be skipped', () => {
+  const selected = successfulRun()
+  selected.select.outputs.bootstrap = 'true'
+  for (const result of ['failure', 'skipped', 'cancelled', undefined]) {
+    selected.bootstrap.result = result
+    assert.throws(() => verifyRequiredChecks(selected), /bootstrap/)
+  }
+  selected.bootstrap.result = 'success'
+  verifyRequiredChecks(selected)
+
+  const unselected = successfulRun()
+  unselected.bootstrap.result = 'success'
+  assert.throws(() => verifyRequiredChecks(unselected), /bootstrap: expected skipped/)
 })

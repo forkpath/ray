@@ -1,10 +1,11 @@
+import { View } from 'react-native'
+
+import { BuiltWith } from '@libs/ui-native'
+
 import { ScrollView } from '~/modules/common/styled'
 import { AreaChart } from '~/modules/home/charts/area'
 import { BarChart } from '~/modules/home/charts/bar'
 import { PieChart } from '~/modules/home/charts/pie'
-import { View } from 'react-native'
-
-import { BuiltWith } from '@libs/ui-native'
 
 export default function Home() {
   return (

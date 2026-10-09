@@ -14,8 +14,9 @@ import {
   PlatformSmokePayload
 } from '@libs/platform-contract'
 
-import { AppModule } from '../src/app/app.module'
-import { PlatformHandlerRegistry } from '../src/app/platform-handler.registry'
+import { AppModule } from '~/app/app.module'
+import { PlatformHandlerRegistry } from '~/app/platform-handler.registry'
+
 import { startWorkerProcess } from './process-fixture'
 
 describe('Worker real RabbitMQ delivery and Inbox', () => {

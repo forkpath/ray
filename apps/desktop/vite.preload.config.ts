@@ -6,6 +6,11 @@ import { defineConfig } from 'vite'
 const external = ['electron', ...builtinModules, ...builtinModules.map(module => `node:${module}`)]
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '~': path.resolve(import.meta.dirname, 'src')
+    }
+  },
   build: {
     lib: {
       entry: path.resolve(import.meta.dirname, 'src/main/preload.ts'),

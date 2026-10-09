@@ -1,8 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema'
-import { pathsConfig } from '~/config/paths'
-import { Link } from '~/modules/common/styled'
 import * as Linking from 'expo-linking'
 import { Controller, useForm } from 'react-hook-form'
 import { Alert, View } from 'react-native'
@@ -11,7 +9,9 @@ import { forgotPasswordSchema } from '@libs/auth-contract'
 import { useTranslation } from '@libs/i18n'
 import { Button, Field, FieldError, FieldLabel, Icons, Input, Spin, Text } from '@libs/ui-native'
 
-import { auth } from '../../lib/api'
+import { pathsConfig } from '~/config/paths'
+import { auth } from '~/modules/auth/lib/api'
+import { Link } from '~/modules/common/styled'
 
 export const ForgotPasswordForm = () => {
   const { t } = useTranslation(['common', 'auth'])

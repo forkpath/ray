@@ -14,7 +14,7 @@ Chrome/Firefox 用户；通过浏览器加载扩展产物，不能由其他库�
 
 ## 环境变量与配置来源
 
-env.ts 读取 VITE_URL（站点地址）、VITE_API_BASE_URL（Engine）、VITE_DEFAULT_LOCALE/VITE_THEME_MODE/VITE_THEME_COLOR（UI 设置），均由根 .env/部署构建提供；wxt.config.ts 根据 MODE/NODE_ENV 加载根 env。监控使用 VITE_SENTRY_EXTENSION_DSN 与 VITE_SENTRY_ENVIRONMENT（Sentry 后台/环境名），埋点用 VITE_POSTHOG_KEY/HOST。公开配置不要放 token/secret。
+`src/lib/env.ts` 读取 VITE_URL（站点地址）、VITE_API_BASE_URL（Engine）、VITE_DEFAULT_LOCALE/VITE_THEME_MODE/VITE_THEME_COLOR（UI 设置），均由根 .env/部署构建提供；wxt.config.ts 根据 MODE/NODE_ENV 加载根 env。监控使用 VITE_SENTRY_EXTENSION_DSN 与 VITE_SENTRY_ENVIRONMENT（Sentry 后台/环境名），埋点用 VITE_POSTHOG_KEY/HOST。公开配置不要放 token/secret。
 
 | 变量                                     | 含义                            | 何时配置/默认                                                          | 值从哪里来                                    |
 | ---------------------------------------- | ------------------------------- | ---------------------------------------------------------------------- | --------------------------------------------- |
@@ -27,7 +27,7 @@ env.ts 读取 VITE_URL（站点地址）、VITE_API_BASE_URL（Engine）、VITE_
 
 依赖配置：[auth-client-web](../../libs/auth-client-web/README.md)、[monitoring-web](../../libs/monitoring-web/README.md)。只在实际启用对应路径时提供厂商配置，不把服务端密钥放到客户端。
 
-读取/配置定义：[env.ts](env.ts)。
+读取/配置定义：[src/lib/env.ts](src/lib/env.ts)。
 
 加载时机、dotenv wrapper 和秘密管理见[环境指南](../../docs/development/environment.md)。本表未包含真实凭据。
 

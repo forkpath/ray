@@ -1,10 +1,11 @@
 import type React from 'react'
 
+import { motion } from 'motion/react'
+
 import { IconBlock } from '~/components/marketing/common/icon-block'
 import { CodeIcon, PhoneIcon, WindowIcon } from '~/components/marketing/icons/bento-icons'
 import { LinearLogo, NotionLogo, OpenAILogo, SlackLogo, SupabaseLogo } from '~/components/marketing/icons/general'
 import { LogoSVG } from '~/components/marketing/logo'
-import { motion } from 'motion/react'
 
 import { BottomSVG, MiddleSVG, RightSideSVG, TopSVG, VerticalLine } from './native-tool-connectors'
 

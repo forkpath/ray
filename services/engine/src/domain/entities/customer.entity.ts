@@ -1,6 +1,6 @@
-import { CustomerId } from '../value-objects/customer-id.vo'
-import { ExternalId } from '../value-objects/external-id.vo'
-import { UserId } from '../value-objects/user-id.vo'
+import { CustomerId } from '~/domain/value-objects/customer-id.vo'
+import { ExternalId } from '~/domain/value-objects/external-id.vo'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 export interface BillingCustomerUserSnapshot {
   readonly name: string

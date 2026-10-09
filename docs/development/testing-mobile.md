@@ -125,4 +125,4 @@ JUnit、Maestro 诊断、截图、测试产物、bundle 页面检查、fixture �
 必须包含真正的失败断言；不要用 `optional: true` 掩盖核心路径失败。需要
 第三方集成的专项测试单独显式启用，缺少前置条件时明确报告，不能悄悄当作通过。
 
-当前实际平台结果见 [阶段验收记录](testing-framework-validation.md)。
+当前实际平台结果见 [项目现状](status.md)。

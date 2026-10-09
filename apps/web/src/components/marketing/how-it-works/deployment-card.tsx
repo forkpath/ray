@@ -1,9 +1,10 @@
 import type { useMotionValue } from 'motion/react'
 
-import { ForkIcon } from '~/components/marketing/icons/general'
 import { motion, useTransform } from 'motion/react'
 
 import { cn } from '@libs/ui-core'
+
+import { ForkIcon } from '~/components/marketing/icons/general'
 
 /* 单个部署卡片的动画容器（将 useTransform 提取到组件级别以遵循 Hooks 规则） */
 export const DeployCardMotion = ({

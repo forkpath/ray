@@ -1,9 +1,10 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { appConfig } from '~/config/app'
 import { browser } from 'wxt/browser'
 
 import { config } from '@libs/i18n'
+
+import { appConfig } from '~/config/app'
 
 const QUERY_KEY = 'locale'
 

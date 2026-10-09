@@ -6,7 +6,7 @@ import { unitCoverage } from '../../scripts/testing/unit-coverage.mjs'
 
 export default defineConfig({
   root: import.meta.dirname,
-  plugins: [react(), tsconfigPaths({ projects: ['../../tsconfig.base.json'] })],
+  plugins: [react(), tsconfigPaths({ projects: ['../../tsconfig.base.json', './tsconfig.json'] })],
   test: {
     name: 'desktop',
     watch: false,

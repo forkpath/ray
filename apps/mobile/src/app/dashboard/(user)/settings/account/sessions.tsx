@@ -1,15 +1,16 @@
 import { Fragment } from 'react/jsx-runtime'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
-import { pathsConfig } from '~/config/paths'
-import { authClient } from '~/lib/auth'
-import { auth } from '~/modules/auth/lib/api'
 import { router } from 'expo-router'
 import { Alert, FlatList, RefreshControl, View } from 'react-native'
 
 import { useTranslation } from '@libs/i18n'
 import { cn } from '@libs/ui-core'
 import { Badge, Button, Icons, Skeleton, Spin, Text } from '@libs/ui-native'
+
+import { pathsConfig } from '~/config/paths'
+import { authClient } from '~/lib/auth'
+import { auth } from '~/modules/auth/lib/api'
 
 export default function Sessions() {
   const { t } = useTranslation(['common', 'auth'])

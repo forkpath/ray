@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { auth } from '~/modules/auth/lib/api'
 import { Alert } from 'react-native'
 import { create } from 'zustand'
 
 import { useTranslation } from '@libs/i18n'
 
-import { useBackupCodes } from '../backup-codes/use-backup-codes'
+import { auth } from '~/modules/auth/lib/api'
+import { useBackupCodes } from '~/modules/user/settings/account/two-factor/backup-codes/use-backup-codes'
 
 const useUri = create<{
   uri: string

@@ -1,15 +1,14 @@
 import type { ICommandHandler } from '@nestjs/cqrs'
-import type { UserResponse } from '../../dtos/user/user.dto'
-import type { IUserRepository } from '#/domain/repositories/user.repository.interface'
+import type { UserResponse } from '~/application/dtos/user/user.dto'
+import type { IUserRepository } from '~/domain/repositories/user.repository.interface'
 
 import { Inject } from '@nestjs/common'
 import { CommandHandler } from '@nestjs/cqrs'
 
-import { UserNotFoundException } from '#/domain/exceptions/user.exception'
-import { USER_REPOSITORY } from '#/domain/repositories/user.repository.interface'
-import { UserId } from '#/domain/value-objects/user-id.vo'
-
-import { UserMapper } from '../../mappers/user.mapper'
+import { UserMapper } from '~/application/mappers/user.mapper'
+import { UserNotFoundException } from '~/domain/exceptions/user.exception'
+import { USER_REPOSITORY } from '~/domain/repositories/user.repository.interface'
+import { UserId } from '~/domain/value-objects/user-id.vo'
 
 /**
  * 解封用户命令
