@@ -5,14 +5,15 @@
 
 ## 已就绪
 
-| 能力         | 状态与入口                                                                                                                                              |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 本地启动     | `pnpm bootstrap --seed --start` 一条命令完成配置、安装、基础设施、迁移、演示数据与四个应用；`pnpm run doctor` 诊断。见 [本地启动](bootstrap.md)         |
-| 质量门禁     | 全仓 `nx format:check`、零 warning lint、typecheck、带覆盖率门槛的单测；CI 按 affected 选择并强制执行。见 [CI 检查](testing-ci.md)                      |
-| 分层约束     | Engine/Pulse 的 Domain 与 Application 层禁止导入数据库、SDK 和 infrastructure，由 ESLint 拦截。见 [框架指南](../architecture/ray-framework-nx-guide.md) |
-| 业务资源生成 | `nx g @ray/plugin:resource` 生成 Prisma 到 API client 的全部后端分层与测试。见 [生成器](../../tools/ray-plugin/README.md)                               |
-| 后端集成测试 | Testcontainers 启动真实 PG/Redis/Mongo/RabbitMQ，失败与中断也会清理。见 [后端测试](testing-backend.md)                                                  |
-| 依赖安全     | 官方 registry 审计；本地补丁必须有期限和回归测试；`pnpm ci:patches` 报告补丁的上游新版本。见 [依赖治理](dependency-governance.md)                       |
+| 能力          | 状态与入口                                                                                                                                              |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 本地启动      | `pnpm bootstrap --seed --start` 一条命令完成配置、安装、基础设施、迁移、演示数据与四个应用；`pnpm run doctor` 诊断。见 [本地启动](bootstrap.md)         |
+| 质量门禁      | 全仓 `nx format:check`、零 warning lint、typecheck、带覆盖率门槛的单测；CI 按 affected 选择并强制执行。见 [CI 检查](testing-ci.md)                      |
+| 分层约束      | Engine/Pulse 的 Domain 与 Application 层禁止导入数据库、SDK 和 infrastructure，由 ESLint 拦截。见 [框架指南](../architecture/ray-framework-nx-guide.md) |
+| 业务资源生成  | `nx g @ray/plugin:resource` 生成 Prisma 到 API client 的全部后端分层与测试。见 [生成器](../../tools/ray-plugin/README.md)                               |
+| 后端集成测试  | Testcontainers 启动真实 PG/Redis/Mongo/RabbitMQ，失败与中断也会清理。见 [后端测试](testing-backend.md)                                                  |
+| 自托管 Runner | iOS 与 Desktop 测试可通过仓库变量切到自有 Mac/Windows，默认仍用托管 runner。见 [自托管 Runner](self-hosted-runners.md)                                  |
+| 依赖安全      | 官方 registry 审计；本地补丁必须有期限和回归测试；`pnpm ci:patches` 报告补丁的上游新版本。见 [依赖治理](dependency-governance.md)                       |
 
 ## 已知限制
 

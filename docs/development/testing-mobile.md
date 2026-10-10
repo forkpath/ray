@@ -29,7 +29,7 @@ pnpm nx run mobile:e2e:ios
   SecureStore 能访问该测试应用的 Keychain；不能设置 `CODE_SIGNING_ALLOWED=NO`。
 
 Expo 57 的官方最低要求是 Xcode 26.4；本套件固定到 GitHub `macos-26`
-已提供的 Xcode 26.6 / iOS 26.5。可用 `DEVELOPER_DIR` 选择并行安装的
+已提供的 Xcode 26.6 / iOS 26.5。改用自有 Mac 执行时，需在相同路径安装同一版本，见 [自托管 Runner](self-hosted-runners.md)。可用 `DEVELOPER_DIR` 选择并行安装的
 Xcode。旧工具链会在构建前明确失败，不修改依赖源码绕过编译器要求。
 参见 [Expo 兼容表](https://docs.expo.dev/versions/latest/) 和
 [GitHub runner 清单](https://github.com/actions/runner-images/blob/main/images/macos/macos-26-Readme.md)。

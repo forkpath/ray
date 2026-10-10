@@ -6,6 +6,8 @@ import { isDeepStrictEqual } from 'node:util'
 
 import { parse } from 'yaml'
 
+import { readContext, readVariables, resolveRunners } from './runners.mjs'
+
 export function onlyDeploymentJobsChanged(before, after) {
   const record = value => value !== null && typeof value === 'object' && !Array.isArray(value)
   const withoutDeployment = source => {
@@ -144,6 +146,8 @@ function main() {
     }
   }
   const suites = selectTestSuites({ affected, nativeAffected, files, full, ciDeploymentOnly })
+  // Resolve before writing outputs so a malformed runner variable fails the selection job.
+  const { runners } = resolveRunners(readVariables(), readContext())
   const output = {
     full: suites.full,
     base: suites.full ? '' : base,
@@ -159,8 +163,8 @@ function main() {
     mobileIos: suites.mobileIos,
     mobile: JSON.stringify({
       include: [
-        ...(suites.mobileAndroid ? [{ platform: 'android', os: 'ubuntu-24.04' }] : []),
-        ...(suites.mobileIos ? [{ platform: 'ios', os: 'macos-26' }] : [])
+        ...(suites.mobileAndroid ? [{ platform: 'android', runner: 'ubuntu-24.04' }] : []),
+        ...(suites.mobileIos ? [{ platform: 'ios', runner: runners.ios }] : [])
       ]
     })
   }

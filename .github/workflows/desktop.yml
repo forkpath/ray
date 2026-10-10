@@ -9,18 +9,46 @@ on:
 permissions:
   contents: read
 jobs:
+  # Resolve hosted or self-hosted runners with the same validation as the CI selector.
+  # In a reusable workflow, vars and the event context come from the calling run.
+  runners:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      runners: ${{ steps.resolve.outputs.runners }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.14.1
+      - id: resolve
+        run: node scripts/ci/runners.mjs
+        env:
+          RAY_RUNNER_IOS: ${{ vars.RAY_RUNNER_IOS }}
+          RAY_RUNNER_DESKTOP_MAC_ARM64: ${{ vars.RAY_RUNNER_DESKTOP_MAC_ARM64 }}
+          RAY_RUNNER_DESKTOP_MAC_X64: ${{ vars.RAY_RUNNER_DESKTOP_MAC_X64 }}
+          RAY_RUNNER_DESKTOP_WIN: ${{ vars.RAY_RUNNER_DESKTOP_WIN }}
+          RAY_RUNNER_ANDROID: ${{ vars.RAY_RUNNER_ANDROID }}
+
   desktop:
+    needs: runners
     strategy:
       fail-fast: false
       matrix:
+        # `os` names the hosted image and the artifact; `runner` is where the job runs.
         include:
           - os: macos-15
             arch: arm64
+            runner: ${{ fromJSON(needs.runners.outputs.runners).desktopMacArm64 }}
           - os: macos-15-intel
             arch: x64
+            runner: ${{ fromJSON(needs.runners.outputs.runners).desktopMacX64 }}
           - os: windows-2025
             arch: x64
-    runs-on: ${{ matrix.os }}
+            runner: ${{ fromJSON(needs.runners.outputs.runners).desktopWin }}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     env:
       NX_NO_CLOUD: 'true'

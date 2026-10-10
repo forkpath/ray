@@ -65,6 +65,12 @@ jobs:
         run: node scripts/ci/select-test-suites.mjs
         env:
           CI_FULL: ${{ inputs.full }}
+          # Optional self-hosted runners; see docs/development/self-hosted-runners.md.
+          RAY_RUNNER_IOS: ${{ vars.RAY_RUNNER_IOS }}
+          RAY_RUNNER_DESKTOP_MAC_ARM64: ${{ vars.RAY_RUNNER_DESKTOP_MAC_ARM64 }}
+          RAY_RUNNER_DESKTOP_MAC_X64: ${{ vars.RAY_RUNNER_DESKTOP_MAC_X64 }}
+          RAY_RUNNER_DESKTOP_WIN: ${{ vars.RAY_RUNNER_DESKTOP_WIN }}
+          RAY_RUNNER_ANDROID: ${{ vars.RAY_RUNNER_ANDROID }}
 
   main:
     needs: select
@@ -353,7 +359,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.select.outputs.mobile) }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 90
     env:
       NX_NO_CLOUD: 'true'
@@ -403,9 +409,10 @@ jobs:
           path: |
             ~/Library/Caches/CocoaPods
             .cache/mobile-native/ios
-          key: mobile-xcode-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/testing/mobile-tools.json') }}-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'apps/mobile/package.json', 'apps/mobile/app.config.ts', 'apps/mobile/eas.json', 'patches/**') }}
+          # Hosted and self-hosted Macs run different macOS versions; keep their caches apart.
+          key: mobile-xcode-v1-${{ runner.environment }}-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/testing/mobile-tools.json') }}-${{ hashFiles('pnpm-lock.yaml', 'pnpm-workspace.yaml', 'apps/mobile/package.json', 'apps/mobile/app.config.ts', 'apps/mobile/eas.json', 'patches/**') }}
           restore-keys: |
-            mobile-xcode-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/testing/mobile-tools.json') }}-
+            mobile-xcode-v1-${{ runner.environment }}-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/testing/mobile-tools.json') }}-
       - run: pnpm install --frozen-lockfile
       - run: node scripts/testing/install-maestro.mjs
       - name: Prepare Android device and native SDK
@@ -414,13 +421,16 @@ jobs:
           test -e /dev/kvm
           sudo chmod a+rw /dev/kvm
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'ndk;27.1.12297006' 'system-images;android-36;google_apis;x86_64'
-      - name: Select pinned Xcode and hosted simulator runtime
+      - name: Select pinned Xcode and simulator runtime
         if: matrix.platform == 'ios'
         run: |
           node --input-type=module <<'JS'
-          import { appendFileSync, readFileSync } from 'node:fs'
+          import { appendFileSync, existsSync, readFileSync } from 'node:fs'
           const tools = JSON.parse(readFileSync('scripts/testing/mobile-tools.json', 'utf8'))
-          appendFileSync(process.env.GITHUB_ENV, `DEVELOPER_DIR=/Applications/Xcode_${tools.xcodeVersion}.app/Contents/Developer\n`)
+          const developerDir = `/Applications/Xcode_${tools.xcodeVersion}.app/Contents/Developer`
+          // Self-hosted Macs must install the pinned Xcode at the same path as the hosted image.
+          if (!existsSync(developerDir)) throw new Error(`Pinned Xcode ${tools.xcodeVersion} not found at ${developerDir}`)
+          appendFileSync(process.env.GITHUB_ENV, `DEVELOPER_DIR=${developerDir}\n`)
           JS
       - run: pnpm nx run mobile:e2e:${{ matrix.platform }}
       # A later device/flow failure must not discard a completed native build's
