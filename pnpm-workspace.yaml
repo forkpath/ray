@@ -19,9 +19,9 @@ catalog:
   '@tanstack/react-devtools': ^0.10.8
   '@tanstack/react-query': 5.101.2
   '@tanstack/react-query-devtools': 5.101.2
-  '@tanstack/react-router': ^1.170.38
+  '@tanstack/react-router': 1.170.42
   '@tanstack/react-router-devtools': ^1.167.2
-  '@tanstack/router-plugin': ^1.168.40
+  '@tanstack/router-plugin': 1.168.43
   '@testing-library/react': 16.3.0
   '@vitejs/plugin-react': 6.1.1
   '@vitest/coverage-v8': 4.1.11
@@ -149,6 +149,9 @@ overrides:
   better-call@1.3.7>@better-fetch/fetch: 1.3.1
   # Match TanStack Start's Node adapter; mixed srvx headers crash the dev server.
   'h3@2.0.1-rc.20>srvx': 0.11.22
+  # @tanstack/react-start pins one router-core; peers (devtools, SSR query) must share it.
+  # Update together with @tanstack/react-start, react-router and router-plugin.
+  '@tanstack/router-core': 1.171.35
   # Zeego 3.0.6 still pins 1.2.2, which does not compile with React Native 0.86.
   'zeego>@react-native-menu/menu': 2.0.0
   zod: 4.4.3
@@ -166,6 +169,7 @@ overrides:
   'brace-expansion@>=5.0.0 <5.0.11': 5.0.11
   'browserslist@>=4.0.0 <4.28.7': 4.28.7
   '@prisma/config@7.8.0>deepmerge-ts': 8.0.2
+  'compression@>=1.0.0 <1.8.2': 1.8.2
   'defu@>=6.0.0 <6.1.5': 6.1.5
   'fast-uri@>=3.0.0 <3.1.7': 3.1.7
   'fast-xml-parser@>=5.0.0 <5.10.1': 5.10.1
@@ -188,11 +192,14 @@ overrides:
   'piscina@>=4.0.0 <4.9.4': 4.9.4
   'postcss@>=8.0.0 <8.5.18': 8.5.18
   'protobufjs@>=7.0.0 <7.6.1': 7.6.1
+  'proxy-addr@>=2.0.0 <2.0.8': 2.0.8
   'rollup@>=4.0.0 <4.59.0': 4.59.0
   'serialize-javascript@>=6.0.0 <7.0.3': 7.0.5
-  'seroval@>=1.0.0 <1.5.3': 1.5.3
-  'shell-quote@>=1.0.0 <1.9.0': 1.9.0
+  'seroval@>=1.0.0 <1.6.3': 1.6.3
+  'shell-quote@>=1.0.0 <1.11.0': 1.11.0
   'smol-toml@>=1.0.0 <1.7.1': 1.7.1
+  'solid-js@>=1.9.0 <1.9.17': 1.9.17
+  'source-map-js@>=1.0.0 <1.2.2': 1.2.2
   'svgo@>=3.0.0 <3.3.5': 3.3.5
   'svgo@>=4.0.0 <4.1.0': 4.1.0
   'tmp@<0.2.7': 0.2.7

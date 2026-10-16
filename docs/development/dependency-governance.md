@@ -250,3 +250,33 @@ pnpm nx run-many -t build -p engine,pulse,worker --nxBail
 补丁和记录必须一起维护。上游发布修复版后，应在单独 PR 升级并移除相应补丁及记录，
 保留回归用例验证正式版本，再执行冻结安装、官方源复扫和完整 CI。不得自动续期，
 也不能只重算哈希来消除失败。远端验收以 PR 最新提交的 `Required checks` 为准。
+
+## 2026-10-16：新增严重告警修复与三项豁免复审
+
+官方源扫描在三项豁免到期当天新增 **critical 5、high 3**（原有 high 3 同时到期），所有 PR 的
+`Required checks` 因安全扫描失败而无法通过。处理结果：
+
+| 包                                       | 告警                            | 处理                                                                                                                                                     |
+| ---------------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| @tanstack/react-start、start-server-core | GHSA-qx66-fv34-fjm8（critical） | react-start `~1.168.61`（引入 start-server-core 1.169.40）；未升到 1.169 线，该线改用新的服务端运行时（去掉 h3、srvx 1.x），会破坏现有 Web HTTP 兼容测试 |
+| proxy-addr                               | critical                        | 安全下限 2.0.8（express `~2.0.7` 范围内）                                                                                                                |
+| shell-quote                              | critical                        | 原下限调整为 1.11.0（detox `^1.7.2` 范围内）                                                                                                             |
+| seroval                                  | critical + high                 | solid-js 下限 1.9.17（自带 seroval `~1.6.8`）；seroval 下限调整为 1.6.3                                                                                  |
+| source-map-js、compression               | high                            | 安全下限 1.2.2、1.8.2（补丁级）                                                                                                                          |
+
+TanStack 的 react-start、react-router、router-plugin 与 router-core 相互精确依赖：catalog 中
+react-router 固定为 1.170.42、router-plugin 固定为 1.168.43，并用 override 把 router-core 固定为 1.171.35，
+保证整个工作区只有一份 router 运行时。升级 react-start 时这几项必须一起更新。
+
+三项本地补丁的豁免按审查复核续期至 **2026-10-30 00:00 UTC**（不超过 14 天），不是上游修复：
+
+- node-forge 1.4.0、braces 3.0.3 仍是最新版本，公告未列出修复版本。
+- http-cache-semantics 上游已发布 4.3.0，但**没有修复** GHSA-ch52：其 `max-stale` / 过期复用分支与 4.2.0
+  完全相同，带 `Set-Cookie` 且 `no-cache` 的响应仍会通过 `max-stale` 返回给另一个 Cookie 的请求。
+  公告的受影响范围写为 `<=4.2.0`，升级会让扫描变绿但重新引入问题，因此保留 4.2.0 与本地补丁。
+  `pnpm ci:patches` 会把 4.3.0 显示为“上游有新版本”，复核结论以本节为准。
+- 三项补丁文件未改动；在重新生成的锁文件上，三组补丁回归共 33 项全部通过。
+  因锁文件与 workspace 变化，按复核结果重新绑定哈希，并更新每条记录的复核说明。
+
+复核后官方源原始扫描为 **high 3、critical 0**，补丁核验通过时缓解 3、未缓解 0。到期前仍需再次复核：
+上游发布真正的修复版本时，按上一节的步骤在单独 PR 中升级并移除补丁。

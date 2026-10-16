@@ -10,17 +10,17 @@
       "vulnerableVersions": "<=1.4.0",
       "patchedVersions": "<0.0.0",
       "advisoryUpdated": "2026-10-01T21:09:10.000Z",
-      "reviewedAt": "2026-10-03T00:00:00.000Z",
-      "expiresAt": "2026-10-16T00:00:00.000Z",
-      "reason": "Existing nested DigestAlgorithm element-count fix re-reviewed against unchanged advisory and upstream PR #1152. All 10 real signature and Expo signing/CSR regressions pass after the two new dependency patches. Patch is unchanged; frozen dependency bindings are re-reviewed and expiry is not extended. Registry still reports this finding. Upstream proposal is not merged or released.",
+      "reviewedAt": "2026-10-16T00:00:00.000Z",
+      "expiresAt": "2026-10-30T00:00:00.000Z",
+      "reason": "Re-reviewed 2026-10-16 against the unchanged advisory and upstream PR #1152: node-forge 1.4.0 is still the latest release and the advisory lists no patched version. The local DigestAlgorithm element-count patch is unchanged and all real signature and Expo signing/CSR regressions pass on the regenerated lockfile. Renewed for one review period; upstream proposal is still not merged or released.",
       "sources": [
         "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
         "https://github.com/digitalbazaar/forge/pull/1152"
       ],
       "removal": "Upgrade to a released upstream fix, remove the pnpm patch and this record, regenerate the frozen lockfile, rerun regressions, raw audit and the full native CI matrix. Never renew automatically.",
       "files": {
-        "pnpm-lock.yaml": "38d3963e3af7cdb1db40bbacdd3fe7b6bb9e9c25c915c0d9cd27a82d91adc134",
-        "pnpm-workspace.yaml": "b320799e06ebf914860273a06b2626b4c803a8a74220763e173653b2efbe73a4",
+        "pnpm-lock.yaml": "f8217070d550bc72dec81c86d6a29685586a98ad7d4d50de04f409f9f6205edb",
+        "pnpm-workspace.yaml": "5270c4bd9529c53ba2651486d689060fca639c2243d204e76d4c71d57337c40e",
         "patches/node-forge@1.4.0.patch": "266a573c1d45837e959f85fbe574e371c5f667a622504161b388838532ccf439",
         "scripts/ci/node-forge-patch.test.mjs": "020f6a308e5788942b56f6ca0cda5615f0e73a1fe92da832ce14a7309b57f16a"
       }
@@ -34,9 +34,9 @@
       "vulnerableVersions": "<=4.2.0",
       "patchedVersions": "<0.0.0",
       "advisoryUpdated": "2026-10-02T22:36:44.000Z",
-      "reviewedAt": "2026-10-03T00:00:00.000Z",
-      "expiresAt": "2026-10-16T00:00:00.000Z",
-      "reason": "Centralized response reuse restrictions prevent max-stale and stale-while-revalidate from bypassing shared-cookie, private, no-cache, no-store and authorization rules. All 13 real API and SWC downloader HTTP regressions pass; pristine package fails 8. Upstream proposal is not merged or released.",
+      "reviewedAt": "2026-10-16T00:00:00.000Z",
+      "expiresAt": "2026-10-30T00:00:00.000Z",
+      "reason": "Re-reviewed 2026-10-16: upstream 4.3.0 was published but does not fix GHSA-ch52 (its max-stale/stale-while-revalidate handling is byte-identical to 4.2.0; a no-cache Set-Cookie response is still served to another cookie via max-stale). The advisory still lists no patched version. The local reuse-limit patch is unchanged and its regressions pass on the regenerated lockfile. Renewed for one review period.",
       "sources": [
         "https://github.com/advisories/GHSA-ch52-4w7c-c8xp",
         "https://github.com/kornelski/http-cache-semantics/pull/58"
@@ -44,8 +44,8 @@
       "upstreamCommit": "14a8c2ad51740dc39bf3e8f1a11c845a5003f217",
       "removal": "Upgrade to a released upstream fix, remove this pnpm patch and record, regenerate the frozen lockfile, retain and rerun regressions, raw audit and full CI including native builds. Never renew automatically.",
       "files": {
-        "pnpm-lock.yaml": "38d3963e3af7cdb1db40bbacdd3fe7b6bb9e9c25c915c0d9cd27a82d91adc134",
-        "pnpm-workspace.yaml": "b320799e06ebf914860273a06b2626b4c803a8a74220763e173653b2efbe73a4",
+        "pnpm-lock.yaml": "f8217070d550bc72dec81c86d6a29685586a98ad7d4d50de04f409f9f6205edb",
+        "pnpm-workspace.yaml": "5270c4bd9529c53ba2651486d689060fca639c2243d204e76d4c71d57337c40e",
         "patches/http-cache-semantics@4.2.0.patch": "bfcf00566a3fdf00a595f838b4fb57e05aed93d48de2192d046459540f4fb98a",
         "scripts/ci/http-cache-semantics-patch.test.mjs": "eaa1f6e5824daa04c7c7ea5332df576724534d123aefb88c08ced0f64fb38991"
       }
@@ -59,15 +59,15 @@
       "vulnerableVersions": "<=3.0.3",
       "patchedVersions": "<0.0.0",
       "advisoryUpdated": "2026-10-02T22:36:34.000Z",
-      "reviewedAt": "2026-10-03T00:00:00.000Z",
-      "expiresAt": "2026-10-16T00:00:00.000Z",
-      "reason": "Parser and recursive AST walkers enforce a maximum nesting depth of 100, including caller-supplied ASTs. All 10 API and Jest micromatch regressions pass; pristine package fails 9. Ordinary patterns, ranges and boundary behavior are preserved. Upstream proposal is not merged or released.",
+      "reviewedAt": "2026-10-16T00:00:00.000Z",
+      "expiresAt": "2026-10-30T00:00:00.000Z",
+      "reason": "Re-reviewed 2026-10-16: braces 3.0.3 is still the latest release and the advisory lists no patched version. The local nesting-depth patch is unchanged and its parser/compile/expand regressions pass on the regenerated lockfile. Renewed for one review period; upstream PR #72 is still not merged or released.",
       "sources": ["https://github.com/advisories/GHSA-vfj7-8cjw-p6xm", "https://github.com/micromatch/braces/pull/72"],
       "upstreamCommit": "d0d575e55e74a4e0218e5248fafb79efc3e54ebb",
       "removal": "Upgrade to a released upstream fix, remove this pnpm patch and record, regenerate the frozen lockfile, retain and rerun regressions, raw audit and full CI including native builds. Never renew automatically.",
       "files": {
-        "pnpm-lock.yaml": "38d3963e3af7cdb1db40bbacdd3fe7b6bb9e9c25c915c0d9cd27a82d91adc134",
-        "pnpm-workspace.yaml": "b320799e06ebf914860273a06b2626b4c803a8a74220763e173653b2efbe73a4",
+        "pnpm-lock.yaml": "f8217070d550bc72dec81c86d6a29685586a98ad7d4d50de04f409f9f6205edb",
+        "pnpm-workspace.yaml": "5270c4bd9529c53ba2651486d689060fca639c2243d204e76d4c71d57337c40e",
         "patches/braces@3.0.3.patch": "37f95f7d660c05bfd44d4b429ca49ceeede99dcff68389f81ee9b995a8ea24d2",
         "scripts/ci/braces-patch.test.mjs": "0a4d22b26c8c9ba1db50c16f2e80686c2544d690de999c431f178b2e487f2175"
       }
