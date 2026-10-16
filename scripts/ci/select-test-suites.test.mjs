@@ -4,7 +4,12 @@ import { test } from 'node:test'
 
 import { parse, stringify } from 'yaml'
 
-import { onlyDeploymentJobsChanged, requiresFullRun, selectTestSuites } from './select-test-suites.mjs'
+import {
+  applyPullRequestLabels,
+  onlyDeploymentJobsChanged,
+  requiresFullRun,
+  selectTestSuites
+} from './select-test-suites.mjs'
 
 test('the CI native exemption requires unchanged shared configuration and all non-deployment jobs', () => {
   const before = readFileSync('.github/workflows/ci.yml', 'utf8')
@@ -82,10 +87,15 @@ test('deployment-only CI edits retain full quality gates and use the remaining c
   }
 })
 
-test('ordinary dev pushes use affected selection; initial, scheduled and explicit full runs retain the complete matrix', () => {
-  const input = { eventName: 'push', ref: 'refs/heads/dev', base: 'a'.repeat(40), force: '' }
+test('pull requests use affected selection; dev pushes, initial, scheduled and explicit runs are full', () => {
+  const input = { eventName: 'pull_request', ref: 'refs/pull/1/merge', base: 'a'.repeat(40), force: '' }
   assert.equal(requiresFullRun(input), false)
+  // arch pushes never run CI (no push trigger); other branch pushes are not full either.
+  assert.equal(requiresFullRun({ ...input, eventName: 'push', ref: 'refs/heads/feature' }), false)
+  // main is fast-forwarded to an already tested dev commit; CI does not run there.
+  assert.equal(requiresFullRun({ ...input, eventName: 'push', ref: 'refs/heads/main' }), false)
   for (const change of [
+    { eventName: 'push', ref: 'refs/heads/dev' },
     { base: undefined },
     { base: '0'.repeat(40) },
     { eventName: 'schedule' },
@@ -226,4 +236,24 @@ test('environment-level setup changes run the fresh-checkout bootstrap acceptanc
   assert.equal(selectTestSuites({ affected: [], files: [], full: true }).bootstrap, true)
   const setup = selectTestSuites({ affected: [], files: ['scripts/development/doctor.mjs'], full: false })
   assert.equal(setup.mobileAndroid || setup.mobileIos || setup.desktop, false)
+})
+
+test('pull request labels skip only the named device suites, and ci:full overrides them', () => {
+  const all = selectTestSuites({ affected: [], files: [], full: true })
+  const mobile = applyPullRequestLabels(all, ['CI:skip-mobile'])
+  assert.equal(mobile.suites.mobileAndroid || mobile.suites.mobileIos, false)
+  assert.equal(mobile.suites.desktop && mobile.suites.extension && mobile.suites.web, true)
+  assert.deepEqual(mobile.suites.backend, ['engine', 'pulse', 'worker'])
+  assert.deepEqual(
+    mobile.skipped.map(item => item.suite),
+    ['mobileAndroid', 'mobileIos']
+  )
+  const both = applyPullRequestLabels(all, ['ci:skip-desktop', 'ci:skip-extension', 'documentation'])
+  assert.equal(both.suites.desktop || both.suites.extension, false)
+  assert.equal(both.suites.mobileAndroid, true)
+  const forced = applyPullRequestLabels(all, ['ci:skip-mobile', 'ci:full'])
+  assert.deepEqual(forced, { suites: all, skipped: [] })
+  // A skip label on an unselected suite reports nothing.
+  const docs = selectTestSuites({ affected: [], files: ['docs/development/testing.md'], full: false })
+  assert.deepEqual(applyPullRequestLabels(docs, ['ci:skip-mobile']).skipped, [])
 })

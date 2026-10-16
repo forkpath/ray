@@ -8,6 +8,8 @@
 | `check-container-contracts.sh` / `pnpm ci:container-contracts` | Dockerfile Buildx 检查、Compose 渲染、入口语法检查；`--require-artifacts` 检查打包文件                          | CI；改 Docker/打包配置时   |
 | `runtime-boundaries.test.mjs`                                  | 用实际 ESLint/浏览器打包验证 Web/Native 不引入 Node 专用依赖                                                    | `pnpm ci:checks`           |
 | `check-patches.mjs` / `pnpm ci:patches`                        | 报告本地补丁对应依赖的上游新正式版本和安全豁免剩余天数；registry 失败时返回失败                                 | 每周安全扫描；改补丁前后   |
+| `pr-policy.mjs`                                                | `PR policy` 检查：PR 只能面向 dev 或 arch；main 不接受 PR，通过快进发布                                         | `pr-policy.yml`            |
+| `rulesets.test.mjs`                                            | 检查 `.github/rulesets/*.json` 与工作流检查名称、合并方式、main 发布规则一致                                    | `pnpm ci:checks`           |
 | `runners.mjs`                                                  | 根据仓库变量为 iOS/Desktop 任务选择托管或自托管 runner；机器人、fork 运行强制托管，变量格式或架构标签不符时失败 | CI select、`desktop.yml`   |
 | `self-hosted/*-job-cleanup.*`                                  | 自托管 runner 的任务前后钩子：结束工作目录残留进程、删除 `ray-e2e-*` 模拟器；复制到仓库外使用                   | runner `.env` 钩子         |
 | `self-hosted/*-maintenance.*`                                  | 自托管 runner 账户的每周维护：清理模拟器、Xcode/CocoaPods 缓存、runner 临时目录与旧日志；任务运行中自动跳过     | launchd / 任务计划程序     |

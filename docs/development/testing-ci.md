@@ -11,7 +11,20 @@ CI 检查当前提交是否仍能安装、编译并满足框架行为契约；CD
 版本标签由 `Release Extension` 调用一次完整 CI，`ci.yml` 不再同时监听标签，
 避免同一个发布提交重复运行两套移动设备与桌面矩阵。
 
-| 套件                                      | PR / dev 推送选择条件            | 首次建分支、定时、手动、发布验证    |
+面向 dev 和 arch 的 PR 只运行受影响的套件，并可用标签跳过设备 E2E；合入 dev 后的推送运行全量矩阵，
+不读取标签。arch 的推送不运行 CI；main 不接受 PR，快进到已部署 staging 的 dev 提交后直接部署，不再运行 CI。
+
+| 标签                | 作用（仅 PR 生效）               |
+| ------------------- | -------------------------------- |
+| `ci:skip-mobile`    | 跳过 Mobile Android/iOS 设备 E2E |
+| `ci:skip-desktop`   | 跳过 Desktop 三平台检查          |
+| `ci:skip-extension` | 跳过 Chromium 扩展 E2E           |
+| `ci:full`           | 运行全量矩阵，优先于所有跳过标签 |
+
+标签只跳过设备/E2E 套件，所有受影响项目的 lint、类型检查、单测和构建仍会执行。
+修改标签后在该 PR 的运行上选择 **Re-run all jobs**（或推送新提交）生效。
+
+| 套件                                      | PR 选择条件                      | dev 推送、定时、手动、发布验证      |
 | ----------------------------------------- | -------------------------------- | ----------------------------------- |
 | lint/typecheck/typecheck-tests/test/build | Nx affected                      | 全部                                |
 | PG 迁移与 schema                          | 每次                             | 每次                                |
@@ -40,9 +53,9 @@ Web 的历史厂商/业务账户场景不在默认框架页面套件中，不计
 
 ## 仓库合并规则
 
-在仓库 Settings → Rules → Rulesets / Branches 为 dev 添加 `Required checks`，
-为 main 添加 `Required checks` 和 `Staging deployment`，并要求合并前更新检查。
-main 使用同一 SHA 的 fast-forward 推广，见部署指南。YAML 成功运行与 GitHub 实际阻止合并是两件事，不能
+dev、arch 的 ruleset 要求 `Required checks` 与 `PR policy`；main 要求 `Required checks` 与 `Staging verified` 状态（staging 部署成功后由 CI 写入），
+只能由发布部署密钥快进更新。具体配置、合并方式与发布流程见
+[分支维护](branch-workflow.md)。YAML 成功运行与 GitHub 实际阻止合并是两件事，不能
 仅凭 job 名称宣称已经启用保护。
 
 2026-09-29 历史验收已核实 `forkpath/postfly.io` 当时的默认分支 `arch` 和验收基线分支

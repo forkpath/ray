@@ -34,9 +34,9 @@ Compose 中的 Kong 使用 `LAST,A,CNAME` 解析服务名，按配置端口连�
 Docker 不提供这些服务名的 SRV 记录；优先查询 SRV 可能回退到公共 DNS，例如将 `web`
 误认为公共 `.web` 域。镜像发布前会通过同一 Kong 配置验证页面与 HTTP/WS 授权边界。
 
-默认开发分支为 `dev`，Nx affected 的默认基线也为 `dev`。功能 PR 合入 dev 后自动
-运行 CI；`Required checks` 汇总格式、官方源安全扫描、类型、零警告 lint、覆盖率和
-被选中的真实测试。通过后调用 `Deploy Ray`：构建五个镜像，在隔离基础设施中实际
+默认开发分支为 `dev`，Nx affected 的默认基线也为 `dev`。PR 合入 dev 后自动
+运行**全量** CI；`Required checks` 汇总格式、官方源安全扫描、类型、零警告 lint、覆盖率和
+全部真实测试。分支与发布规则见 [分支维护](../development/branch-workflow.md)。通过后调用 `Deploy Ray`：构建五个镜像，在隔离基础设施中实际
 运行迁移与服务，核对 image ID 后推送 registry，再按 digest 部署到 `staging`。
 公开网关探针通过后，保存 `staging-release-<commit>` 部署记录，保留 30 天。
 
@@ -98,12 +98,14 @@ main 已存在时，在本地任意干净工作目录可执行（不会切换当
 ```sh
 git fetch origin dev main
 git merge-base --is-ancestor origin/main origin/dev
-git push origin origin/dev:main
+git push git@github-ray-release:forkpath/postfly.io.git origin/dev:refs/heads/main
 ```
 
-上面的祖先检查失败时先解决分支历史；不要 force push。main 的分支保护仍要求同一 SHA
-上的 `Required checks` 与 `Staging deployment` 成功，并对管理员生效。dev 合并只要求
-`Required checks`，避免功能 PR 在合并前需要部署凭据。两个分支均禁止强推和删除；当前单维护者
+推送使用发布部署密钥（`github-ray-release` 是 SSH 配置中的别名），配置与完整检查见
+[分支维护 · 发布](../development/branch-workflow.md#74-发布快进-main)。上面的祖先检查失败时先解决分支历史；
+不要 force push。main 的 ruleset 要求同一 SHA 上的 `Required checks` 成功，并带有 `Staging verified` 状态
+（只由 dev 推送后的 CI 在 staging 部署成功时写入），并只允许发布部署密钥更新，网页上的合并按钮无法修改 main。
+dev 合并只要求 `Required checks` 与 `PR policy`，避免功能 PR 在合并前需要部署凭据。dev、arch、main 均禁止强推和删除；当前单维护者
 设置不要求无法自行满足的额外人工 approval。CODEOWNERS 保留维护归属，团队增加成员后
 可再要求独立代码审阅。
 

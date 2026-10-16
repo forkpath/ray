@@ -1,10 +1,18 @@
 name: CI
 
+# Branch policy (docs/development/branch-workflow.md):
+# - pull requests into dev and arch are tested; labels may skip device suites;
+# - pushes to dev (merged pull requests) run the full matrix, then deploy staging;
+# - arch pushes run nothing; main is fast-forwarded to a staging-verified dev commit
+#   and deployed by deploy.yml without re-running tests.
 on:
   push:
     branches:
       - dev
   pull_request:
+    branches:
+      - dev
+      - arch
   schedule:
     - cron: '23 18 * * 0'
   workflow_dispatch:
@@ -20,6 +28,8 @@ on:
 permissions:
   actions: read
   contents: read
+  # The selector reads the current pull request labels (ci:skip-*, ci:full).
+  pull-requests: read
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -65,6 +75,7 @@ jobs:
         run: node scripts/ci/select-test-suites.mjs
         env:
           CI_FULL: ${{ inputs.full }}
+          GITHUB_TOKEN: ${{ github.token }}
           # Optional self-hosted runners; see docs/development/self-hosted-runners.md.
           RAY_RUNNER_IOS: ${{ vars.RAY_RUNNER_IOS }}
           RAY_RUNNER_DESKTOP_MAC_ARM64: ${{ vars.RAY_RUNNER_DESKTOP_MAC_ARM64 }}
@@ -512,7 +523,24 @@ jobs:
     if: always() && github.event_name == 'push' && github.ref == 'refs/heads/dev' && inputs.ref == ''
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    # The main-gate ruleset requires the "Staging verified" commit status before main can be
+    # fast-forwarded to this commit. A skipped job reports success for required checks, so the
+    # gate uses a status that only this dev-push job ever writes. The newest status wins, so a
+    # failed deployment followed by a successful re-run ends as success.
+    permissions:
+      statuses: write
     steps:
+      - name: Record whether staging verified this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOYMENT_RESULT: ${{ needs.deploy-staging.result }}
+          STATUS_URL: repos/${{ github.repository }}/statuses/${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          state=failure
+          if [ "$DEPLOYMENT_RESULT" = success ]; then state=success; fi
+          gh api -X POST "$STATUS_URL" -f state="$state" -f context='Staging verified' \
+            -f description="Staging deployment: $DEPLOYMENT_RESULT" -f target_url="$RUN_URL"
       - name: Require the real staging deployment to succeed
         env:
           DEPLOYMENT_RESULT: ${{ needs.deploy-staging.result }}

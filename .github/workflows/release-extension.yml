@@ -25,10 +25,13 @@ jobs:
   quality-gate:
     needs: verify-release-ref
     # Reusable CI declares this capability for dev deployment; tag runs skip it.
+    # Must grant at least CI's top-level permissions, or the called run fails to start.
     permissions:
       actions: read
       contents: read
       packages: write
+      pull-requests: read
+      statuses: write
     uses: ./.github/workflows/ci.yml
     with:
       ref: ${{ github.sha }}

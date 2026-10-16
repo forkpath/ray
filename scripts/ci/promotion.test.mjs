@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
@@ -280,4 +280,47 @@ test('the workflow gates staging behind all required tests and only issues recei
   assert.ok(smoke >= 0 && smoke < receipt && receipt < upload)
   assert.equal(steps[upload]['continue-on-error'], undefined)
   assert.equal(deploy.concurrency['cancel-in-progress'], false)
+})
+
+test('branch policy: PRs into dev and arch are tested, dev deploys staging, main deploys without CI', () => {
+  const ci = parse(readFileSync('.github/workflows/ci.yml', 'utf8'))
+  const deploy = parse(readFileSync('.github/workflows/deploy.yml', 'utf8'))
+  const policy = parse(readFileSync('.github/workflows/pr-policy.yml', 'utf8'))
+  assert.deepEqual(ci.on.pull_request.branches, ['dev', 'arch'])
+  assert.deepEqual(ci.on.push.branches, ['dev'])
+  assert.equal(ci.permissions['pull-requests'], 'read')
+  // main is fast-forwarded to a staging-verified dev commit and deployed by deploy.yml alone.
+  assert.equal(ci.jobs['deploy-production'], undefined)
+  assert.deepEqual(deploy.on.push.branches, ['main'])
+  // PR policy must report on every pull request, including those targeting main.
+  assert.equal(policy.on.pull_request.branches, undefined)
+  assert.equal(policy.jobs.policy.name, 'PR policy')
+})
+
+test('every workflow that calls CI grants every permission CI or its jobs request', () => {
+  const ci = parse(readFileSync('.github/workflows/ci.yml', 'utf8'))
+  const rank = { none: 0, read: 1, write: 2 }
+  // GitHub validates nested job permissions before any job runs, even jobs that `if` would skip.
+  const requested = {}
+  for (const permissions of [ci.permissions, ...Object.values(ci.jobs).map(job => job.permissions ?? {})]) {
+    for (const [scope, level] of Object.entries(permissions)) {
+      if (rank[level] > rank[requested[scope] ?? 'none']) requested[scope] = level
+    }
+  }
+  const callers = readdirSync('.github/workflows')
+    .filter(file => file.endsWith('.yml'))
+    .flatMap(file =>
+      Object.entries(parse(readFileSync(`.github/workflows/${file}`, 'utf8')).jobs ?? {})
+        .filter(([, job]) => job.uses === './.github/workflows/ci.yml')
+        .map(([name, job]) => ({ name: `${file}:${name}`, permissions: job.permissions ?? {} }))
+    )
+  assert.ok(callers.length > 0)
+  for (const caller of callers) {
+    for (const [scope, level] of Object.entries(requested)) {
+      assert.ok(
+        rank[caller.permissions[scope] ?? 'none'] >= rank[level],
+        `${caller.name} must grant ${scope}: ${level}`
+      )
+    }
+  }
 })

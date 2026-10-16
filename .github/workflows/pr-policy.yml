@@ -1,0 +1,28 @@
+name: PR policy
+
+# Runs for pull requests against any branch (no branch filter), so a pull request
+# targeting main or an unsupported branch fails visibly. `edited` re-checks a changed
+# base. Required by the dev and arch rulesets; see docs/development/branch-workflow.md.
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-policy-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  policy:
+    name: PR policy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24.14.1
+      - name: Check the target branch
+        run: node scripts/ci/pr-policy.mjs

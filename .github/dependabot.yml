@@ -5,6 +5,8 @@ updates:
   # Public npm uses the default registry; custom registries require credentials.
   - package-ecosystem: npm
     directory: /
+    # Dependency updates enter through dev like every other change (branch-workflow.md).
+    target-branch: dev
     schedule:
       interval: weekly
       day: monday
@@ -57,6 +59,8 @@ updates:
 
   - package-ecosystem: github-actions
     directory: /
+    # Dependency updates enter through dev like every other change (branch-workflow.md).
+    target-branch: dev
     schedule:
       interval: weekly
       day: monday
