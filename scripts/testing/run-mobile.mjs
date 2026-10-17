@@ -300,8 +300,12 @@ try {
         '-gpu',
         'swiftshader',
         ...(process.platform === 'darwin' ? ['-feature', '-Vulkan'] : []),
+        // API 36 needs more than API 35: with 2 vCPUs and the 2560 MB image minimum, the
+        // system server's UI thread stalled until its watchdog restarted it mid-install.
         '-memory',
-        '2048'
+        '4096',
+        '-cores',
+        '4'
       ],
       { background: true, timeout: 1_800_000 }
     )
@@ -324,27 +328,51 @@ try {
       if (Date.now() > deadline || emulator.child.exitCode !== null) throw new Error('Android emulator failed to boot')
       await new Promise(resolveTick => setTimeout(resolveTick, 1000))
     }
-    // API 36 images keep starting system services after sys.boot_completed. Wait until the
-    // package manager answers, then turn off Play Protect's verification of adb installs: it
-    // waits on Google Play services and made installs exceed the timeout on CI emulators.
-    // It only vets the install source; the app under test runs unchanged.
-    const packageDeadline = Date.now() + 300_000
-    while (
-      !(await command(adb, ['-s', device, 'shell', 'pm', 'path', 'android']).catch(() => '')).startsWith('package:')
-    ) {
-      if (Date.now() > packageDeadline || emulator.child.exitCode !== null) {
-        throw new Error('Android package manager did not become ready')
+    // API 36 keeps starting system services after sys.boot_completed, and a starved system
+    // server can be restarted by its watchdog. Before each install attempt, wait until the
+    // package manager answers and apply the test settings again.
+    const prepareDevice = async () => {
+      const packageDeadline = Date.now() + 300_000
+      while (
+        !(await command(adb, ['-s', device, 'shell', 'pm', 'path', 'android']).catch(() => '')).startsWith('package:')
+      ) {
+        if (Date.now() > packageDeadline || emulator.child.exitCode !== null) {
+          throw new Error('Android package manager did not become ready')
+        }
+        await new Promise(resolveTick => setTimeout(resolveTick, 3000))
       }
-      await new Promise(resolveTick => setTimeout(resolveTick, 3000))
+      for (const [key, value] of [
+        // Play Protect verification of adb installs waits on Google Play services; it only
+        // vets the install source, and the app under test runs unchanged.
+        ['verifier_verify_adb_installs', '0'],
+        ['package_verifier_enable', '0'],
+        // "System UI isn't responding" can cover the app. A crashed app still fails the flows,
+        // because it never renders the screens they wait for.
+        ['hide_error_dialogs', '1'],
+        // Less rendering work for the system server; flows wait on elements, not on animations.
+        ['window_animation_scale', '0'],
+        ['transition_animation_scale', '0'],
+        ['animator_duration_scale', '0']
+      ]) {
+        await command(adb, ['-s', device, 'shell', 'settings', 'put', 'global', key, value])
+      }
+      await command(adb, ['-s', device, 'reverse', `tcp:${port}`, `tcp:${port}`])
     }
-    await command(adb, ['-s', device, 'shell', 'settings', 'put', 'global', 'verifier_verify_adb_installs', '0'])
-    await command(adb, ['-s', device, 'shell', 'settings', 'put', 'global', 'package_verifier_enable', '0'])
-    // A slow emulator can raise "System UI isn't responding" over the app, hiding the
-    // elements the flows assert. Suppressing system error dialogs does not hide app
-    // failures: a crashed app never renders the screens the flows wait for.
-    await command(adb, ['-s', device, 'shell', 'settings', 'put', 'global', 'hide_error_dialogs', '1'])
-    await command(adb, ['-s', device, 'reverse', `tcp:${port}`, `tcp:${port}`])
-    await command(adb, ['-s', device, 'install', '-r', artifact], { timeout: 600_000 })
+    await prepareDevice()
+    for (let attempt = 1; ; attempt++) {
+      try {
+        await command(adb, ['-s', device, 'install', '-r', artifact], { timeout: 600_000 })
+        break
+      } catch (error) {
+        if (attempt >= 3 || emulator.child.exitCode !== null) throw error
+        // Recorded in the job log and runner.log, so a flaky lane stays visible after a pass.
+        const message = `Android install attempt ${attempt} failed; retrying after the system server settles: ${error.message.split('\n')[0]}`
+        console.warn(`Mobile android: ${message}`)
+        log.write(`${message}\n`)
+        await new Promise(resolveTick => setTimeout(resolveTick, 15_000))
+        await prepareDevice()
+      }
+    }
   } else {
     await command('pod', ['install'], { cwd: resolve(app, 'ios'), timeout: 900_000 })
     const derived = resolve(workspace, 'derived')
