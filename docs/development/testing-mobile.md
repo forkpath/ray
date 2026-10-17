@@ -23,6 +23,9 @@ pnpm nx run mobile:e2e:ios
   Apple Silicon 使用 `arm64-v8a`。例如使用已安装的 SDK 管理器安装
   `system-images;android-36;google_apis;x86_64`。需要可用的硬件虚拟化。
   构建前检查硬件加速，并记录 SDK 中已安装的 emulator 版本。
+  模拟器开机后先等待包管理器就绪，再关闭 adb 安装的 Play Protect 校验和系统“无响应”对话框，
+  安装超时为 10 分钟：API 36 镜像开机后仍在启动系统服务，否则安装会超时或系统对话框会遮挡被测界面。
+  这些设置不影响被测应用；应用崩溃时界面不会出现，流程仍会失败。
 - iOS 需要 macOS、Xcode 26.6、CocoaPods，以及配置文件指定的 iOS 26.5
   Simulator runtime。测试构建由 Xcode 使用本地 ad-hoc 签名，不要求开发者
   或商店证书。保留 Xcode 在链接阶段生成的模拟器 entitlements，确保真实

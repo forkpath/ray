@@ -324,8 +324,27 @@ try {
       if (Date.now() > deadline || emulator.child.exitCode !== null) throw new Error('Android emulator failed to boot')
       await new Promise(resolveTick => setTimeout(resolveTick, 1000))
     }
+    // API 36 images keep starting system services after sys.boot_completed. Wait until the
+    // package manager answers, then turn off Play Protect's verification of adb installs: it
+    // waits on Google Play services and made installs exceed the timeout on CI emulators.
+    // It only vets the install source; the app under test runs unchanged.
+    const packageDeadline = Date.now() + 300_000
+    while (
+      !(await command(adb, ['-s', device, 'shell', 'pm', 'path', 'android']).catch(() => '')).startsWith('package:')
+    ) {
+      if (Date.now() > packageDeadline || emulator.child.exitCode !== null) {
+        throw new Error('Android package manager did not become ready')
+      }
+      await new Promise(resolveTick => setTimeout(resolveTick, 3000))
+    }
+    await command(adb, ['-s', device, 'shell', 'settings', 'put', 'global', 'verifier_verify_adb_installs', '0'])
+    await command(adb, ['-s', device, 'shell', 'settings', 'put', 'global', 'package_verifier_enable', '0'])
+    // A slow emulator can raise "System UI isn't responding" over the app, hiding the
+    // elements the flows assert. Suppressing system error dialogs does not hide app
+    // failures: a crashed app never renders the screens the flows wait for.
+    await command(adb, ['-s', device, 'shell', 'settings', 'put', 'global', 'hide_error_dialogs', '1'])
     await command(adb, ['-s', device, 'reverse', `tcp:${port}`, `tcp:${port}`])
-    await command(adb, ['-s', device, 'install', '-r', artifact])
+    await command(adb, ['-s', device, 'install', '-r', artifact], { timeout: 600_000 })
   } else {
     await command('pod', ['install'], { cwd: resolve(app, 'ios'), timeout: 900_000 })
     const derived = resolve(workspace, 'derived')
