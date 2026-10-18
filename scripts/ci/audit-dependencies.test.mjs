@@ -10,16 +10,49 @@ import { parse } from 'yaml'
 
 import { evaluateAudit } from './audit-dependencies.mjs'
 
-const files = [
-  'pnpm-lock.yaml',
-  'pnpm-workspace.yaml',
-  'patches/node-forge@1.4.0.patch',
-  'scripts/ci/node-forge-patch.test.mjs'
-]
+const files = ['patches/node-forge@1.4.0.patch', 'scripts/ci/node-forge-patch.test.mjs']
 const contents = 'isolated reviewed fixture'
 const hash = createHash('sha256').update(contents).digest('hex')
 const now = new Date('2026-10-03T00:00:00Z')
-const options = { now, read: () => contents }
+const reviewed = [
+  ['node-forge', '1.4.0'],
+  ['http-cache-semantics', '4.2.0'],
+  ['braces', '3.0.3']
+]
+// Minimal pnpm workspace and lockfile in the real layout. Every patch file holds `contents`.
+const workspaceYaml = [
+  'packages: []',
+  'patchedDependencies:',
+  ...reviewed.map(([n, v]) => `  ${n}@${v}: patches/${n}@${v}.patch`)
+].join('\n')
+function lockYaml({ patchHash = hash, snapshots } = {}) {
+  return [
+    "lockfileVersion: '9.0'",
+    '',
+    'patchedDependencies:',
+    ...reviewed.flatMap(([n, v]) => [`  ${n}@${v}:`, `    hash: ${patchHash}`, `    path: patches/${n}@${v}.patch`]),
+    '',
+    'packages:',
+    '',
+    ...reviewed.flatMap(([n, v]) => [`  ${n}@${v}:`, `    resolution: {integrity: sha512-x}`, '']),
+    'snapshots:',
+    '',
+    ...(snapshots ?? reviewed.map(([n, v]) => `  ${n}@${v}(patch_hash=${hash}): {}`))
+  ].join('\n')
+}
+function reader(overrides = {}) {
+  return path => {
+    if (path in overrides) {
+      const value = overrides[path]
+      if (value instanceof Error) throw value
+      return value
+    }
+    if (path === 'pnpm-workspace.yaml') return workspaceYaml
+    if (path === 'pnpm-lock.yaml') return lockYaml()
+    return contents
+  }
+}
+const options = { now, read: reader() }
 function fixture() {
   const advisory = {
     github_advisory_id: 'GHSA-86w9-cpqp-85rv',
@@ -98,18 +131,9 @@ test('changed advisory identity, scope, severity, package, version and paths fai
 test('every reviewed input must exist with its exact hash', () => {
   for (const file of files) {
     const { report, policy } = fixture()
+    assert.equal(evaluateAudit(report, policy, { ...options, read: reader({ [file]: 'changed' }) }).passed, false)
     assert.equal(
-      evaluateAudit(report, policy, { ...options, read: path => (path === file ? 'changed' : contents) }).passed,
-      false
-    )
-    assert.equal(
-      evaluateAudit(report, policy, {
-        ...options,
-        read: path => {
-          if (path === file) throw new Error('missing')
-          return contents
-        }
-      }).passed,
+      evaluateAudit(report, policy, { ...options, read: reader({ [file]: new Error('missing') }) }).passed,
       false
     )
     delete policy.mitigations[0].files[file]
@@ -161,19 +185,11 @@ for (const [id, name, version, testFile] of [
       false,
       'node-forge files cannot authorize another patch'
     )
-    const required = [
-      'pnpm-lock.yaml',
-      'pnpm-workspace.yaml',
-      `patches/${name}@${version}.patch`,
-      `scripts/ci/${testFile}.test.mjs`
-    ]
+    const required = [`patches/${name}@${version}.patch`, `scripts/ci/${testFile}.test.mjs`]
     entry.files = Object.fromEntries(required.map(file => [file, hash]))
     assert.equal(evaluateAudit(report, policy, options).passed, true)
     for (const file of required) {
-      assert.equal(
-        evaluateAudit(report, policy, { ...options, read: path => (path === file ? 'changed' : contents) }).passed,
-        false
-      )
+      assert.equal(evaluateAudit(report, policy, { ...options, read: reader({ [file]: 'changed' }) }).passed, false)
       delete entry.files[file]
       assert.equal(evaluateAudit(report, policy, options).passed, false)
       entry.files[file] = hash
@@ -289,5 +305,38 @@ test('security runs before expensive CI; production repeats the same raw-audit e
     const workflow = parse(readFileSync(`.github/workflows/${file}`, 'utf8'))
     assert.ok(workflow.jobs[job].steps.some(step => step.run === `node scripts/ci/audit-dependencies.mjs ${name}.json`))
     assert.ok(workflow.jobs[job].steps.some(step => step.with?.path?.includes(`${name}-evaluation.json`)))
+  }
+})
+
+test('unrelated lockfile and workspace changes keep a reviewed patch valid', () => {
+  const { report, policy } = fixture()
+  const read = reader({
+    'pnpm-lock.yaml': lockYaml() + '\n  expo@57.0.1: {}\n',
+    'pnpm-workspace.yaml': workspaceYaml.replace('packages: []', 'packages: []\ncatalog:\n  expo: 57.0.1')
+  })
+  assert.equal(evaluateAudit(report, policy, { ...options, read }).passed, true)
+})
+
+test('dropping, changing or bypassing the patch in the lockfile fails closed', () => {
+  const cases = {
+    'workspace no longer applies the patch': { 'pnpm-workspace.yaml': 'packages: []\n' },
+    'lockfile records another patch hash': { 'pnpm-lock.yaml': lockYaml({ patchHash: 'f'.repeat(64) }) },
+    'lockfile no longer records the patch': {
+      'pnpm-lock.yaml': lockYaml().replace(/^patchedDependencies:$/m, 'unrelated:')
+    },
+    'an unpatched copy is installed': {
+      'pnpm-lock.yaml': lockYaml({
+        snapshots: [`  node-forge@1.4.0(patch_hash=${hash}): {}`, '  node-forge@1.4.0: {}']
+      })
+    },
+    'the reviewed version is not resolved': {
+      'pnpm-lock.yaml': lockYaml().replace(/^  node-forge@1\.4\.0:$/m, '  node-forge@1.3.9:')
+    }
+  }
+  for (const [label, overrides] of Object.entries(cases)) {
+    const { report, policy } = fixture()
+    const result = evaluateAudit(report, policy, { ...options, read: reader(overrides) })
+    assert.equal(result.passed, false, label)
+    assert.match(result.unresolved[0].reason, /pnpm-(lock|workspace)\.yaml/, label)
   }
 })

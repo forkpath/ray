@@ -4,6 +4,8 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
+import { parsePatchedDependencies } from './check-patches.mjs'
+
 const severities = ['info', 'low', 'moderate', 'high', 'critical']
 const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value)
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex')
@@ -15,6 +17,54 @@ const reviewedPatches = new Map([
   ],
   ['GHSA-vfj7-8cjw-p6xm:braces@3.0.3', ['patches/braces@3.0.3.patch', 'scripts/ci/braces-patch.test.mjs']]
 ])
+
+const escapeRegExp = text => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+// Lines of a top-level YAML section (pnpm lockfile layout), without a YAML parser:
+// the security workflow runs this script before dependencies are installed.
+function yamlSection(text, name) {
+  const lines = text.split(/\r?\n/)
+  const start = lines.indexOf(`${name}:`)
+  if (start === -1) return []
+  const end = lines.findIndex((line, index) => index > start && /^\S/.test(line))
+  return lines.slice(start + 1, end === -1 ? undefined : end)
+}
+
+/**
+ * Bind a reviewed patch to the lockfile entries that carry it, instead of hashing the
+ * whole lockfile: unrelated dependency updates must not invalidate every reviewed patch,
+ * while dropping the patch, changing it or installing an unpatched copy still fails.
+ * Returns an error message, or null when the binding holds.
+ */
+export function lockBindingError(name, version, patchFile, read) {
+  const spec = `${name}@${version}`
+  const patchHash = sha256(read(patchFile))
+  const workspace = String(read('pnpm-workspace.yaml'))
+  const lock = String(read('pnpm-lock.yaml'))
+
+  const declared = parsePatchedDependencies(workspace).find(entry => `${entry.name}@${entry.version}` === spec)
+  if (declared?.patch !== patchFile) return `pnpm-workspace.yaml does not apply ${patchFile} to ${spec}`
+
+  const patched = yamlSection(lock, 'patchedDependencies')
+  const at = patched.findIndex(line => line.replace(/'/g, '') === `  ${spec}:`)
+  const fields = Object.fromEntries(
+    patched
+      .slice(at + 1)
+      .filter((line, index, rest) => rest.slice(0, index + 1).every(item => item.startsWith('    ')))
+      .map(line => line.trim().split(/:\s+/))
+  )
+  if (at === -1 || fields.path !== patchFile || fields.hash !== patchHash) {
+    return `pnpm-lock.yaml does not record ${patchFile} with its current hash for ${spec}`
+  }
+
+  const key = new RegExp(`^  '?${escapeRegExp(spec)}(\\(|'?:)`)
+  if (!yamlSection(lock, 'packages').some(line => key.test(line))) return `pnpm-lock.yaml does not resolve ${spec}`
+  const snapshots = yamlSection(lock, 'snapshots').filter(line => key.test(line))
+  if (snapshots.length === 0 || snapshots.some(line => !line.includes(`(patch_hash=${patchHash})`))) {
+    return `pnpm-lock.yaml installs ${spec} without the reviewed patch`
+  }
+  return null
+}
 
 // A local patch never changes the registry's finding. Keep the raw report and
 // independently verify the narrowly reviewed mitigation against this checkout.
@@ -89,15 +139,15 @@ export function evaluateAudit(report, policy, { now = new Date(), read = readFil
           reason = 'No reviewed patch implementation for this advisory and package version'
         } else if (
           !isObject(entry.files) ||
-          !['pnpm-lock.yaml', 'pnpm-workspace.yaml', ...patchFiles].every(file =>
-            /^[a-f0-9]{64}$/.test(entry.files[file] ?? '')
-          )
+          !patchFiles.every(file => /^[a-f0-9]{64}$/.test(entry.files[file] ?? ''))
         ) {
-          reason = 'Missing patch, frozen dependency inputs, or regression-test binding'
+          reason = 'Missing patch or regression-test binding'
         } else {
           try {
             const changed = Object.entries(entry.files).find(([file, hash]) => sha256(read(file)) !== hash)
+            const binding = changed ? null : lockBindingError(result.package, result.version, patchFiles[0], read)
             if (changed) reason = `Reviewed file changed: ${changed[0]}`
+            else if (binding) reason = binding
             else {
               mitigated.push({ ...result, expiresAt: entry.expiresAt })
               continue
