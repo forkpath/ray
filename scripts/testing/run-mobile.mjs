@@ -300,12 +300,13 @@ try {
         '-gpu',
         'swiftshader',
         ...(process.platform === 'darwin' ? ['-feature', '-Vulkan'] : []),
-        // API 36 needs more than API 35: with 2 vCPUs and the 2560 MB image minimum, the
-        // system server's UI thread stalled until its watchdog restarted it mid-install.
+        // Private-repository hosted runners have 2 vCPUs, and KVM rejects more. The API 36
+        // Google APIs image starved there (watchdog restarts, ANRs), so mobile-tools.json pins
+        // the lighter Automated Test Device (google_atd) image; memory is above its minimum.
         '-memory',
         '4096',
         '-cores',
-        '4'
+        '2'
       ],
       { background: true, timeout: 1_800_000 }
     )

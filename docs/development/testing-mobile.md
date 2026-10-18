@@ -19,9 +19,11 @@ pnpm nx run mobile:e2e:ios
 - Java 21，设置 `JAVA_HOME` 并确认 `java -version`。
 - Android SDK、platform-tools、emulator、command-line tools；设置
   `ANDROID_HOME`。原生 SDK/NDK 版本由锁定的 Expo/React Native 构建配置决定。
-  设备镜像为 Android 36 / Google APIs / revision 7，Intel 使用 `x86_64`，
+  设备镜像为 Android 36 / Google APIs ATD（Automated Test Device）/ revision 1，Intel 使用 `x86_64`，
   Apple Silicon 使用 `arm64-v8a`。例如使用已安装的 SDK 管理器安装
-  `system-images;android-36;google_apis;x86_64`。需要可用的硬件虚拟化。
+  `system-images;android-36;google_atd;x86_64`。需要可用的硬件虚拟化。
+  ATD 是 Google 为自动化测试精简的镜像，保留 Google APIs、去掉不必要的后台服务；私有仓库的托管 runner
+  只有 2 个 vCPU，完整的 Google APIs 镜像在其上会因资源不足导致系统进程卡死。
   构建前检查硬件加速，并记录 SDK 中已安装的 emulator 版本。
   模拟器开机后先等待包管理器就绪，再关闭 adb 安装的 Play Protect 校验和系统“无响应”对话框，
   安装超时为 10 分钟：API 36 镜像开机后仍在启动系统服务，否则安装会超时或系统对话框会遮挡被测界面。
