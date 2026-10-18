@@ -145,9 +145,15 @@ const server = createServer((request, response) => {
 const sdk = env.ANDROID_HOME ?? env.ANDROID_SDK_ROOT ?? resolve(env.HOME, 'Library/Android/sdk')
 const adb = resolve(sdk, 'platform-tools/adb')
 const avdmanager = resolve(sdk, 'cmdline-tools/latest/bin/avdmanager')
+// Self-hosted runners keep tools and compiler caches outside the checkout, which
+// actions/checkout cleans before every job (docs/development/self-hosted-runners.md).
+const toolsDirectory = process.env.RAY_TESTING_TOOLS_DIR || resolve(root, '.cache/testing-tools')
+const nativeCacheDirectory = process.env.RAY_MOBILE_NATIVE_CACHE_DIR || resolve(root, '.cache/mobile-native')
 const maestro =
-  process.env.RAY_MAESTRO_BIN ??
-  resolve(root, `.cache/testing-tools/maestro-${tools.maestroVersion}/maestro/bin/maestro`)
+  process.env.RAY_MAESTRO_BIN ?? resolve(toolsDirectory, `maestro-${tools.maestroVersion}/maestro/bin/maestro`)
+// Native build parallelism. Hosted runners have 2 vCPUs; a self-hosted runner may set more.
+const buildJobs = Number(process.env.RAY_MOBILE_BUILD_JOBS || 2)
+if (!Number.isInteger(buildJobs) || buildJobs < 1) throw new Error('RAY_MOBILE_BUILD_JOBS must be a positive integer')
 const appId = 'com.ray.mobile.e2e'
 const iosRuntime = tools.iosRuntime
 const avdName = `ray-e2e-${runId}`
@@ -190,6 +196,11 @@ try {
   env.EXPO_PUBLIC_API_BASE_URL = `http://127.0.0.1:${port}`
   env.EXPO_PUBLIC_SITE_URL = env.EXPO_PUBLIC_API_BASE_URL
   workspace = await mkdtemp(resolve(tmpdir(), `ray-mobile-${platform}-`))
+  // Metro keeps its transform cache in $TMPDIR/metro-cache. A cache shared between runs
+  // served a previous copy's route list and failed the bundle route check, so every run
+  // starts empty; the directory is removed with the workspace.
+  env.TMPDIR = resolve(workspace, 'tmp')
+  await mkdir(env.TMPDIR)
   const files = (
     await command('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { captureAll: true })
   ).split('\0')
@@ -236,7 +247,7 @@ try {
     const gradleArgs = [
       '--no-daemon',
       '--build-cache',
-      '--max-workers=2',
+      `--max-workers=${buildJobs}`,
       '-Dorg.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m',
       `-PreactNativeArchitectures=${arch}`
     ]
@@ -380,8 +391,8 @@ try {
     // Keep only content-addressed compiler entries across runs. Build products,
     // fixture URLs, simulator state and test results remain unique to this run.
     const compilationCache = resolve(
-      root,
-      '.cache/mobile-native/ios',
+      nativeCacheDirectory,
+      'ios',
       `xcode-${tools.xcodeVersion}`,
       'CompilationCache.noindex'
     )
@@ -390,7 +401,7 @@ try {
       'xcodebuild',
       [
         '-jobs',
-        '2',
+        String(buildJobs),
         '-workspace',
         'RayE2E.xcworkspace',
         '-scheme',

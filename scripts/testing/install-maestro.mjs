@@ -1,14 +1,33 @@
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { createReadStream, createWriteStream } from 'node:fs'
-import { mkdir, readFile, rm } from 'node:fs/promises'
+import { access, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 
 const tools = JSON.parse(await readFile(resolve(import.meta.dirname, 'mobile-tools.json'), 'utf8'))
 const root = resolve(import.meta.dirname, '../..')
-const directory = resolve(root, `.cache/testing-tools/maestro-${tools.maestroVersion}`)
+// Self-hosted runners point this outside the checkout, which actions/checkout cleans every job.
+const toolsDirectory = process.env.RAY_TESTING_TOOLS_DIR || resolve(root, '.cache/testing-tools')
+const directory = resolve(toolsDirectory, `maestro-${tools.maestroVersion}`)
+const binary = resolve(directory, 'maestro/bin/maestro')
+// Written only after a verified extraction, so an interrupted install is never reused.
+const marker = resolve(directory, 'installed.sha256')
+
+const installed = await readFile(marker, 'utf8').catch(() => '')
+if (
+  installed.trim() === tools.maestroSha256 &&
+  (await access(binary).then(
+    () => true,
+    () => false
+  ))
+) {
+  console.log(`Verified Maestro ${tools.maestroVersion} already installed: ${binary}`)
+  process.exit(0)
+}
+
+await rm(directory, { recursive: true, force: true })
 await mkdir(directory, { recursive: true })
 const archive = resolve(directory, 'maestro.zip')
 const response = await fetch(
@@ -28,4 +47,5 @@ if (hash.digest('hex') !== tools.maestroSha256) {
 // unzip preserves the executable bits used by Maestro's bundled drivers.
 execFileSync('unzip', ['-q', '-o', archive, '-d', directory], { timeout: 120_000 })
 await rm(archive)
-console.log(`Installed verified Maestro ${tools.maestroVersion}: ${resolve(directory, 'maestro/bin/maestro')}`)
+await writeFile(marker, `${tools.maestroSha256}\n`)
+console.log(`Installed verified Maestro ${tools.maestroVersion}: ${binary}`)

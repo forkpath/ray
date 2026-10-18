@@ -11,7 +11,7 @@ export function verifyRequiredChecks(results) {
     bootstrap: 'bootstrap',
     extension: 'extension',
     web: 'web',
-    mobile: 'mobileAndroid',
+    mobile: 'mobileEnabled',
     'desktop-checks': 'desktop'
   }
   for (const [job, flag] of Object.entries(selected)) {

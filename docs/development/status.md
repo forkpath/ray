@@ -13,7 +13,7 @@
 | 业务资源生成  | `nx g @ray/plugin:resource` 生成 Prisma 到 API client 的全部后端分层与测试。见 [生成器](../../tools/ray-plugin/README.md)                               |
 | 后端集成测试  | Testcontainers 启动真实 PG/Redis/Mongo/RabbitMQ，失败与中断也会清理。见 [后端测试](testing-backend.md)                                                  |
 | 分支与发布    | dev/arch 只能经 PR 修改，dev 部署 staging；main 只能快进到已部署 staging 的 dev 提交，部署 production。见 [分支维护](branch-workflow.md)                |
-| 自托管 Runner | iOS 与 Desktop 测试可通过仓库变量切到自有 Mac/Windows，默认仍用托管 runner。见 [自托管 Runner](self-hosted-runners.md)                                  |
+| 自托管 Runner | Mobile 与 Desktop 客户端测试可通过仓库变量切到自有 Mac/Windows，默认仍用托管 runner。见 [自托管 Runner](self-hosted-runners.md)                         |
 | 依赖安全      | 官方 registry 审计；本地补丁必须有期限和回归测试；`pnpm ci:patches` 报告补丁的上游新版本。见 [依赖治理](dependency-governance.md)                       |
 
 ## 已知限制

@@ -6,9 +6,12 @@
 # owned by that user; nothing here is needed by a later job, which rebuilds or
 # re-downloads what it uses:
 #   - unavailable simulators (left over after a simulator runtime is removed);
-#   - Xcode DerivedData and the CocoaPods download cache;
+#   - Xcode DerivedData, the CocoaPods download cache and Maestro's run logs;
+#   - the CI cache directory (RAY_CI_CACHE_DIR, default ~/.cache/ray-ci) once it
+#     grows past RAY_CI_CACHE_LIMIT_GB (default 20); the next job rebuilds it;
 #   - the runner's temporary directory and diagnostic logs older than 14 days;
-#   - the pnpm content store, when pnpm is on PATH.
+#   - unreferenced packages in the pnpm content store, when pnpm is on PATH.
+# Gradle expires its own unused cache entries.
 # Tool versions under _work/_tool, simulator runtimes and Xcode installs are kept.
 # Nothing runs while a job is in progress.
 #
@@ -47,9 +50,18 @@ fi
 for dir in \
   "$HOME/Library/Developer/Xcode/DerivedData" \
   "$HOME/Library/Caches/CocoaPods" \
+  "$HOME/.maestro/tests" \
   "$runner_dir/_work/_temp"; do
   if [[ -d "$dir" ]]; then run rm -rf "$dir"; fi
 done
+
+ci_cache="${RAY_CI_CACHE_DIR:-$HOME/.cache/ray-ci}"
+limit_gb="${RAY_CI_CACHE_LIMIT_GB:-20}"
+if [[ -d "$ci_cache" ]]; then
+  used_gb=$(( $(du -sk "$ci_cache" | awk '{print $1}') / 1048576 ))
+  echo "CI cache: ${used_gb} GB (limit ${limit_gb} GB)"
+  if (( used_gb >= limit_gb )); then run rm -rf "$ci_cache"; fi
+fi
 
 if [[ -d "$runner_dir/_diag" ]]; then
   run find "$runner_dir/_diag" -type f -mtime +14 -delete

@@ -6,6 +6,7 @@ import { parse, stringify } from 'yaml'
 
 import {
   applyPullRequestLabels,
+  mobileMatrix,
   onlyDeploymentJobsChanged,
   requiresFullRun,
   selectTestSuites
@@ -256,4 +257,20 @@ test('pull request labels skip only the named device suites, and ci:full overrid
   // A skip label on an unselected suite reports nothing.
   const docs = selectTestSuites({ affected: [], files: ['docs/development/testing.md'], full: false })
   assert.deepEqual(applyPullRequestLabels(docs, ['ci:skip-mobile']).skipped, [])
+})
+
+test('the mobile matrix uses the resolved runners and drops lanes without one', () => {
+  const mac = ['self-hosted', 'macOS', 'X64', 'ray-mac']
+  const both = { mobileAndroid: true, mobileIos: true }
+  assert.deepEqual(mobileMatrix(both, { android: mac, ios: mac }).include, [
+    { platform: 'android', runner: mac },
+    { platform: 'ios', runner: mac }
+  ])
+  assert.deepEqual(mobileMatrix(both, { android: 'ubuntu-24.04', ios: null }).include, [
+    { platform: 'android', runner: 'ubuntu-24.04' }
+  ])
+  assert.deepEqual(mobileMatrix(both, { android: null, ios: null }).include, [])
+  assert.deepEqual(mobileMatrix({ mobileAndroid: true, mobileIos: false }, { android: mac, ios: mac }).include, [
+    { platform: 'android', runner: mac }
+  ])
 })

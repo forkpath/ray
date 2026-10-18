@@ -36,8 +36,9 @@ CI 检查当前提交是否仍能安装、编译并满足框架行为契约；CD
 | Mobile iOS                                | Mobile 受影响且原生依赖/配置变化 | 执行                                |
 | Linux 全新检出启动验收                    | 启动相关脚本、依赖或迁移变化     | 执行                                |
 
-Mobile iOS 与 Desktop 三平台默认在 GitHub 托管 runner 上执行，可通过仓库变量改在自有机器上运行，
-机器人和 fork 发起的运行始终使用托管 runner，见 [自托管 Runner](self-hosted-runners.md)。
+Mobile Android/iOS 与 Desktop（macOS x64、Windows x64）默认在 GitHub 托管 runner 上执行，可通过仓库变量
+改在自有机器上运行；Apple Silicon Desktop 只在配置了自有机器时运行。机器人和 fork 发起的运行不会使用自有机器，
+已改到自有机器的任务在这些运行中默认跳过，见 [自托管 Runner](self-hosted-runners.md)。
 
 测试编排、CI/发布脚本、Docker 配置、依赖补丁和 workflow 的变化选择完整 E2E 矩阵。
 普通文档变化可不启动设备/后端套件。无法解析影响图时检查失败；找不到基线
