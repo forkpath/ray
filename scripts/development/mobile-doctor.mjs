@@ -42,7 +42,10 @@ export async function checkMobileTools({
     await check('E2E Maestro', async () => {
       const binary =
         env.RAY_MAESTRO_BIN ??
-        resolve(directory, `.cache/testing-tools/maestro-${tools.maestroVersion}/maestro/bin/maestro`)
+        resolve(
+          env.RAY_TESTING_TOOLS_DIR || resolve(directory, '.cache/testing-tools'),
+          `maestro-${tools.maestroVersion}/maestro/bin/maestro`
+        )
       const version = await execute(binary, ['--version'])
       if (!version.split(/\s+/).includes(tools.maestroVersion))
         throw new Error(`Expected Maestro ${tools.maestroVersion}; got ${version}`)

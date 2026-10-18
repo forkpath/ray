@@ -58,6 +58,7 @@ jobs:
       bootstrap: ${{ steps.suites.outputs.bootstrap }}
       mobile: ${{ steps.suites.outputs.mobile }}
       mobileAndroid: ${{ steps.suites.outputs.mobileAndroid }}
+      mobileEnabled: ${{ steps.suites.outputs.mobileEnabled }}
     env:
       NX_NO_CLOUD: 'true'
     steps:
@@ -82,6 +83,7 @@ jobs:
           RAY_RUNNER_DESKTOP_MAC_X64: ${{ vars.RAY_RUNNER_DESKTOP_MAC_X64 }}
           RAY_RUNNER_DESKTOP_WIN: ${{ vars.RAY_RUNNER_DESKTOP_WIN }}
           RAY_RUNNER_ANDROID: ${{ vars.RAY_RUNNER_ANDROID }}
+          RAY_RUNNER_UNTRUSTED: ${{ vars.RAY_RUNNER_UNTRUSTED }}
 
   main:
     needs: select
@@ -366,7 +368,7 @@ jobs:
 
   mobile:
     needs: select
-    if: needs.select.outputs.mobileAndroid == 'true'
+    if: needs.select.outputs.mobileEnabled == 'true'
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.select.outputs.mobile) }}
@@ -382,9 +384,10 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: 24.14.1
-          cache: pnpm
+          # Self-hosted runners keep their pnpm store on disk; restoring a copy only costs time.
+          cache: ${{ runner.environment == 'github-hosted' && 'pnpm' || '' }}
       - name: Make room for the Android native build
-        if: matrix.platform == 'android'
+        if: matrix.platform == 'android' && runner.environment == 'github-hosted'
         run: |
           df -h . /tmp
           # This hosted Android job does not use the preinstalled .NET/Haskell/CodeQL tools.
@@ -399,8 +402,19 @@ jobs:
           java-version: '21'
       # Native tools validate cached entries against their actual inputs. Do not
       # cache an APK/app, simulator state, credentials, or a test result.
+      # Self-hosted runners keep these caches on disk instead: Gradle and CocoaPods in the
+      # runner account's home, Maestro and the Xcode compilation cache under RAY_CI_CACHE_DIR
+      # (outside the checkout, which actions/checkout cleans before every job).
+      - name: Use the self-hosted runner's persistent caches
+        if: runner.environment == 'self-hosted'
+        run: |
+          cache="${RAY_CI_CACHE_DIR:-$HOME/.cache/ray-ci}"
+          mkdir -p "$cache"
+          echo "RAY_TESTING_TOOLS_DIR=$cache/testing-tools" >> "$GITHUB_ENV"
+          echo "RAY_MOBILE_NATIVE_CACHE_DIR=$cache/mobile-native" >> "$GITHUB_ENV"
+          node scripts/ci/check-free-space.mjs "$cache"
       - name: Restore Android native dependencies and compilation cache
-        if: matrix.platform == 'android'
+        if: matrix.platform == 'android' && runner.environment == 'github-hosted'
         id: gradle-cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -413,7 +427,7 @@ jobs:
           restore-keys: |
             mobile-gradle-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/testing/mobile-tools.json') }}-
       - name: Restore iOS native dependencies and compilation cache
-        if: matrix.platform == 'ios'
+        if: matrix.platform == 'ios' && runner.environment == 'github-hosted'
         id: ios-cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -428,26 +442,42 @@ jobs:
       - run: node scripts/testing/install-maestro.mjs
       - name: Prepare Android device and native SDK
         if: matrix.platform == 'android'
+        env:
+          HOSTED: ${{ runner.environment == 'github-hosted' }}
+          ABI: ${{ runner.arch == 'ARM64' && 'arm64-v8a' || 'x86_64' }}
         run: |
-          test -e /dev/kvm
-          sudo chmod a+rw /dev/kvm
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'ndk;27.1.12297006' 'system-images;android-36;google_atd;x86_64'
+          # Self-hosted runners set ANDROID_HOME in the runner's .env to an SDK the runner account owns.
+          test -n "$ANDROID_HOME"
+          if [ "$RUNNER_OS" = Linux ]; then
+            test -e /dev/kvm
+            if [ "$HOSTED" = true ]; then sudo chmod a+rw /dev/kvm; fi
+          fi
+          # Installed packages are left as they are; only missing ones are downloaded.
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'ndk;27.1.12297006' "system-images;android-36;google_atd;$ABI"
       - name: Select pinned Xcode and simulator runtime
         if: matrix.platform == 'ios'
         run: |
           node --input-type=module <<'JS'
           import { appendFileSync, existsSync, readFileSync } from 'node:fs'
+          import { execFileSync } from 'node:child_process'
           const tools = JSON.parse(readFileSync('scripts/testing/mobile-tools.json', 'utf8'))
-          const developerDir = `/Applications/Xcode_${tools.xcodeVersion}.app/Contents/Developer`
-          // Self-hosted Macs must install the pinned Xcode at the same path as the hosted image.
-          if (!existsSync(developerDir)) throw new Error(`Pinned Xcode ${tools.xcodeVersion} not found at ${developerDir}`)
-          appendFileSync(process.env.GITHUB_ENV, `DEVELOPER_DIR=${developerDir}\n`)
+          // Hosted images install every Xcode as Xcode_<version>.app; a self-hosted Mac may keep
+          // the pinned version as its only Xcode.app. Accept a path only if its version matches.
+          const candidates = [`Xcode_${tools.xcodeVersion}.app`, `Xcode-${tools.xcodeVersion}.app`, 'Xcode.app']
+          const version = app =>
+            execFileSync('plutil', ['-extract', 'CFBundleShortVersionString', 'raw', `/Applications/${app}/Contents/version.plist`], {
+              encoding: 'utf8'
+            }).trim()
+          const app = candidates.find(name => existsSync(`/Applications/${name}`) && version(name) === tools.xcodeVersion)
+          if (!app) throw new Error(`Pinned Xcode ${tools.xcodeVersion} not found as /Applications/{${candidates.join(',')}}`)
+          appendFileSync(process.env.GITHUB_ENV, `DEVELOPER_DIR=/Applications/${app}/Contents/Developer\n`)
+          console.log(`Using /Applications/${app}`)
           JS
       - run: pnpm nx run mobile:e2e:${{ matrix.platform }}
       # A later device/flow failure must not discard a completed native build's
       # reusable cache. Never publish an incomplete first build as an exact hit.
       - name: Save Android cache after a completed native build
-        if: ${{ !cancelled() && matrix.platform == 'android' && steps.gradle-cache.outputs.cache-hit != 'true' && hashFiles('dist/test-results/mobile/e2e/android/**/native-build.json') != '' }}
+        if: ${{ !cancelled() && runner.environment == 'github-hosted' && matrix.platform == 'android' && steps.gradle-cache.outputs.cache-hit != 'true' && hashFiles('dist/test-results/mobile/e2e/android/**/native-build.json') != '' }}
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
@@ -457,7 +487,7 @@ jobs:
             !~/.gradle/caches/**/gc.properties
           key: ${{ steps.gradle-cache.outputs.cache-primary-key }}
       - name: Save iOS cache after a completed native build
-        if: ${{ !cancelled() && matrix.platform == 'ios' && steps.ios-cache.outputs.cache-hit != 'true' && hashFiles('dist/test-results/mobile/e2e/ios/**/native-build.json') != '' }}
+        if: ${{ !cancelled() && runner.environment == 'github-hosted' && matrix.platform == 'ios' && steps.ios-cache.outputs.cache-hit != 'true' && hashFiles('dist/test-results/mobile/e2e/ios/**/native-build.json') != '' }}
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |

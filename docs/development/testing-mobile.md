@@ -9,8 +9,9 @@ pnpm nx run mobile:e2e:android
 pnpm nx run mobile:e2e:ios
 ```
 
-安装脚本下载固定版本并校验 SHA-256，只写仓库 `.cache/testing-tools`，不会
-更改系统 Maestro。已有相同版本可用 `RAY_MAESTRO_BIN` 指定可执行文件。
+安装脚本下载固定版本并校验 SHA-256，只写仓库 `.cache/testing-tools`（设置
+`RAY_TESTING_TOOLS_DIR` 时写该目录），不会更改系统 Maestro；已校验安装过的版本不再重复下载。
+已有相同版本可用 `RAY_MAESTRO_BIN` 指定可执行文件。
 固定版本和设备配置见 `scripts/testing/mobile-tools.json`。
 
 ## 系统前置条件
@@ -28,14 +29,15 @@ pnpm nx run mobile:e2e:ios
   模拟器开机后先等待包管理器就绪，再关闭 adb 安装的 Play Protect 校验和系统“无响应”对话框，
   安装超时为 10 分钟：API 36 镜像开机后仍在启动系统服务，否则安装会超时或系统对话框会遮挡被测界面。
   这些设置不影响被测应用；应用崩溃时界面不会出现，流程仍会失败。
-- iOS 需要 macOS、Xcode 26.6、CocoaPods，以及配置文件指定的 iOS 26.5
+- iOS 需要 macOS、Xcode 26.5、CocoaPods，以及配置文件指定的 iOS 26.5
   Simulator runtime。测试构建由 Xcode 使用本地 ad-hoc 签名，不要求开发者
   或商店证书。保留 Xcode 在链接阶段生成的模拟器 entitlements，确保真实
   SecureStore 能访问该测试应用的 Keychain；不能设置 `CODE_SIGNING_ALLOWED=NO`。
 
 Expo 57 的官方最低要求是 Xcode 26.4；本套件固定到 GitHub `macos-26`
-已提供的 Xcode 26.6 / iOS 26.5。改用自有 Mac 执行时，需在相同路径安装同一版本，见 [自托管 Runner](self-hosted-runners.md)。可用 `DEVELOPER_DIR` 选择并行安装的
-Xcode。旧工具链会在构建前明确失败，不修改依赖源码绕过编译器要求。
+已提供的 Xcode 26.5 / iOS 26.5。CI 依次查找 `/Applications/Xcode_26.5.app`、`Xcode-26.5.app`、
+`Xcode.app`，使用第一个版本号相符的；自有 Mac 见 [自托管 Runner](self-hosted-runners.md)。本地可用
+`DEVELOPER_DIR` 选择并行安装的 Xcode。旧工具链会在构建前明确失败，不修改依赖源码绕过编译器要求。
 参见 [Expo 兼容表](https://docs.expo.dev/versions/latest/) 和
 [GitHub runner 清单](https://github.com/actions/runner-images/blob/main/images/macos/macos-26-Readme.md)。
 

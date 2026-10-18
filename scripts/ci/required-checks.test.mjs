@@ -13,7 +13,7 @@ function successfulRun() {
         bootstrap: 'false',
         extension: 'false',
         web: 'true',
-        mobileAndroid: 'false',
+        mobileEnabled: 'false',
         desktop: 'false'
       }
     },
@@ -41,8 +41,8 @@ test('only deliberately unselected suites may be skipped', () => {
 
 test('missing selection data and failed prerequisites fail closed', () => {
   const run = successfulRun()
-  delete run.select.outputs.mobileAndroid
-  assert.throws(() => verifyRequiredChecks(run), /mobileAndroid/)
+  delete run.select.outputs.mobileEnabled
+  assert.throws(() => verifyRequiredChecks(run), /mobileEnabled/)
   for (const id of ['select', 'security', 'main', 'database-contract']) {
     const failed = successfulRun()
     failed[id].result = 'failure'

@@ -6,7 +6,20 @@ import { isDeepStrictEqual } from 'node:util'
 
 import { parse } from 'yaml'
 
-import { readContext, readVariables, resolveRunners } from './runners.mjs'
+import { readContext, readVariables, resolveRunners, skippedSummary } from './runners.mjs'
+
+/**
+ * The mobile device matrix. A selected platform whose runner resolved to `null`
+ * (a self-hosted lane on an untrusted run) is left out; see scripts/ci/runners.mjs.
+ */
+export function mobileMatrix({ mobileAndroid, mobileIos }, runners) {
+  return {
+    include: [
+      ...(mobileAndroid && runners.android ? [{ platform: 'android', runner: runners.android }] : []),
+      ...(mobileIos && runners.ios ? [{ platform: 'ios', runner: runners.ios }] : [])
+    ]
+  }
+}
 
 export function onlyDeploymentJobsChanged(before, after) {
   const record = value => value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -210,7 +223,10 @@ async function main() {
     )
   }
   // Resolve before writing outputs so a malformed runner variable fails the selection job.
-  const { runners } = resolveRunners(readVariables(), readContext())
+  const { runners, skipped: skippedLanes } = resolveRunners(readVariables(), readContext())
+  const mobile = mobileMatrix(suites, runners)
+  const lanesSummary = skippedSummary(skippedLanes)
+  if (lanesSummary && process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, lanesSummary)
   const output = {
     full: suites.full,
     base: suites.full ? '' : base,
@@ -224,15 +240,13 @@ async function main() {
     bootstrap: suites.bootstrap,
     mobileAndroid: suites.mobileAndroid,
     mobileIos: suites.mobileIos,
-    mobile: JSON.stringify({
-      include: [
-        ...(suites.mobileAndroid ? [{ platform: 'android', runner: 'ubuntu-24.04' }] : []),
-        ...(suites.mobileIos ? [{ platform: 'ios', runner: runners.ios }] : [])
-      ]
-    })
+    mobile: JSON.stringify(mobile),
+    mobileEnabled: mobile.include.length > 0
   }
   for (const [key, value] of Object.entries(output)) appendFileSync(process.env.GITHUB_OUTPUT, `${key}=${value}\n`)
-  console.log(JSON.stringify({ ...output, labels, skipped, affected, nativeAffected, ciDeploymentOnly }, null, 2))
+  console.log(
+    JSON.stringify({ ...output, labels, skipped, skippedLanes, affected, nativeAffected, ciDeploymentOnly }, null, 2)
+  )
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) await main()

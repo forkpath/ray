@@ -6,6 +6,6 @@
   "androidImageVariant": "google_atd",
   "iosRuntime": "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
   "iosDeviceType": "com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro",
-  "xcodeVersion": "26.6",
+  "xcodeVersion": "26.5",
   "androidImageRevision": 1
 }

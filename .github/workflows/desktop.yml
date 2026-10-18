@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
-      runners: ${{ steps.resolve.outputs.runners }}
+      desktop: ${{ steps.resolve.outputs.desktop }}
+      desktopEnabled: ${{ steps.resolve.outputs.desktopEnabled }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -31,23 +32,17 @@ jobs:
           RAY_RUNNER_DESKTOP_MAC_X64: ${{ vars.RAY_RUNNER_DESKTOP_MAC_X64 }}
           RAY_RUNNER_DESKTOP_WIN: ${{ vars.RAY_RUNNER_DESKTOP_WIN }}
           RAY_RUNNER_ANDROID: ${{ vars.RAY_RUNNER_ANDROID }}
+          RAY_RUNNER_UNTRUSTED: ${{ vars.RAY_RUNNER_UNTRUSTED }}
 
   desktop:
     needs: runners
+    # Every lane can be absent: arm64 is opt-in, and self-hosted lanes skip untrusted runs.
+    if: needs.runners.outputs.desktopEnabled == 'true'
     strategy:
       fail-fast: false
-      matrix:
-        # `os` names the hosted image and the artifact; `runner` is where the job runs.
-        include:
-          - os: macos-15
-            arch: arm64
-            runner: ${{ fromJSON(needs.runners.outputs.runners).desktopMacArm64 }}
-          - os: macos-15-intel
-            arch: x64
-            runner: ${{ fromJSON(needs.runners.outputs.runners).desktopMacX64 }}
-          - os: windows-2025
-            arch: x64
-            runner: ${{ fromJSON(needs.runners.outputs.runners).desktopWin }}
+      # Entries are { os, arch, runner }: `os` names the hosted image the lane mirrors and
+      # the artifact; `runner` is where the job runs (scripts/ci/runners.mjs desktopMatrix).
+      matrix: ${{ fromJSON(needs.runners.outputs.desktop) }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     env:
@@ -63,7 +58,11 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version: 24.14.1
-          cache: pnpm
+          # Self-hosted runners keep their pnpm store on disk; restoring a copy only costs time.
+          cache: ${{ runner.environment == 'github-hosted' && 'pnpm' || '' }}
+      - name: Check free disk space on the self-hosted runner
+        if: runner.environment == 'self-hosted'
+        run: node scripts/ci/check-free-space.mjs
       - run: pnpm install --frozen-lockfile
       - run: pnpm nx run-many -t lint,typecheck,test,build -p desktop
       - run: pnpm nx run desktop:e2e
