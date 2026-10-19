@@ -39,6 +39,6 @@
     "vite": "catalog:",
     "vite-plugin-svgr": "catalog:",
     "vitest": "catalog:",
-    "wxt": "^0.20.19"
+    "wxt": "^0.21.4"
   }
 }
