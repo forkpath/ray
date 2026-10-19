@@ -27,14 +27,17 @@ const selfHosted = {
 }
 const macLabels = ['self-hosted', 'macOS', 'X64', 'ray-mac']
 
-test('without variables every role stays on its hosted image and arm64 desktop is off', () => {
+test('without variables every role stays on its hosted image', () => {
   assert.deepEqual(resolveRunners({}, push), { trusted: true, runners: HOSTED_RUNNERS, skipped: [] })
-  assert.equal(HOSTED_RUNNERS.desktopMacArm64, null)
   assert.equal(HOSTED_RUNNERS.android, 'ubuntu-24.04')
   assert.deepEqual(resolveRunners({ RAY_RUNNER_IOS: '  ' }, push).runners.ios, 'macos-26')
   assert.deepEqual(
-    desktopMatrix(HOSTED_RUNNERS).include.map(entry => entry.runner),
-    ['macos-15-intel', 'windows-2025']
+    desktopMatrix(HOSTED_RUNNERS).include.map(entry => [entry.os, entry.arch, entry.runner]),
+    [
+      ['macos-15-intel', 'x64', 'macos-15-intel'],
+      ['windows-2025', 'x64', 'windows-2025'],
+      ['macos-15', 'arm64', 'macos-15']
+    ]
   )
 })
 
@@ -43,7 +46,8 @@ test('trusted events use the configured self-hosted labels', () => {
   assert.deepEqual(skipped, [])
   for (const role of ['ios', 'android', 'desktopMacX64']) assert.deepEqual(runners[role], macLabels)
   assert.deepEqual(runners.desktopWin, ['self-hosted', 'Windows', 'X64', 'ray-win'])
-  assert.equal(runners.desktopMacArm64, null)
+  // A role without a variable keeps its hosted image.
+  assert.equal(runners.desktopMacArm64, 'macos-15')
   for (const eventName of ['workflow_dispatch', 'schedule']) {
     assert.equal(resolveRunners(selfHosted, { ...push, eventName }).trusted, true)
   }
@@ -53,16 +57,12 @@ test('trusted events use the configured self-hosted labels', () => {
     'Linux',
     'X64'
   ])
-  // Apple-silicon desktop runs only when a machine is configured for it.
   const arm64 = resolveRunners({ RAY_RUNNER_DESKTOP_MAC_ARM64: '["self-hosted","macOS","ARM64"]' }, push).runners
-  assert.deepEqual(
-    desktopMatrix(arm64).include.map(entry => [entry.os, entry.arch]),
-    [
-      ['macos-15-intel', 'x64'],
-      ['windows-2025', 'x64'],
-      ['macos-15', 'arm64']
-    ]
-  )
+  assert.deepEqual(desktopMatrix(arm64).include.at(-1), {
+    os: 'macos-15',
+    arch: 'arm64',
+    runner: ['self-hosted', 'macOS', 'ARM64']
+  })
 })
 
 test('untrusted runs skip only self-hosted lanes whose hosted fallback is macOS', () => {
@@ -78,9 +78,10 @@ test('untrusted runs skip only self-hosted lanes whose hosted fallback is macOS'
     skipped.map(entry => entry.role),
     ['ios', 'desktopMacX64']
   )
+  // The unconfigured arm64 lane keeps its hosted image.
   assert.deepEqual(
     desktopMatrix(runners).include.map(entry => entry.runner),
-    ['windows-2025']
+    ['windows-2025', 'macos-15']
   )
   assert.match(skippedSummary(skipped), /RAY_RUNNER_UNTRUSTED=hosted/)
   assert.equal(skippedSummary([]), '')
@@ -90,12 +91,12 @@ test('untrusted runs skip only self-hosted lanes whose hosted fallback is macOS'
   const hosted = resolveRunners({ ...selfHosted, RAY_RUNNER_UNTRUSTED: 'hosted' }, bot)
   assert.deepEqual(hosted.runners, HOSTED_RUNNERS)
   assert.deepEqual(hosted.skipped, [])
-  // The opt-in arm64 lane has no hosted image to fall back to.
-  const arm64 = resolveRunners(
-    { RAY_RUNNER_DESKTOP_MAC_ARM64: '["self-hosted","macOS","ARM64"]', RAY_RUNNER_UNTRUSTED: 'hosted' },
-    bot
-  )
+  const arm64 = resolveRunners({ RAY_RUNNER_DESKTOP_MAC_ARM64: '["self-hosted","macOS","ARM64"]' }, bot)
   assert.equal(arm64.runners.desktopMacArm64, null)
+  assert.deepEqual(
+    arm64.skipped.map(entry => entry.role),
+    ['desktopMacArm64']
+  )
   assert.throws(() => resolveRunners({ RAY_RUNNER_UNTRUSTED: 'self-hosted' }, push), /RAY_RUNNER_UNTRUSTED/)
 })
 
