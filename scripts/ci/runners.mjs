@@ -3,8 +3,8 @@
  *
  * Each role defaults to a GitHub-hosted image. A repository variable holding a JSON
  * label array (for example `["self-hosted","macOS","X64","ray-mac"]`) moves that role
- * to a self-hosted runner. Unset or empty restores the hosted image. A role without a
- * hosted image (Apple-silicon desktop) runs only when its variable is set.
+ * to a self-hosted runner. Unset or empty restores the hosted image. A role whose
+ * hosted image is `null` would run only when its variable is set.
  *
  * Self-hosted machines keep state between jobs, so only trusted events may use them:
  * pushes, manual and scheduled runs, and pull requests opened from this repository
@@ -30,8 +30,7 @@ const ROLES = {
   android: { variable: 'RAY_RUNNER_ANDROID', os: ['Linux', 'macOS'], arch: null, hosted: 'ubuntu-24.04' },
   desktopMacX64: { variable: 'RAY_RUNNER_DESKTOP_MAC_X64', os: ['macOS'], arch: 'X64', hosted: 'macos-15-intel' },
   desktopWin: { variable: 'RAY_RUNNER_DESKTOP_WIN', os: ['Windows'], arch: 'X64', hosted: 'windows-2025' },
-  // Opt-in: no hosted lane, so Apple-silicon desktop is tested only on a configured machine.
-  desktopMacArm64: { variable: 'RAY_RUNNER_DESKTOP_MAC_ARM64', os: ['macOS'], arch: 'ARM64', hosted: null }
+  desktopMacArm64: { variable: 'RAY_RUNNER_DESKTOP_MAC_ARM64', os: ['macOS'], arch: 'ARM64', hosted: 'macos-15' }
 }
 
 export const HOSTED_RUNNERS = Object.fromEntries(Object.entries(ROLES).map(([role, { hosted }]) => [role, hosted]))

@@ -3,6 +3,11 @@
 本手册说明如何把自有的一台 Intel Mac 和一台 Windows 电脑配置成 GitHub Actions runner，承担全部客户端测试
 （Mobile iOS/Android、Desktop macOS x64、Desktop Windows x64），以及日常怎样使用、切换和清理。按章节顺序操作即可。
 
+> **开源（公开）仓库无需启用自托管 runner。** 公开仓库使用 GitHub 标准托管 runner（含 macOS、Windows）免费且不限分钟，
+> 配置也比私有仓库更高。公开仓库还不应注册自托管 runner：fork 发起的 PR 运行的是 PR 自带的 workflow，可以直接把
+> `runs-on` 指向你的机器，绕过 `scripts/ci/runners.mjs` 的信任判断；个人账户也没有组织的 runner 组权限控制。
+> 仓库公开期间保持所有 `RAY_RUNNER_*` 变量为空，不注册 runner；本手册只适用于私有仓库。
+
 ## 1. 概览
 
 私有仓库在 GitHub 托管 runner 上，macOS 按 10 倍、Windows 按 2 倍计算分钟数，客户端测试是最耗分钟的部分。
@@ -18,11 +23,11 @@
 | `RAY_RUNNER_ANDROID`           | Mobile Android 模拟器 E2E  | `ubuntu-24.04`                     |
 | `RAY_RUNNER_DESKTOP_MAC_X64`   | Desktop macOS x64 检查     | `macos-15-intel`                   |
 | `RAY_RUNNER_DESKTOP_WIN`       | Desktop Windows x64 检查   | `windows-2025`                     |
-| `RAY_RUNNER_DESKTOP_MAC_ARM64` | Desktop macOS arm64 检查   | 无：只在设置了变量时运行           |
+| `RAY_RUNNER_DESKTOP_MAC_ARM64` | Desktop macOS arm64 检查   | `macos-15`                         |
 | `RAY_RUNNER_UNTRUSTED`         | 不可信运行如何处理自有任务 | `skip`，可设 `hosted`（第 2.2 节） |
 
-Apple Silicon 的 Desktop 检查默认不运行；以后有 M 芯片机器时设置 `RAY_RUNNER_DESKTOP_MAC_ARM64` 即可恢复。
-注意签名发布流程（`release-desktop.yml`）仍会在托管 `macos-15` 上打包 arm64 版本，这个版本不再经过 CI 的 Desktop 检查。
+本手册的两台机器中没有 Apple 芯片的 Mac，所以 `RAY_RUNNER_DESKTOP_MAC_ARM64` 不设置，Apple 芯片的 Desktop 检查
+继续在托管 `macos-15` 上运行。
 
 ## 2. 为什么要这样配置
 
@@ -45,7 +50,8 @@ Dependabot 的 PR 分支建在本仓库里，CI 会安装并运行新版本依�
 对这些运行，已改到自有机器的任务按成本处理：
 
 - Android（托管 Linux，1 倍）和 Desktop Windows（2 倍）改用托管 runner 执行，依赖升级仍有设备测试覆盖。
-- iOS 和 Desktop macOS x64 的托管镜像是 macOS（10 倍），**默认跳过**，运行摘要中会列出被跳过的任务。
+- iOS 和 Desktop macOS 的托管镜像是 macOS（10 倍），**默认跳过**，运行摘要中会列出被跳过的任务。
+  未改到自有机器的任务（例如 Apple 芯片 Desktop）不受影响，照常在托管 runner 上运行。
   `Required checks` 把它们视为“未选择”，不会因此失败。
 
 需要在合并前补上 macOS 任务时：
@@ -487,7 +493,7 @@ rm -rf ~/.cache/ray-ci                    # 清空 CI 缓存，下次运行重�
 ## 15. 安全须知
 
 - 只有可信事件使用自有机器：推送、手动运行、定时运行，以及本仓库分支上由人发起的 PR。机器人与 fork 的运行不使用自有机器。
-- 保持仓库设置中“运行来自 fork 的 PR 工作流”处于关闭状态。
+- 仓库保持私有。改为公开前，先删除所有 `RAY_RUNNER_*` 变量并注销 runner（见本手册开头）。
 - runner 账户为非管理员，不存放个人凭据；清理与维护脚本由管理员安装在 runner 账户无法修改的目录中。
   这不能防御恶意任务本身（任务以 `ghrunner` 身份运行，可以修改 runner 目录与缓存），这也是只让可信事件使用自有机器的原因。
 - 不要在这些机器上运行签名发布任务。
