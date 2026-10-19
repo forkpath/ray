@@ -168,7 +168,8 @@ overrides:
   'brace-expansion@>=2.0.0 <2.1.6': 2.1.6
   'brace-expansion@>=5.0.0 <5.0.11': 5.0.11
   'browserslist@>=4.0.0 <4.28.7': 4.28.7
-  '@prisma/config@7.8.0>deepmerge-ts': 8.0.2
+  # Any Prisma release may pin deepmerge-ts 7.x (GHSA-ggr8-5vv4-36mx); a range survives Prisma bumps.
+  'deepmerge-ts@<8.0.0': 8.0.2
   'compression@>=1.0.0 <1.8.2': 1.8.2
   'defu@>=6.0.0 <6.1.5': 6.1.5
   'fast-uri@>=3.0.0 <3.1.7': 3.1.7
