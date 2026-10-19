@@ -281,7 +281,7 @@
     "nx": "23.2.1",
     "prettier": "~3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.2",
-    "prisma": "^7.8.0",
+    "prisma": "^7.10.1",
     "react-grab": "^0.1.32",
     "testcontainers": "12.2.0",
     "tslib": "^2.3.0",
