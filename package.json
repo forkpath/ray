@@ -132,7 +132,7 @@
     "@sentry/nestjs": "^10.47.0",
     "@sentry/node": "^10.42.0",
     "@sentry/react": "catalog:",
-    "@simplewebauthn/server": "13.3.1",
+    "@simplewebauthn/server": "13.3.2",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-router-ssr-query": "^1.167.1",
@@ -164,7 +164,7 @@
     "lucide-react": "^0.562.0",
     "lucide-react-native": "catalog:native",
     "mongodb": "^7.0.0",
-    "mongoose": "^9.1.6",
+    "mongoose": "^9.7.2",
     "motion": "^12.29.0",
     "negotiator": "^1.0.0",
     "nestjs-i18n": "^10.6.0",
@@ -296,7 +296,7 @@
     "web-vitals": "^5.1.0",
     "webpack": "5.108.1",
     "webpack-cli": "7.1.0",
-    "webpack-dev-server": "5.2.5",
+    "webpack-dev-server": "5.2.6",
     "yaml": "2.9.1"
   },
   "config": {
