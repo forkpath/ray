@@ -45,7 +45,7 @@ export default function AccountsScreen() {
     }
   })
 
-  const handleDisconnect = (provider: SocialProvider) => {
+  const handleDisconnect = (provider: SocialProvider, accountId: string) => {
     Alert.alert(
       t('account.accounts.disconnect.cta', {
         provider: capitalize(provider)
@@ -60,7 +60,7 @@ export default function AccountsScreen() {
         },
         {
           text: t('continue'),
-          onPress: () => disconnect.mutate({ providerId: provider })
+          onPress: () => disconnect.mutate({ accountId })
         }
       ]
     )
@@ -85,10 +85,7 @@ export default function AccountsScreen() {
                 const Icon = SocialIcons[provider]
 
                 return (
-                  <View
-                    key={social.accountId}
-                    className="border-border flex-row items-center border-b p-4 last:border-b-0"
-                  >
+                  <View key={social.id} className="border-border flex-row items-center border-b p-4 last:border-b-0">
                     <Icon className="text-foreground size-8" />
                     <View className="ml-3 flex-1">
                       <Text className="font-sans-medium capitalize">{social.providerId}</Text>
@@ -103,9 +100,9 @@ export default function AccountsScreen() {
                       variant="ghost"
                       size="icon"
                       disabled={accounts.length === 1 || disconnect.isPending}
-                      onPress={() => handleDisconnect(provider)}
+                      onPress={() => handleDisconnect(provider, social.id)}
                     >
-                      {disconnect.isPending && disconnect.variables.providerId === provider ? (
+                      {disconnect.isPending && disconnect.variables.accountId === social.id ? (
                         <Spin>
                           <Icons.Loader2 className="text-foreground size-5" />
                         </Spin>

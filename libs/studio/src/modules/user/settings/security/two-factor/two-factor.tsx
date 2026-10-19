@@ -30,10 +30,9 @@ export const TwoFactorAuthentication = () => {
 
   const onEnable = useCallback(
     async (data: { password: string }) => {
-      const response = (await enable.mutateAsync(data)) as unknown as {
-        totpURI: string
-        backupCodes: string[]
-      }
+      const response = await enable.mutateAsync({ ...data, method: 'totp' })
+      if (response.method !== 'totp') return
+
       setUri(response.totpURI)
       setCodes(response.backupCodes)
       setTwoFactorOpen(false)
