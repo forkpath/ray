@@ -28,7 +28,7 @@ export default function TwoFactor() {
   const onEnable = useCallback(
     async (data: PasswordPayload) => {
       const response = await enable.mutateAsync({ ...data, method: 'totp' })
-      if (response.method !== 'totp') return
+      if (response.method !== 'totp') throw new Error('Expected a TOTP enrollment response')
 
       setUri(response.totpURI)
       setCodes(response.backupCodes)

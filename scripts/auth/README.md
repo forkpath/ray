@@ -18,4 +18,4 @@ pnpm nx run auth-server:schema-check
 
 比较器检查逻辑字段、类型、默认值、关系和索引，忽略物理映射及本项目明确列出的计费关系/索引扩展。因此它是辅助检查，不能替代数据库约束验证或真实登录测试。
 
-CLI 通过 `tools/auth-schema` 隔离固定版本（`auth@1.7.11` 与运行时 `better-auth@1.7.11`），不会动态下载 latest。入口拒绝两个 manifest 的版本不一致；升级时仍需审核候选 schema 差异。运行注入测试认证/邮件/OAuth 值；数据库地址使用占位值，不继承真实数据库配置。
+CLI 通过 `tools/auth-schema` 隔离固定版本（`auth@1.7.11` 与运行时 `better-auth@1.7.11`），不会动态下载 latest。入口拒绝两个 manifest 的版本不一致，也拒绝根 manifest 中与 `better-auth` 版本不同的 `@better-auth/*` 包；升级时仍需审核候选 schema 差异。运行注入测试认证/邮件/OAuth 值；数据库地址使用占位值，不继承真实数据库配置。
