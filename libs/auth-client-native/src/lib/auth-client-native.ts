@@ -1,6 +1,6 @@
 import type { LastLoginMethodClientConfig } from '@better-auth/expo/plugins'
 import type { PermissionCheckParams } from '@libs/auth-contract'
-import type { BetterAuthClientOptions, BetterAuthClientPlugin } from 'better-auth'
+import type { BetterAuthClientOptions } from 'better-auth'
 
 import { expoClient } from '@better-auth/expo/client'
 import { lastLoginMethodClient } from '@better-auth/expo/plugins'
@@ -23,34 +23,33 @@ export { resolvePermissionCheckSuccess } from './permission-result'
 export type AuthMobileClientOptions = Parameters<typeof expoClient>[0]
 type ExpoClientOptions = AuthMobileClientOptions
 
-export const createClient = ({
-  mobile,
-  lastLoginMethod,
-  ...options
-}: Omit<BetterAuthClientOptions, 'plugins'> & {
+const createPlugins = (mobile: ExpoClientOptions, lastLoginMethod: LastLoginMethodClientConfig) => [
+  anonymousClient(),
+  magicLinkClient(),
+  emailOTPClient(),
+  twoFactorClient(),
+  adminClient(),
+  organizationClient({ ac }),
+  lastLoginMethodClient(lastLoginMethod),
+  expoClient(mobile)
+]
+
+export interface AuthNativeClientOptions extends Omit<BetterAuthClientOptions, 'plugins'> {
   mobile: ExpoClientOptions
   lastLoginMethod: LastLoginMethodClientConfig
-}) => {
-  type ExpoPlugin = ReturnType<typeof expoClient>
-  type CompatibleExpoPlugin = Omit<ExpoPlugin, 'getActions'> & {
-    getActions: ExpoPlugin['getActions'] & BetterAuthClientPlugin['getActions']
-  }
-  const mobilePlugin = expoClient(mobile) as CompatibleExpoPlugin
-
-  return createAuthClient({
-    ...options,
-    plugins: [
-      anonymousClient(),
-      magicLinkClient(),
-      emailOTPClient(),
-      twoFactorClient(),
-      adminClient(),
-      organizationClient({ ac }),
-      lastLoginMethodClient(lastLoginMethod),
-      mobilePlugin
-    ]
-  })
 }
+
+// Better Auth 1.7 does not export the `sessionOptions` type, so an inferred
+// spread object cannot be emitted in declarations. Name the client config.
+export type AuthNativeClientConfig = Omit<BetterAuthClientOptions, 'plugins'> & {
+  plugins: ReturnType<typeof createPlugins>
+}
+
+export const createClient = ({ mobile, lastLoginMethod, ...options }: AuthNativeClientOptions) =>
+  createAuthClient<AuthNativeClientConfig>({
+    ...options,
+    plugins: createPlugins(mobile, lastLoginMethod)
+  })
 
 export type AuthClient = ReturnType<typeof createClient>
 

@@ -4,7 +4,7 @@
 
 Nx 项目名 @ray/auth-schema-tool；type:platform、runtime:node、domain:auth。供认证维护者/CI 做逻辑 schema 对照，不供 Web/Native 或业务库 import。
 
-此 package.json 隔离 CLI 的依赖解析；官方替代包 `auth` 与根 Better Auth runtime 都固定为 `1.6.26`。检查入口先验证两个 manifest 的版本相同，防止运行时升级后仍用旧生成器检查。旧 `@better-auth/cli` 已停止维护，其专用的 fetch/call 兼容依赖一并移除。
+此 package.json 隔离 CLI 的依赖解析；官方替代包 `auth` 与根 Better Auth runtime 都固定为 `1.7.11`。检查入口先验证两个 manifest 的版本相同，防止运行时升级后仍用旧生成器检查。旧 `@better-auth/cli` 已停止维护，其专用的 fetch/call 兼容依赖一并移除。
 
 ## 环境与运行
 

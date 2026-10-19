@@ -51,7 +51,7 @@ export const Accounts = () => {
     enabled: !!sessionData.data?.user?.id
   })
 
-  const accounts = (data as unknown as { providerId: string; accountId: string; updatedAt: string }[]) ?? []
+  const accounts = (data as unknown as { id: string; providerId: string; accountId: string; updatedAt: string }[]) ?? []
   const socials = accounts.filter(a => (OAUTH_PROVIDERS as readonly string[]).includes(a.providerId))
   const missing = OAUTH_PROVIDERS.filter(p => !socials.some(s => s.providerId === p))
 
@@ -104,7 +104,7 @@ export const Accounts = () => {
               const Icon = SocialIcons[provider]
 
               return (
-                <li key={social.accountId} className="flex items-center gap-3 border-b px-4 py-3 last:border-b-0">
+                <li key={social.id} className="flex items-center gap-3 border-b px-4 py-3 last:border-b-0">
                   {Icon ? <Icon className="size-8" /> : null}
 
                   <div className="mr-auto flex flex-col">
@@ -140,7 +140,7 @@ export const Accounts = () => {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>{t('common:cancel')}</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => disconnect.mutate({ providerId: provider })}>
+                        <AlertDialogAction onClick={() => disconnect.mutate({ accountId: social.id })}>
                           {t('common:continue', {
                             defaultValue: 'Continue'
                           })}

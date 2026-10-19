@@ -14,18 +14,26 @@ import { createAuthClient } from 'better-auth/react'
 
 import { ac } from '@libs/auth-contract'
 
-export const createClient = (options?: Omit<BetterAuthClientOptions, 'plugins'>) =>
-  createAuthClient({
+const createPlugins = () => [
+  passkeyClient(),
+  anonymousClient(),
+  magicLinkClient(),
+  twoFactorClient(),
+  adminClient(),
+  organizationClient({ ac }),
+  lastLoginMethodClient()
+]
+
+export type AuthWebClientOptions = Omit<BetterAuthClientOptions, 'plugins'>
+
+// Better Auth 1.7 does not export the `sessionOptions` type, so an inferred
+// spread object cannot be emitted in declarations. Name the client config.
+export type AuthWebClientConfig = AuthWebClientOptions & { plugins: ReturnType<typeof createPlugins> }
+
+export const createClient = (options?: AuthWebClientOptions) =>
+  createAuthClient<AuthWebClientConfig>({
     ...options,
-    plugins: [
-      passkeyClient(),
-      anonymousClient(),
-      magicLinkClient(),
-      twoFactorClient(),
-      adminClient(),
-      organizationClient({ ac }),
-      lastLoginMethodClient()
-    ]
+    plugins: createPlugins()
   })
 
 export type AuthClient = ReturnType<typeof createClient>
