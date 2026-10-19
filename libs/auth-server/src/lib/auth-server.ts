@@ -155,6 +155,8 @@ export const auth = betterAuth({
         switch (ctx.path) {
           case '/magic-link/verify':
             return AuthProvider.MAGIC_LINK
+          case '/sign-in/email-otp':
+            return AuthProvider.EMAIL_OTP
           case '/passkey/verify-authentication':
             return AuthProvider.PASSKEY
           default:

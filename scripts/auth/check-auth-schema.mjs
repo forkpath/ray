@@ -14,8 +14,20 @@ const workspaceRoot = resolve(import.meta.dirname, '../..')
 const toolRoot = join(workspaceRoot, 'tools/auth-schema')
 const runtimeManifest = JSON.parse(readFileSync(join(workspaceRoot, 'package.json'), 'utf8'))
 const toolManifest = JSON.parse(readFileSync(join(toolRoot, 'package.json'), 'utf8'))
-if (toolManifest.devDependencies.auth !== runtimeManifest.dependencies['better-auth']) {
+const runtimeVersion = runtimeManifest.dependencies['better-auth']
+if (toolManifest.devDependencies.auth !== runtimeVersion) {
   throw new Error('Pin the auth CLI to the same exact version as the Better Auth runtime before checking schemas.')
+}
+// Mixed Better Auth package versions resolve two @better-auth/core copies and
+// break plugin type inference, so every @better-auth/* runtime package must
+// match better-auth exactly.
+const mismatchedPackages = Object.entries(runtimeManifest.dependencies)
+  .filter(([name, version]) => name.startsWith('@better-auth/') && version !== runtimeVersion)
+  .map(([name, version]) => `${name}@${version}`)
+if (mismatchedPackages.length > 0) {
+  throw new Error(
+    `Pin every @better-auth/* package to better-auth@${runtimeVersion}; mismatched: ${mismatchedPackages.join(', ')}`
+  )
 }
 const canonicalPath = join(workspaceRoot, 'libs/pg-dao/src/models/auth.prisma')
 const authProjectRoot = join(workspaceRoot, 'libs/auth-server')

@@ -31,7 +31,7 @@ export const TwoFactorAuthentication = () => {
   const onEnable = useCallback(
     async (data: { password: string }) => {
       const response = await enable.mutateAsync({ ...data, method: 'totp' })
-      if (response.method !== 'totp') return
+      if (response.method !== 'totp') throw new Error('Expected a TOTP enrollment response')
 
       setUri(response.totpURI)
       setCodes(response.backupCodes)

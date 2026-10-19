@@ -517,9 +517,12 @@ export type I18nTranslations = {
                 "expired": string;
                 "invalid": string;
                 "tooManyAttempts": string;
+                "notConfigured": string;
             };
             "totp": {
                 "notEnabled": string;
+                "alreadyEnabled": string;
+                "notConfigured": string;
             };
             "twoFactor": {
                 "notEnabled": string;
