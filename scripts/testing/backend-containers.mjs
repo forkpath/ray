@@ -5,6 +5,7 @@ import { GenericContainer, Network, PullPolicy, Wait } from 'testcontainers'
 import { parse } from 'yaml'
 
 export const TEST_RUN_LABEL = 'io.ray.test.run'
+const STARTUP_LOG_LINES = 80
 
 // Test the same immutable infrastructure versions that deployment will pull.
 const infrastructure = parse(readFileSync(new URL('../../docker/docker-compose.infra.yml', import.meta.url), 'utf8'))
@@ -120,7 +121,19 @@ export class BackendContainers {
   async launch(service, builder) {
     this.assertRunning()
     this.progress(`Starting ${service}`)
-    const container = await builder.start()
+    // testcontainers removes a container whose wait strategy fails, so the runner's
+    // final `docker logs` sweep never sees it. Keep its output from the first line and
+    // attach the tail to the error, so a startup failure explains itself.
+    const output = []
+    builder.withLogConsumer(stream => stream.on('data', line => output.push(String(line).trimEnd())))
+    let container
+    try {
+      container = await builder.start()
+    } catch (error) {
+      const tail = output.slice(-STARTUP_LOG_LINES).join('\n')
+      error.message = `${service} failed to start: ${error.message}\n--- last ${STARTUP_LOG_LINES} lines of ${service} output ---\n${tail || '(no output)'}`
+      throw error
+    }
     this.containers.set(service, container)
     this.assertRunning()
     if (!['127.0.0.1', 'localhost', '::1'].includes(container.getHost()))
