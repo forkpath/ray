@@ -67,7 +67,10 @@ export class BackendContainers {
             MONGO_INITDB_ROOT_USERNAME: 'root',
             MONGO_INITDB_ROOT_PASSWORD: password,
             MONGO_INITDB_DATABASE: database,
-            RAY_TEST_PASSWORD: password
+            RAY_TEST_PASSWORD: password,
+            // Same as docker/docker-compose.infra.yml: MongoDB 8 refuses to start on Linux 6.19+
+            // while TCMalloc's per-CPU caches are active (SERVER-121912).
+            GLIBC_TUNABLES: 'glibc.pthread.rseq=1'
           })
           .withCopyFilesToContainer([
             {
