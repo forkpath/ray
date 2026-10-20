@@ -52,6 +52,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      # Linux 6.19+ breaks TCMalloc's per-CPU caches (SERVER-121912), and MongoDB 8 then
+      # refuses to start. The image sets rseq=0 so TCMalloc can use them; rseq=1 lets glibc own
+      # rseq, which turns the per-CPU caches off on every kernel at a small throughput cost.
+      GLIBC_TUNABLES: glibc.pthread.rseq=1
     volumes:
       - mongo:/data/db
       - ./mongo/init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
