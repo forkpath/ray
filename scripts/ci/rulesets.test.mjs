@@ -84,10 +84,25 @@ test('main is fast-forwarded only by the deploy key to a staging-deployed, teste
   assert.equal(rule(gate, 'required_linear_history'), undefined)
   // A bypass only applies within its own ruleset: the deploy key passes "update" but not main-gate.
   assert.deepEqual(gate.bypass_actors, [])
+  // "update" does not cover creating the branch, so "creation" keeps the one-time creation of main to the deploy key.
   assert.deepEqual(
     release.rules.map(item => item.type),
-    ['update']
+    ['creation', 'update']
   )
   assert.deepEqual(release.bypass_actors, [{ actor_id: null, actor_type: 'DeployKey', bypass_mode: 'always' }])
   for (const name of ['dev', 'arch']) assert.deepEqual(rulesets[name].bypass_actors, [])
+})
+
+test('main can be created once without a staging status, then only fast-forwarded through the gate', () => {
+  const gate = rulesets['main-gate']
+  // A new repository has no commit with "Staging verified" until staging works, so enforcing the checks on
+  // creation would make main impossible to create. Deletion is blocked, so creation happens only once.
+  assert.equal(rule(gate, 'required_status_checks').parameters.do_not_enforce_on_create, true)
+  assert.ok(rule(gate, 'deletion'))
+  assert.ok(rule(gate, 'non_fast_forward'))
+  assert.ok(rule(rulesets['main-release'], 'creation'))
+  // dev and arch already exist when the rulesets are imported; their checks still apply to new refs.
+  for (const name of ['dev', 'arch']) {
+    assert.equal(rule(rulesets[name], 'required_status_checks').parameters.do_not_enforce_on_create, false)
+  }
 })

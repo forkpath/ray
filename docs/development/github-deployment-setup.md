@@ -266,12 +266,13 @@ HTTPS 探针都通过后，才算部署验收完成。`Required checks` 是测�
 1. 功能 PR 的 `Required checks` 成功后合入 `dev`。
 2. 等待该 dev SHA 的**整次 CI**成功，包括 staging 部署和公开探针；记录保留 30 天。
 3. 确认已按 [分支维护](branch-workflow.md#5-github-仓库配置一次性) 配置 ruleset：main 要求同一 SHA 的
-   `Required checks` 与 `Staging verified` 状态、只允许发布部署密钥更新、禁止强推和删除。
-4. 首次发布且远端 main **尚不存在**时（此时还没有 main 的 ruleset），在干净工作目录执行：
+   `Required checks` 与 `Staging verified` 状态、只允许发布部署密钥创建和更新、禁止强推和删除。
+4. 首次发布且远端 main **尚不存在**时，按 [分支维护 · 在新仓库中创建 main](branch-workflow.md#581-在新仓库中创建-main)
+   用发布部署密钥创建 main（个人账户会被拒绝）：
 
    ```sh
    git fetch origin dev
-   git push origin origin/dev:refs/heads/main
+   git push git@github-ray-release:owner/repo.git origin/dev:refs/heads/main
    ```
 
    main 已存在时先验证可 fast-forward，按 [分支维护 · 发布](branch-workflow.md#74-发布快进-main) 使用发布部署密钥推送。

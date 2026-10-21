@@ -104,7 +104,7 @@ git push git@github-ray-release:forkpath/postfly.io.git origin/dev:refs/heads/ma
 推送使用发布部署密钥（`github-ray-release` 是 SSH 配置中的别名），配置与完整检查见
 [分支维护 · 发布](../development/branch-workflow.md#74-发布快进-main)。上面的祖先检查失败时先解决分支历史；
 不要 force push。main 的 ruleset 要求同一 SHA 上的 `Required checks` 成功，并带有 `Staging verified` 状态
-（只由 dev 推送后的 CI 在 staging 部署成功时写入），并只允许发布部署密钥更新，网页上的合并按钮无法修改 main。
+（只由 dev 推送后的 CI 在 staging 部署成功时写入），并只允许发布部署密钥创建和更新，网页上的合并按钮无法修改 main。
 dev 合并只要求 `Required checks` 与 `PR policy`，避免功能 PR 在合并前需要部署凭据。dev、arch、main 均禁止强推和删除；当前单维护者
 设置不要求无法自行满足的额外人工 approval。CODEOWNERS 保留维护归属，团队增加成员后
 可再要求独立代码审阅。
