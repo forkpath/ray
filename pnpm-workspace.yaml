@@ -153,7 +153,9 @@ overrides:
   '@tanstack/router-core': 1.171.35
   # Zeego 3.0.6 still pins 1.2.2, which does not compile with React Native 0.86.
   'zeego>@react-native-menu/menu': 2.0.0
-  zod: 4.4.3
+  # One zod runtime for every library. Must satisfy each dependent's range (Better Auth 1.7 and
+  # TanStack Router need >=4.5.4); scripts/ci/dependency-overrides.test.mjs checks this.
+  zod: 4.6.7
   # Security floors for vulnerable transitive versions; newer versions remain untouched.
   # Sources and cross-major compatibility checks: docs/development/dependency-governance.md.
   '@babel/plugin-transform-modules-systemjs@>=7.0.0 <7.29.4': 7.29.4
