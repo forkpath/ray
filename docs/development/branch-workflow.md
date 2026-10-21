@@ -175,6 +175,7 @@ gh api -X PUT repos/forkpath/postfly.io/rulesets/<id> --input .github/rulesets/d
 | 规则                                  | `dev`                          | `arch` | `main-gate`（main）                   | `main-release`（main） |
 | ------------------------------------- | ------------------------------ | ------ | ------------------------------------- | ---------------------- |
 | Bypass list                           | 空                             | 空     | 空                                    | **Deploy keys**        |
+| Restrict creations                    | ✗                              | ✗      | ✗                                     | ✓                      |
 | Restrict updates                      | ✗                              | ✗      | ✗                                     | ✓                      |
 | Restrict deletions                    | ✓                              | ✓      | ✓                                     | ✗                      |
 | Block force pushes                    | ✓                              | ✓      | ✓                                     | ✗                      |
@@ -186,9 +187,14 @@ gh api -X PUT repos/forkpath/postfly.io/rulesets/<id> --input .github/rulesets/d
 | Require status checks to pass         | ✓                              | ✓      | ✓                                     | ✗                      |
 | → Require branches to be up to date   | ✗                              | ✓      | ✗                                     | —                      |
 | → Status checks                       | `Required checks`、`PR policy` | 同左   | `Required checks`、`Staging verified` | —                      |
+| → 创建分支时不检查                    | ✗                              | ✗      | ✓                                     | —                      |
 
 - main 拆成两个 ruleset：bypass 只对所在 ruleset 生效。部署密钥可以绕过 `main-release` 的“禁止更新”，
   但仍要满足 `main-gate` 的检查（测试通过、staging 部署成功、只能快进）。任何人（包括管理员）在网页上都无法更新 main。
+- main 的“创建”与“更新”是两条规则：`main-release` 的“禁止更新”不限制创建分支，所以另加“禁止创建”，
+  让 main 也只能由部署密钥创建。`main-gate` 在创建 main 时不检查状态（`do_not_enforce_on_create`）：新仓库在 staging
+  可用之前没有任何提交带 `Staging verified`，检查创建会让 main 永远无法创建。main 禁止删除，创建只会发生一次，
+  之后的每次快进仍要满足两项检查。创建步骤见第 5.8.1 节。
 - `Staging verified` 是一个提交状态，只由 dev 推送后的 CI 在 staging 部署结束时写入：部署成功写 success，失败或被跳过写 failure，
   重跑后以最新一次为准。只有 dev 的提交会部署 staging，因此它同时证明该提交来自 dev。
   没有使用 GitHub 的“Require deployments to succeed”规则：导入时 GitHub 对本仓库返回 `Invalid deployment environments`。
@@ -199,8 +205,8 @@ gh api -X PUT repos/forkpath/postfly.io/rulesets/<id> --input .github/rulesets/d
 
 ### 5.5 先在测试分支上验证 main 的规则
 
-main 的规则在直接推送时是否按预期生效，应先实测再依赖。规则只对**更新**已有分支生效，
-所以先创建测试分支，再加规则，然后只做更新推送：
+main 的规则在直接推送时是否按预期生效，应先实测再依赖。加入规则后只有部署密钥能创建分支，
+所以先创建测试分支 `ruleset-test`，再加规则，用它验证更新；另用一个尚不存在的 `ruleset-create-test` 验证创建：
 
 1. 在 main 规则还没有包含测试分支时，从 main 创建测试分支：
 
@@ -208,7 +214,8 @@ main 的规则在直接推送时是否按预期生效，应先实测再依赖。
    git push origin origin/main:refs/heads/ruleset-test
    ```
 
-2. 在网页上编辑 `main-gate` 与 `main-release`，在 Target branches 中都加上 `ruleset-test`（Include by pattern）。
+2. 在网页上编辑 `main-gate` 与 `main-release`，在 Target branches 中都加上 `ruleset-test` 与
+   `ruleset-create-test`（Include by pattern）。
 3. 用你的个人账户推送 dev 最新提交，应被“禁止更新”拒绝：
 
    ```sh
@@ -235,7 +242,18 @@ main 的规则在直接推送时是否按预期生效，应先实测再依赖。
    git push git@github-ray-release:forkpath/postfly.io.git origin/dev:refs/heads/ruleset-test
    ```
 
-6. 从两个 ruleset 中移除 `ruleset-test`（或按第 5.4 节用 JSON 文件重新 PUT），再在 GitHub 网页 Branches 页面删除测试分支。
+6. 验证创建：用个人账户创建 `ruleset-create-test`，应被“禁止创建”拒绝；再用部署密钥以第 4 步那个**没有**
+   `Staging verified` 的提交创建，应成功（创建时不检查状态，见第 5.8.1 节）：
+
+   ```sh
+   git push origin origin/dev:refs/heads/ruleset-create-test
+   ```
+
+   ```sh
+   git push git@github-ray-release:forkpath/postfly.io.git <第4步的提交SHA>:refs/heads/ruleset-create-test
+   ```
+
+7. 从两个 ruleset 中移除两个测试名称（或按第 5.4 节用 JSON 文件重新 PUT），再在 GitHub 网页 Branches 页面删除两个测试分支。
 
 第 4 步如果没有被拒绝，说明状态要求对推送不生效：main 仍受“只允许部署密钥更新”和发布前检查（第 7.4 节）保护，
 生产部署时也会再次核对 staging 记录，不会部署未验证的提交。
@@ -271,6 +289,39 @@ gh api repos/forkpath/postfly.io/branches/main/protection
 2. 开 `fix/scaffold-review-3-6 → dev` 的 PR，等待 `Required checks` 与 `PR policy` 通过。
 3. 这一次选择 **Create a merge commit**：本地 dev 已包含这些提交，合并提交能让本地 `git pull --ff-only` 直接同步。
 4. dev 运行全量测试并部署 staging。staging 部署成功后，才能按第 7.4 节发布到 main。
+
+#### 5.8.1 在新仓库中创建 main
+
+从本脚手架生成的新仓库没有 main。按以下顺序操作：
+
+1. 确认 dev 与 arch 都已存在（dev 为默认分支）。它们的规则在创建分支时同样要求检查，导入后无法再创建。
+   生成的仓库只有默认分支时，先从 dev 创建 arch：
+
+   ```sh
+   git push origin origin/dev:refs/heads/arch
+   ```
+
+2. 按 5.1～5.4 完成配置并导入四个 ruleset。新仓库没有旧版分支保护，跳过 5.6。
+3. 选定 main 的起点。它必须是 dev 上的提交，之后 main 才能快进到 dev：
+   - staging 已可用：选 dev 最新、`Staging verified` 为 success 的提交（核对方法见第 7.4 节第 2 步），创建 main 即第一次发布。
+   - staging 尚未可用：选 dev 上 `Required checks` 已通过的提交，通常是 dev 最新提交。
+
+   ```sh
+   git fetch origin dev && git merge-base --is-ancestor <该提交SHA> origin/dev && echo ok
+   ```
+
+4. 用部署密钥创建 main。个人账户会被“禁止创建”拒绝；创建时不检查 `Required checks` 与 `Staging verified`：
+
+   ```sh
+   git push git@github-ray-release:forkpath/postfly.io.git <该提交SHA>:refs/heads/main
+   ```
+
+   推送会触发 `Deploy Ray`：该提交有 staging 部署记录时部署 production；没有记录时部署失败，不会部署任何内容，属于预期结果。
+
+5. 此后只按第 7.4 节快进发布，每次都要求 `Required checks` 与 `Staging verified`。staging 部署成功、
+   且 dev 比 main 多出至少两个提交后，在下一次发布前按第 5.5 节验证 main 的规则，再按第 5.7 节核对。
+6. 起点选错（不在 dev 上）时，临时把 `main-gate` 设为 Disabled，用部署密钥把 main 强推到 dev 上的提交
+   （命令同第 5.9 节第 2 步），再恢复为 Active。
 
 ### 5.9 规则配置错误或 main 被错误更新时
 
