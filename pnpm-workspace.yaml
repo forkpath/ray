@@ -144,7 +144,9 @@ onlyBuiltDependencies:
   - unrs-resolver
 
 overrides:
-  '@peculiar/asn1-schema': 2.8.0
+  # asn1-schema keeps decorator schemas in module state, so the @peculiar/asn1-* family used by
+  # passkeys (@simplewebauthn/server) and electron-builder must share one copy. Raise with the family.
+  '@peculiar/asn1-schema': 2.11.0
   '@wxt-dev/module-react>@vitejs/plugin-react': 6.1.1
   # Match TanStack Start's Node adapter; mixed srvx headers crash the dev server.
   'h3@2.0.1-rc.20>srvx': 0.11.22
@@ -156,6 +158,9 @@ overrides:
   # One zod runtime for every library. Must satisfy each dependent's range (Better Auth 1.7 and
   # TanStack Router need >=4.5.4); scripts/ci/dependency-overrides.test.mjs checks this.
   zod: 4.6.7
+  # Expo CLI validates dev-tools plugins and builds MCP tool schemas with zod 3. It runs only at
+  # build time, never in an app bundle, so it gets its declared major instead of the app's zod 4.
+  '@expo/cli>zod': 3.25.76
   # Security floors for vulnerable transitive versions; newer versions remain untouched.
   # Sources and cross-major compatibility checks: docs/development/dependency-governance.md.
   '@babel/plugin-transform-modules-systemjs@>=7.0.0 <7.29.4': 7.29.4

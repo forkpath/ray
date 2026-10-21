@@ -296,3 +296,24 @@ react-router 固定为 1.170.42、router-plugin 固定为 1.168.43，并用 over
 公告标识、范围、包版本、依赖路径、复核期限（不超过 14 天）的检查不变。无关的依赖升级不再使豁免失效；
 移除或修改补丁、安装未打补丁的副本、版本或依赖路径变化时，扫描仍然失败。检查只使用 Node 内置能力，
 安全工作流无需安装依赖。回归用例见 `scripts/ci/audit-dependencies.test.mjs`。
+
+## 2026-10-21：全局固定版本与依赖声明范围核对
+
+`scripts/ci/dependency-overrides.test.mjs` 检查 `overrides` 中的全局固定版本（如 `zod: 4.6.7`）
+是否满足每个已解析包声明的范围；作用于单个父包的 `父包>子包` override 优先于全局固定版本。
+检查只读取 `pnpm-lock.yaml` 解析出的包：`node_modules/.pnpm` 会保留切换分支后不再使用的旧目录，
+例如曾安装过的 react-router 1.170.44、router-plugin 1.168.46，它们不属于当前锁文件。
+早先列为例外的三项均已处理，测试中不再保留例外名单：
+
+- **@tanstack/router-core 1.171.35**：误报。冲突来自上述旧目录；锁文件中 react-start 1.168.61 精确依赖
+  react-router 1.170.42，react-router、router-plugin 1.168.43、router-generator 1.167.41 均精确依赖
+  router-core 1.171.35，与固定版本一致。Dependabot PR #18 实际只升级了 wxt 与 vite。升级到 react-start 1.169 线需单独评估（见 2026-10-16 一节）。
+- **@peculiar/asn1-schema 2.8.0 → 2.11.0**：该固定版本最早在 2026-06-18 升级 Better Auth 1.6（passkey）时加入，
+  当时 asn1 系列混用 2.6.0 与 2.8.0，2.8.0 是最新版。asn1-schema 用模块内状态保存装饰器生成的结构定义，
+  整个系列必须共用一份，这一理由仍然成立，但版本已落后：2.11 系列声明 `^2.11.0`。官方源无相关安全公告；
+  2.9–2.11 为修复与新增包，2.10.0 去掉了 2.7 引入的 `exports` 字段（PeculiarVentures/asn1-schema#161），恢复与 2.6 一致的模块解析。
+  升级后 @simplewebauthn/server 的证书解析（主题、基本约束、EC 公钥转 COSE）与 electron-builder 使用的
+  @peculiar/webcrypto（PKCS#8/SPKI 导入导出与签名验证）均在 2.11.0 上验证通过。
+- **@expo/cli 的 zod**：Expo CLI 声明 `^3.25.76`，用 zod 校验开发工具插件清单并生成 MCP 工具参数结构。
+  新增 `'@expo/cli>zod': 3.25.76`，Expo CLI 使用其声明的主版本；它只在构建和开发时运行，不进入应用包，
+  应用与各库仍只有 zod 4.6.7 一份运行时。

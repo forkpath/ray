@@ -7,6 +7,7 @@
 | `check-nx-cache-contracts.mjs` / `pnpm ci:nx-cache-contracts`  | 检查依赖边界、缓存输入、环境变量、禁止缓存的写入任务和 Action 固定版本                                          | CI；改项目配置后可本地运行 |
 | `check-container-contracts.sh` / `pnpm ci:container-contracts` | Dockerfile Buildx 检查、Compose 渲染、入口语法检查；`--require-artifacts` 检查打包文件                          | CI；改 Docker/打包配置时   |
 | `runtime-boundaries.test.mjs`                                  | 用实际 ESLint/浏览器打包验证 Web/Native 不引入 Node 专用依赖                                                    | `pnpm ci:checks`           |
+| `dependency-overrides.test.mjs`                                | 检查 `overrides` 的全局固定版本满足锁文件中每个包声明的范围；`父包>子包` override 优先                          | `pnpm ci:checks`           |
 | `check-patches.mjs` / `pnpm ci:patches`                        | 报告本地补丁对应依赖的上游新正式版本和安全豁免剩余天数；registry 失败时返回失败                                 | 每周安全扫描；改补丁前后   |
 | `pr-policy.mjs`                                                | `PR policy` 检查：PR 只能面向 dev 或 arch；main 不接受 PR，通过快进发布                                         | `pr-policy.yml`            |
 | `rulesets.test.mjs`                                            | 检查 `.github/rulesets/*.json` 与工作流检查名称、合并方式、main 发布规则一致                                    | `pnpm ci:checks`           |
