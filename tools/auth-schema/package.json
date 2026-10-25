@@ -10,6 +10,6 @@
     ]
   },
   "devDependencies": {
-    "auth": "1.7.11"
+    "auth": "1.7.12"
   }
 }
