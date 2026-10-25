@@ -13,7 +13,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@sentry/electron": "^7.11.0",
-    "electron-updater": "6.8.9"
+    "electron-updater": "6.8.11"
   },
   "devDependencies": {
     "@electron/asar": "3.4.1",
@@ -31,7 +31,7 @@
     "@vitejs/plugin-react": "catalog:",
     "axios": "catalog:",
     "electron": "42.11.3",
-    "electron-builder": "26.15.3",
+    "electron-builder": "26.18.0",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
     "tailwindcss": "catalog:",
