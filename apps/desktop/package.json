@@ -30,7 +30,7 @@
     "@tanstack/router-plugin": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "axios": "catalog:",
-    "electron": "42.11.3",
+    "electron": "42.11.16",
     "electron-builder": "26.15.3",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
